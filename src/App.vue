@@ -34,7 +34,28 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div class="logo title">
+    <img src="/images/logo.png" alt="B" />ands
+    <span style="color: #edb;">&nbsp;&&nbsp;</span>
+    <img src="/images/logo.png" alt="B" />onds
+  </div>
   <Combat />
 </template>
 
-<style scoped></style>
+<style scoped>
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  padding: 10px 0px;
+  border-radius: 20px;
+  overflow: hidden;
+  font-size: 30px;
+}
+.logo img {
+  width: 60px;
+  height: 60px;
+  margin-right: -10px;
+}
+</style>

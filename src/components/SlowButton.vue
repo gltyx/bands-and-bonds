@@ -10,6 +10,9 @@ const props = defineProps({
 });
 const emit = defineEmits(['done']);
 function start() {
+  if (store.timers[props.timerKey]) {
+    return;
+  }
   store.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
 }
 function style() {

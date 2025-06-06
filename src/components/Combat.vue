@@ -5,15 +5,15 @@ import SlowButton from './SlowButton.vue';
 type Attack = {
   duration: number;
   damage: number;
-  image: string;
   description: string;
 };
 
 const attacks: Record<string, Attack> = {
-  'Purple spark': { duration: 20, damage: 5, image: 'purple-spark', description: 'A powerful spark that deals damage over time.' },
-  'Acid bolt': { duration: 5, damage: 10, image: 'acid-bolt', description: 'A corrosive bolt that deals immediate damage.' },
-  'Health potion': { duration: 5, damage: 10, image: 'flask-green', description: 'A potion that restores health over time.' },
-  'Blessing of the Woods': { duration: 5, damage: 10, image: 'deer-skull', description: 'A blessing that enhances your abilities.' },
+  'Purple Spark': { duration: 20, damage: 5, description: 'A powerful spark that deals damage over time.' },
+  'Acid Bolt': { duration: 5, damage: 10, description: 'A corrosive bolt that deals immediate damage.' },
+  'Health Potion': { duration: 1, damage: 10, description: 'A potion that restores health over time.' },
+  'Blessing of the Woods': { duration: 2, damage: 10, description: 'Calls the creatures of the forest to your aid.' },
+  'Wooden Stick': { duration: 0.5, damage: 1, description: 'Whack it with a stick.' },
 };
 
 function executeAttack(attack: Attack) {
@@ -29,7 +29,7 @@ function executeAttack(attack: Attack) {
   </div>
   <div class="card" v-for="(attack, name) in attacks" :key="name">
     <SlowButton :timer-key="`attack-${name}`" :title="name" :description="attack.description"
-      :image="`/images/${attack.image}.png`"
+      :image="`/images/generated/${name}.png`"
       :duration="attack.duration * 1000" @done="executeAttack(attack)"/>
   </div>
 

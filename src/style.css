@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bellefair&family=Grenze+Gotisch:wght@100..900&display=swap');
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Bellefair", serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -60,7 +60,7 @@ button {
 
 .description {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   font-family: "Bellefair", serif;
 }
 
