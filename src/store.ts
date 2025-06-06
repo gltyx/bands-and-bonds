@@ -1,16 +1,13 @@
 import { reactive } from 'vue'
 
-export type Attack = {
+export type Timer = {
+  time?: number;
   duration: number;
-  damage: number;
-};
-
-export const attacks: Record<string, Attack> = {
-  'purple spark': { duration: 20, damage: 5 },
-  'acid bolt': { duration: 5, damage: 10 },
+  cb?: (timer: Timer) => void;
+  [x: string]: unknown;
 };
 
 export const store = reactive({
   damage: 0,
-  attackTimers: {} as Record<string, number>,
+  timers: {} as Record<string, Timer>,
 })
