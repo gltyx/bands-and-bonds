@@ -6,24 +6,35 @@ const props = defineProps({
   title: { type: String, required: true },
   image: { type: String, required: true },
   duration: { type: Number, required: true },
+  description: { type: String, required: false }
 });
 const emit = defineEmits(['done']);
 function start() {
   store.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
+}
+function style() {
+  const percent = (store.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
+  const color = '#486';
+  const bgColor = '#333';
+  return {'background': `
+    linear-gradient(
+      to right,
+      ${color}, ${percent}%, ${color}, ${percent}%, ${bgColor}, ${bgColor}
+      ) no-repeat` };
 }
 </script>
 
 <template>
 
   <div class="slow-button">
-    <Progress v-if="store.timers[props.timerKey] !== undefined" :value="store.timers[props.timerKey].time ?? 0"
-      :max="store.timers[props.timerKey].duration">
-      <img v-bind:src="props.image" width="60"/>
-      {{ store.timers[props.timerKey].time }} / {{ store.timers[props.timerKey].duration }}
-    </Progress>
-    <button v-else @click="start()">
-      <img v-bind:src="props.image" width="60"/>
-      {{ props.title }}
+    <button @click="start()" :style="style()">
+      <img v-bind:src="props.image"/>
+      <div class="text">
+        <div class="title">{{ props.title }}</div>
+        <div class="description">
+          {{ props.description }}
+        </div>
+      </div>
     </button>
   </div>
 
