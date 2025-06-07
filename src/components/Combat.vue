@@ -58,6 +58,14 @@ function executeAttack(attack: Attack) {
     store.enemy += 1;
   }
 }
+
+function retreat() {
+  if (window.confirm("Are you sure you want to retreat?")) {
+    store.damage = 0;
+    store.enemy = 0;
+    store.timers = {};
+  }
+}
 </script>
 
 <template>
@@ -73,6 +81,17 @@ function executeAttack(attack: Attack) {
   <div class="card" v-for="(attack, name) in attacks" :key="name">
     <SlowButton :timer-key="`attack-${name}`" :title="name" :description="attack.description"
       :image="`/images/generated/${name}.png`" :duration="attack.duration * 1000" @done="executeAttack(attack)" />
+  </div>
+  <div class="card">
+    <button @click="retreat()">
+      <img src="/images/generated/Retreat.png" />
+      <div class="text">
+        <div class="title">Retreat</div>
+        <div class="description">
+          Leave the dungeon and return to safety. Live to fight another day.
+        </div>
+      </div>
+    </button>
   </div>
 
 </template>

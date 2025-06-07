@@ -28,19 +28,15 @@ function style() {
 </script>
 
 <template>
-
-  <div class="slow-button">
-    <button @click="start()" :style="style()">
-      <img v-bind:src="props.image" />
-      <div class="text">
-        <div class="title">{{ props.title }}</div>
-        <div class="description">
-          {{ props.description }}
-        </div>
+  <button @click="start()" :style="style()">
+    <img v-bind:src="props.image" />
+    <div class="text">
+      <div class="title">{{ props.title }}</div>
+      <div class="description">
+        {{ props.description }}
       </div>
-    </button>
-  </div>
-
+    </div>
+  </button>
 </template>
 
 <style scoped></style>
