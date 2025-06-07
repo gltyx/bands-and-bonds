@@ -39,9 +39,9 @@ onUnmounted(() => {
 <template>
   <div class="header">
     <div class="logo title">
-      <img src="/images/generated/logo.png" alt="B" />ands
+      <img src="/images/generated/logo.webp" alt="B" />ands
       <span style="color: #edb;">&nbsp;&&nbsp;</span>
-      <img src="/images/generated/logo.png" alt="B" />onds
+      <img src="/images/generated/logo.webp" alt="B" />onds
     </div>
     <div class="tabs">
       <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>

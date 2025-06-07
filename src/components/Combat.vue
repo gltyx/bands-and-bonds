@@ -73,18 +73,18 @@ function retreat() {
   <div class="card enemy">
     <div class="description">Currently fighting:</div>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`/images/generated/${enemy.name}.png`" :alt="enemy.name" />
+    <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name" />
     <Progress :value="enemy.health - store.damage" :max="enemy.health" color="#c00">
       {{ enemy.health - store.damage }} / {{ enemy.health }} HP
     </Progress>
   </div>
   <div class="card" v-for="(attack, name) in attacks" :key="name">
     <SlowButton :timer-key="`attack-${name}`" :title="name" :description="attack.description"
-      :image="`/images/generated/${name}.png`" :duration="attack.duration * 1000" @done="executeAttack(attack)" />
+      :image="`/images/generated/${name}.webp`" :duration="attack.duration * 1000" @done="executeAttack(attack)" />
   </div>
   <div class="card">
     <button @click="retreat()">
-      <img src="/images/generated/Retreat.png" />
+      <img src="/images/generated/Retreat.webp" />
       <div class="text">
         <div class="title">Retreat</div>
         <div class="description">

@@ -16,7 +16,7 @@ function available(row: number, col: number): boolean {
   <div class="band-grid">
     <div class="band-row" v-for="row in band.height" :key="row">
       <button class="band-cell" :class="{ unavailable: !available(row, col) }" v-for="col in band.width" :key="col">
-        <img v-if="get(row, col)" :src="`/images/generated/${get(row, col)}.png`" />
+        <img v-if="get(row, col)" :src="`/images/generated/${get(row, col)}.webp`" />
         <span v-else-if="available(row, col)">
           ＋
         </span>
