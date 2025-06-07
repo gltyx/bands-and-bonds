@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { store } from "../store.ts";
+import { store, enemies } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
+import { computed } from "vue";
 
 type Attack = {
   duration: number;
@@ -48,10 +49,14 @@ const attacks: Record<string, Attack> = {
   },
 };
 
-const enemy = store.enemy;
+const enemy = computed(() => enemies[store.enemy]);
 
 function executeAttack(attack: Attack) {
   store.damage += attack.damage;
+  if (store.damage >= enemy.value.health) {
+    store.damage = 0;
+    store.enemy += 1;
+  }
 }
 </script>
 
