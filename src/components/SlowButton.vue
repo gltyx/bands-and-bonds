@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { store } from '../store.ts'
-import Progress from './Progress.vue'
 const props = defineProps({
   timerKey: { type: String, required: true },
   title: { type: String, required: true },
@@ -19,7 +18,8 @@ function style() {
   const percent = (store.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
   const color = '#486';
   const bgColor = '#333';
-  return {'background': `
+  return {
+    'background': `
     linear-gradient(
       to right,
       ${color}, ${percent}%, ${color}, ${percent}%, ${bgColor}, ${bgColor}
@@ -31,7 +31,7 @@ function style() {
 
   <div class="slow-button">
     <button @click="start()" :style="style()">
-      <img v-bind:src="props.image"/>
+      <img v-bind:src="props.image" />
       <div class="text">
         <div class="title">{{ props.title }}</div>
         <div class="description">

@@ -53,6 +53,7 @@ onUnmounted(() => {
   overflow: hidden;
   font-size: 30px;
 }
+
 .logo img {
   width: 60px;
   height: 60px;
