@@ -1,0 +1,16 @@
+<script setup lang="ts">
+import { store } from "../store.ts";
+
+</script>
+
+<template>
+  <img src="/images/generated/map-preview.png" alt="Map" />
+</template>
+
+<style scoped>
+img {
+  border-radius: 40px;
+  margin: 20px;
+  width: 500px;
+}
+</style>

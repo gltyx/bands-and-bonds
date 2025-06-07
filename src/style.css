@@ -29,7 +29,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  place-items: top;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -40,6 +40,7 @@ h1 {
 }
 
 button {
+  font-family: "Bellefair", serif;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 10px;
@@ -62,7 +63,6 @@ button {
 .description {
   font-size: 15px;
   font-weight: 400;
-  font-family: "Bellefair", serif;
 }
 
 button img {
