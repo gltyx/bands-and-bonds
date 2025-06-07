@@ -7,15 +7,13 @@ export type Timer = {
   [x: string]: unknown;
 };
 
-const enemies = {
-  'Animated Skeleton': {
-    name: 'Animated Skeleton',
-    health: 100,
-  },
-};
+const enemies = [
+  { name: 'Wild Slime', health: 30 },
+  { name: 'Animated Skeleton', health: 100 },
+];
 
 export const store = reactive({
   damage: 0,
-  enemy: enemies['Animated Skeleton'],
+  enemy: enemies[0],
   timers: {} as Record<string, Timer>,
 })

@@ -31,6 +31,7 @@ defineProps<{
   height: 100%;
   background-color: #4caf50;
   border-right: 1px solid #000;
+  transition: width 0.1s;
 }
 
 .progress-text {
