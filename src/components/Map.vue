@@ -10,7 +10,7 @@ import { store } from "../store.ts";
 <style scoped>
 img {
   border-radius: 40px;
-  margin: 20px;
+  margin: 20px 0;
   width: 500px;
 }
 </style>

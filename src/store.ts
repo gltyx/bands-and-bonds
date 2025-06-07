@@ -26,6 +26,16 @@ export const store = reactive({
   band: { width: 5, height: 5 } as Band,
 })
 
+store.band[2] = 'Royal Fruitbearer';
+store.band[6] = 'Desert Rabbit';
 store.band[7] = 'Knight of Claws';
 store.band[12] = 'Lamplighter';
 store.band[13] = 'Stick Master';
+store.band[8] = 'Dark Chef';
+store.band[11] = 'Anvilomancer';
+store.band[16] = 'Azrekta';
+store.band[17] = 'The Silent Song';
+store.band[18] = 'Stick Grandmaster';
+store.band[21] = 'Friend of Metal';
+store.band[22] = 'Friend of Metal and Fire';
+store.band[23] = 'Coldblade';
