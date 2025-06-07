@@ -35,9 +35,9 @@ onUnmounted(() => {
 
 <template>
   <div class="logo title">
-    <img src="/images/logo.png" alt="B" />ands
+    <img src="/images/generated/logo.png" alt="B" />ands
     <span style="color: #edb;">&nbsp;&&nbsp;</span>
-    <img src="/images/logo.png" alt="B" />onds
+    <img src="/images/generated/logo.png" alt="B" />onds
   </div>
   <Combat />
 </template>
@@ -52,11 +52,17 @@ onUnmounted(() => {
   border-radius: 20px;
   overflow: hidden;
   font-size: 30px;
+  position: relative;
 }
 
 .logo img {
   width: 60px;
   height: 60px;
+  margin-left: -10px;
   margin-right: -10px;
+}
+
+.logo span {
+  z-index: 1;
 }
 </style>
