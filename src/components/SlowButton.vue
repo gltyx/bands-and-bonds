@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { store } from '../store.ts'
+import { computed } from 'vue';
+import { store } from '../store.ts';
+import { marked } from 'marked';
 const props = defineProps({
   timerKey: { type: String, required: true },
   title: { type: String, required: true },
@@ -9,13 +11,13 @@ const props = defineProps({
 });
 const emit = defineEmits(['done']);
 function start() {
-  if (store.timers[props.timerKey]) {
+  if (store.run.timers[props.timerKey]) {
     return;
   }
-  store.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
+  store.run.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
 }
 function style() {
-  const percent = (store.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
+  const percent = (store.run.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
   const color = '#486';
   const bgColor = '#333';
   return {
@@ -25,6 +27,9 @@ function style() {
       ${color}, ${percent}%, ${color}, ${percent}%, ${bgColor}, ${bgColor}
       ) no-repeat` };
 }
+const description = computed(() => {
+  return props.description ? marked(props.description) : "";
+});
 </script>
 
 <template>
@@ -32,9 +37,7 @@ function style() {
     <img v-bind:src="props.image" />
     <div class="text">
       <div class="title">{{ props.title }}</div>
-      <div class="description">
-        {{ props.description }}
-      </div>
+      <div class="description" v-html="description"></div>
     </div>
   </button>
 </template>

@@ -10,7 +10,7 @@ function get(row: number, col: number): string | undefined {
   return band[col - 1 + (row - 1) * band.width];
 }
 function available(row: number, col: number): boolean {
-  return (row + col) % 2 || get(row, col);
+  return band.light[col - 1 + (row - 1) * band.width] > 0;
 }
 function unused(name: string): boolean {
   return !store.unassigned.includes(name) && !Object.values(store.band).includes(name);
@@ -30,12 +30,14 @@ function set(row: number, col: number, name: string) {
   if (store.unassigned.includes(name) && available(row, col)) {
     store.band[col - 1 + (row - 1) * band.width] = name;
     store.unassigned.splice(store.unassigned.indexOf(name), 1);
+    friends[selected.value].onAdded?.(band, row - 1, col - 1);
   }
 }
 function clear(row: number, col: number) {
   selected.value = get(row, col);
   delete store.band[col - 1 + (row - 1) * band.width];
   store.unassigned.push(selected.value);
+  friends[selected.value].onRemoved?.(band, row - 1, col - 1);
 }
 
 const description = computed(() => {

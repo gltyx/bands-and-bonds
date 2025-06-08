@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, friends, enemies, type Ability } from "../store.ts";
+import { store, friends, enemies, runData, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -44,7 +44,7 @@ const attacks: Record<string, Ability> = {
   },
 };
 
-const enemy = computed(() => enemies[store.enemy]);
+const enemy = computed(() => enemies[store.run.enemy]);
 const abilities = computed(() => {
   const abilities = [] as Ability[];
   for (let row = 0; row < store.band.height; row++) {
@@ -60,19 +60,31 @@ const abilities = computed(() => {
 });
 
 function executeAbility(ab: Ability) {
-  store.damage += ab.damage;
-  if (store.damage >= enemy.value.health) {
-    store.damage = 0;
-    store.enemy += 1;
+  if (ab.onCompleted) {
+    return ab.onCompleted(store.run, enemy.value);
+  }
+  store.run.damage += ab.damage * store.run.weaponLevel;
+  if (store.run.damage >= enemy.value.health) {
+    store.run.damage = 0;
+    store.run.enemy += 1;
   }
 }
 
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
-    store.damage = 0;
-    store.enemy = 0;
-    store.timers = {};
+    store.run = runData();
   }
+}
+
+function describe(ab: Ability): string {
+  let d = ab.description;
+  if (typeof d === "function") {
+    d = d();
+  }
+  if (ab.damage) {
+    d += `\n\n${ab.damage * store.run.weaponLevel} damage`;
+  }
+  return d;
 }
 </script>
 
@@ -82,12 +94,12 @@ function retreat() {
     <div class="description">Currently fighting:</div>
     <h1>{{ enemy.name }}</h1>
     <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name" />
-    <Progress :value="enemy.health - store.damage" :max="enemy.health" color="#c00">
-      {{ enemy.health - store.damage }} / {{ enemy.health }} HP
+    <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00">
+      {{ enemy.health - store.run.damage }} / {{ enemy.health }} HP
     </Progress>
   </div>
   <div class="card" v-for="ab in abilities" :key="ab.name">
-    <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="ab.description"
+    <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
       :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
   </div>
   <div class="card">

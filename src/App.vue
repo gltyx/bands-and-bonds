@@ -13,12 +13,12 @@ function mainLoop() {
   const currentTime = performance.now();
   const deltaTime = currentTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
-  for (const [key, t] of Object.entries(store.timers)) {
+  for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
     t.time += Math.floor(deltaTime);
     if (t.time >= t.duration) {
       t.cb?.(t);
-      delete store.timers[key];
+      delete store.run.timers[key];
     }
   }
   lastFrameTime.value = currentTime;

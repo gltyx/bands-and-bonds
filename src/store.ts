@@ -10,18 +10,23 @@ export type Timer = {
 export type Band = {
   width: number;
   height: number;
+  light: { [x: number]: number };
   [x: number]: string;
 }
 type Ability = {
   name: string;
-  description: string;
+  description: string | (() => string);
   duration: number;
-  damage: number;
+  damage?: number;
+  consumes?: { [x: string]: number };
+  onCompleted?: () => void;
 };
 
 export type Friend = {
   description?: string;
   abilities?: Ability[];
+  onAdded?: (band: Band, row: number, col: number) => void;
+  onRemoved?: (band: Band, row: number, col: number) => void;
 }
 
 export const enemies = [
@@ -31,7 +36,16 @@ export const enemies = [
 ];
 
 export const friends: Record<string, Friend> = {
-  'Anvilomancer': { description: "Anvilomancer is a master of metal and fire, forging powerful weapons and armor." },
+  'Anvilomancer': {
+    description: "An expert Anvilomancer can upgrade your weapons in the midst of battle.",
+    abilities: [{
+      name: "Forge",
+      duration: 1,
+      consumes: { metal: 1 },
+      description: () => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
+      onCompleted: () => { store.run.weaponLevel += 1; },
+    }],
+  },
   'Azrekta': {
     description: `
 Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
@@ -46,7 +60,29 @@ Abilities:
   'Friend of Metal and Fire': {},
   'Friend of Metal': {},
   'Knight of Claws': {},
-  'Lamplighter': {},
+  'Lamplighter': {
+    description: "Lights up the 8 tiles around it, letting you extend your band.",
+    onAdded: (band: Band, row: number, col: number) => {
+      for (const p of neighbors(band, row, col)) {
+        band.light[p] = (band.light[p] ?? 0) + 1;
+      }
+    },
+    onRemoved: (band: Band, row: number, col: number) => {
+      for (const p of neighbors(band, row, col)) {
+        band.light[p] -= 1;
+        if (band.light[p] === 0 && band[p]) {
+          store.unassigned.push(band[p]);
+          delete band[p];
+        }
+      }
+    },
+    abilities: [{
+      name: "Illuminate",
+      duration: 1,
+      damage: 2,
+      description: "Shines a light on the battlefield, damaging all enemies.",
+    }],
+  },
   'Royal Fruitbearer': {},
   'Stick Grandmaster': {},
   'Stick Master': {
@@ -62,29 +98,37 @@ Abilities:
   'Lord of Gears': {},
 };
 
+export function runData() {
+  // Everything specific to the current run. Deleted when the run ends.
+  return {
+    weaponLevel: 1,
+    damage: 0,
+    enemy: 0,
+    timers: {} as Record<string, Timer>,
+  };
+}
+
 export const store = reactive({
-  damage: 0,
-  enemy: 0,
-  timers: {} as Record<string, Timer>,
-  band: { width: 5, height: 5 } as Band,
+  run: runData(),
+  band: { width: 5, height: 5, light: { 12: 1 } } as Band,
   unlocked: [] as string[],
   unassigned: [] as string[],
+
 })
+
+function neighbors(band: Band, row: number, col: number): number[] {
+  const result: number[] = [];
+  for (let r = row - 1; r <= row + 1; r++) {
+    for (let c = col - 1; c <= col + 1; c++) {
+      if (r >= 0 && r < band.height && c >= 0 && c < band.width) {
+        result.push(r * band.width + c);
+      }
+    }
+  }
+  return result;
+}
 
 for (const name in friends) {
   store.unlocked.push(name);
+  store.unassigned.push(name);
 }
-
-store.band[2] = 'Royal Fruitbearer';
-store.band[6] = 'Desert Rabbit';
-store.band[7] = 'Knight of Claws';
-store.band[12] = 'Lamplighter';
-store.band[13] = 'Stick Master';
-store.band[8] = 'Dark Chef';
-store.band[11] = 'Anvilomancer';
-store.band[16] = 'Azrekta';
-store.band[17] = 'The Silent Song';
-store.band[18] = 'Stick Grandmaster';
-store.band[21] = 'Friend of Metal';
-store.band[22] = 'Friend of Metal and Fire';
-store.band[23] = 'Coldblade';
