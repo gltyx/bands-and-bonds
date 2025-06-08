@@ -63,6 +63,7 @@ button {
 .description {
   font-size: 15px;
   font-weight: 400;
+  text-align: left;
 }
 
 button img {

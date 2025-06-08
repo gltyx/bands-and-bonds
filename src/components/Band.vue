@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { marked } from 'marked';
 import { store, friends } from "../store.ts";
 
 const selected = ref(undefined as string | undefined);
@@ -37,6 +38,10 @@ function clear(row: number, col: number) {
   store.unassigned.push(selected.value);
 }
 
+const description = computed(() => {
+  const description = friends?.[selected.value]?.description;
+  return description ? marked(description) : "";
+});
 </script>
 
 <template>
@@ -64,7 +69,7 @@ function clear(row: number, col: number) {
   <div class="band-details" v-if="selected">
     <img :src="`/images/generated/${selected}.webp`" />
     <h1>{{ selected }}</h1>
-    <p>{{ friends[selected].description }}</p>
+    <div class="description" v-html="description"></div>
     <button v-if="unused(selected)" @click="store.unassigned.push(selected)">
       ⬆ Add to band
     </button>

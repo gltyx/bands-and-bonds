@@ -21,7 +21,7 @@ export const enemies = [
 
 export const friends = {
   'Anvilomancer': { description: "Anvilomancer is a master of metal and fire, forging powerful weapons and armor." },
-  'Azrekta': { description: "Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes." },
+  'Azrekta': { description: "Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.\n\nAbilities:\n- Magic.\n- Cuteness." },
   'Coldblade': {},
   'Dark Chef': {},
   'Desert Rabbit': {},
