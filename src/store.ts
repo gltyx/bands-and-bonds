@@ -12,6 +12,17 @@ export type Band = {
   height: number;
   [x: number]: string;
 }
+type Ability = {
+  name: string;
+  description: string;
+  duration: number;
+  damage: number;
+};
+
+export type Friend = {
+  description?: string;
+  abilities?: Ability[];
+}
 
 export const enemies = [
   { name: 'Wild Slime', health: 30 },
@@ -19,9 +30,16 @@ export const enemies = [
   { name: 'Animated Skeleton', health: 100 },
 ];
 
-export const friends = {
+export const friends: Record<string, Friend> = {
   'Anvilomancer': { description: "Anvilomancer is a master of metal and fire, forging powerful weapons and armor." },
-  'Azrekta': { description: "Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.\n\nAbilities:\n- Magic.\n- Cuteness." },
+  'Azrekta': {
+    description: `
+Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
+
+Abilities:
+- Magic.
+- Cuteness.
+    ` },
   'Coldblade': {},
   'Dark Chef': {},
   'Desert Rabbit': {},
@@ -31,8 +49,17 @@ export const friends = {
   'Lamplighter': {},
   'Royal Fruitbearer': {},
   'Stick Grandmaster': {},
-  'Stick Master': {},
+  'Stick Master': {
+    description: "Stick Master is a master of **the wooden stick**, using it to _whack enemies_ with precision and skill.",
+    abilities: [{
+      name: "Wooden Stick",
+      duration: 0.5,
+      damage: 1,
+      description: "Whack it with a stick.",
+    }],
+  },
   'The Silent Song': {},
+  'Lord of Gears': {},
 };
 
 export const store = reactive({
@@ -44,7 +71,7 @@ export const store = reactive({
   unassigned: [] as string[],
 })
 
-for (const name of Object.keys(friends)) {
+for (const name in friends) {
   store.unlocked.push(name);
 }
 

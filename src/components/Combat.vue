@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { store, enemies } from "../store.ts";
+import { store, friends, enemies, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
 
-type Attack = {
-  duration: number;
-  damage: number;
-  description: string;
-};
 
-const attacks: Record<string, Attack> = {
+const attacks: Record<string, Ability> = {
   "Purple Spark": {
     duration: 20,
     damage: 5,
@@ -50,9 +45,22 @@ const attacks: Record<string, Attack> = {
 };
 
 const enemy = computed(() => enemies[store.enemy]);
+const abilities = computed(() => {
+  const abilities = [] as Ability[];
+  for (let row = 0; row < store.band.height; row++) {
+    for (let col = 0; col < store.band.width; col++) {
+      const place = col + row * store.band.width;
+      const friend = friends[store.band[place]];
+      for (const ab of friend?.abilities ?? []) {
+        abilities.push(ab);
+      }
+    }
+  }
+  return abilities;
+});
 
-function executeAttack(attack: Attack) {
-  store.damage += attack.damage;
+function executeAbility(ab: Ability) {
+  store.damage += ab.damage;
   if (store.damage >= enemy.value.health) {
     store.damage = 0;
     store.enemy += 1;
@@ -78,9 +86,9 @@ function retreat() {
       {{ enemy.health - store.damage }} / {{ enemy.health }} HP
     </Progress>
   </div>
-  <div class="card" v-for="(attack, name) in attacks" :key="name">
-    <SlowButton :timer-key="`attack-${name}`" :title="name" :description="attack.description"
-      :image="`/images/generated/${name}.webp`" :duration="attack.duration * 1000" @done="executeAttack(attack)" />
+  <div class="card" v-for="ab in abilities" :key="ab.name">
+    <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="ab.description"
+      :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
   </div>
   <div class="card">
     <button @click="retreat()">

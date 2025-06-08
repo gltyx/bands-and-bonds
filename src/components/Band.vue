@@ -151,14 +151,11 @@ const description = computed(() => {
     margin-top: -15px;
     margin-bottom: 0;
   }
-
-  p {
-    margin: 10px 0;
-  }
 }
 
 h2 {
   margin-bottom: 0;
   font-family: 'Grenze Gotisch', serif;
+  font-weight: 200;
 }
 </style>
