@@ -91,3 +91,9 @@ button:focus-visible {
   padding: 2rem;
   text-align: center;
 }
+
+h1 {
+  font-weight: 600;
+  font-family: "Grenze Gotisch", serif;
+  font-size: 30px;
+}

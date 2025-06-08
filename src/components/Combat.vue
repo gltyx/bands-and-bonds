@@ -105,9 +105,6 @@ function retreat() {
   h1 {
     margin-top: -5px;
     margin-bottom: 10px;
-    font-weight: 600;
-    font-family: "Grenze Gotisch", serif;
-    font-size: 30px;
   }
 
   img {
