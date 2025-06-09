@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
 export type Timer = {
   time?: number;
@@ -72,7 +72,9 @@ Abilities:
       },
     }],
   },
-  'Desert Rabbit': {},
+  'Desert Rabbit': {
+    description: "The Desert Rabbit is a master of traversing hostile environments. Having him in your band makes it possible to change the band composition at campfires.",
+  },
   'Friend of Metal and Fire': {},
   'Friend of Metal': {},
   'Knight of Claws': {},
@@ -149,13 +151,28 @@ export function runData() {
   };
 }
 
-export const store = reactive({
-  run: runData(),
-  band: { width: 5, height: 5, light: { 12: 1 } } as Band,
-  unlocked: [] as string[],
-  unassigned: [] as string[],
+function startingBand(): Band {
+  return {
+    width: 5,
+    height: 5,
+    light: { 12: 1 },
+    12: 'Stick Master',
+  };
+}
+function startingUnlocked(): string[] {
+  return Object.keys(friends);
+}
 
-})
+const loadedStore = localStorage.getItem('store');
+export const store = reactive(loadedStore ? JSON.parse(loadedStore) : {
+  run: runData(),
+  band: startingBand(),
+  unlocked: startingUnlocked(),
+  unassigned: [] as string[],
+});
+watch(store, (newValue) => {
+  localStorage.setItem('store', JSON.stringify(newValue))
+}, { deep: true });
 
 function neighbors(band: Band, row: number, col: number): number[] {
   const result: number[] = [];
@@ -177,9 +194,4 @@ export function damage(x: number) {
     store.run.poison = 0;
     store.run.enemy += 1;
   }
-}
-
-for (const name in friends) {
-  store.unlocked.push(name);
-  store.unassigned.push(name);
 }
