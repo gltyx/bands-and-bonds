@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, friends, enemies, runData, type Ability } from "../store.ts";
+import { store, friends, enemies, damage, runData, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -63,11 +63,7 @@ function executeAbility(ab: Ability) {
   if (ab.onCompleted) {
     return ab.onCompleted(store.run, enemy.value);
   }
-  store.run.damage += ab.damage * store.run.weaponLevel;
-  if (store.run.damage >= enemy.value.health) {
-    store.run.damage = 0;
-    store.run.enemy += 1;
-  }
+  damage(ab.damage * store.run.weaponLevel);
 }
 
 function retreat() {

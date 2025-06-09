@@ -142,6 +142,7 @@ const description = computed(() => {
   margin: 20px 0;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 600px;
 
   img {
     width: 200px;

@@ -33,6 +33,10 @@ export const enemies = [
   { name: 'Wild Slime', health: 30 },
   { name: 'Poison Crow', health: 50 },
   { name: 'Animated Skeleton', health: 100 },
+  { name: 'The Shroud', health: 1000 },
+  { name: 'Dark Lord', health: 10000 },
+  { name: 'Glass Dragon', health: 100000 },
+  { name: 'Xaranthian Construct', health: 1000000 },
 ];
 
 export const friends: Record<string, Friend> = {
@@ -40,7 +44,7 @@ export const friends: Record<string, Friend> = {
     description: "An expert Anvilomancer can upgrade your weapons in the midst of battle.",
     abilities: [{
       name: "Forge",
-      duration: 1,
+      duration: 5,
       consumes: { metal: 1 },
       description: () => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
       onCompleted: () => { store.run.weaponLevel += 1; },
@@ -49,13 +53,25 @@ export const friends: Record<string, Friend> = {
   'Azrekta': {
     description: `
 Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
+Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
+Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
 
 Abilities:
 - Magic.
 - Cuteness.
     ` },
   'Coldblade': {},
-  'Dark Chef': {},
+  'Dark Chef': {
+    description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
+    abilities: [{
+      name: "Poison Strike",
+      duration: 5,
+      description: "Damage over time.",
+      onCompleted() {
+        store.run.poison += store.run.weaponLevel;
+      },
+    }],
+  },
   'Desert Rabbit': {},
   'Friend of Metal and Fire': {},
   'Friend of Metal': {},
@@ -96,14 +112,39 @@ Abilities:
   },
   'The Silent Song': {},
   'Lord of Gears': {},
+  'Pur Lion': {
+    description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him. He has the ability to _snatch_ items from enemies in the fray of the battle.",
+    abilities: [{
+      name: "Snatch",
+      duration: 0.5,
+      description: "Steals a piece of metal.",
+      onCompleted() {
+        store.run.metal += 1;
+      },
+    }],
+  },
+  'Kit Flash': {
+    description: "A wizard of speed, Kit Flash can _run_ faster than the eye can see. He is able to speed up the abilities of every member of the band.",
+    abilities: [{
+      name: "Running Start",
+      duration: 10,
+      description: () => `Speed up all abilities. (Currently ${store.run.speedLevel}×.)`,
+      onCompleted() {
+        store.run.speedLevel += 1;
+      },
+    }],
+  },
 };
 
 export function runData() {
   // Everything specific to the current run. Deleted when the run ends.
   return {
     weaponLevel: 1,
+    speedLevel: 1,
     damage: 0,
     enemy: 0,
+    metal: 0,
+    poison: 0,
     timers: {} as Record<string, Timer>,
   };
 }
@@ -126,6 +167,16 @@ function neighbors(band: Band, row: number, col: number): number[] {
     }
   }
   return result;
+}
+
+export function damage(x: number) {
+  store.run.damage += x;
+  const enemy = enemies[store.run.enemy];
+  if (store.run.damage >= enemy.health) {
+    store.run.damage = 0;
+    store.run.poison = 0;
+    store.run.enemy += 1;
+  }
 }
 
 for (const name in friends) {

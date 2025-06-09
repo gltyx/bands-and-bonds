@@ -3,10 +3,11 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import Combat from './components/Combat.vue'
 import Map from './components/Map.vue'
 import Band from './components/Band.vue'
-import { store } from './store.ts'
+import { store, damage } from './store.ts'
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
+const lastPoisonTime = ref(performance.now());
 const page = ref<'combat' | 'map' | 'band'>('combat');
 
 function mainLoop() {
@@ -15,12 +16,24 @@ function mainLoop() {
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    t.time += Math.floor(deltaTime);
+    t.time += Math.floor(deltaTime) * store.run.speedLevel;
     if (t.time >= t.duration) {
       t.cb?.(t);
       delete store.run.timers[key];
     }
   }
+  let poison = (currentTime - lastPoisonTime.value) * store.run.poison / 1000;
+  while (poison > 1) {
+    damage(1);
+    if (store.run.poison === 0) {
+      // The enemy died.
+      poison = 0;
+      break;
+    }
+    poison -= 1;
+    lastPoisonTime.value += 1000 / store.run.poison;
+  }
+  if (poison === 0) lastPoisonTime.value = currentTime;
   lastFrameTime.value = currentTime;
   animationFrameId.value = requestAnimationFrame(mainLoop);
 }
@@ -49,11 +62,11 @@ onUnmounted(() => {
       <button :class="{ selected: page === 'band' }" @click="page = 'band'">Band</button>
     </div>
   </div>
-  <div v-show="page === 'combat'">
+  <div class="page-container" v-show="page === 'combat'">
     <Combat />
   </div>
-  <div v-show="page === 'map'"><Map /></div>
-  <div v-show="page === 'band'">
+  <div class="page-container" v-show="page === 'map'"><Map /></div>
+  <div class="page-container" v-show="page === 'band'">
     <Band />
   </div>
 </template>
@@ -117,5 +130,11 @@ onUnmounted(() => {
 
 .logo span {
   z-index: 1;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
