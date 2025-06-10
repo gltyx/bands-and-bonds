@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Germania+One&family=Grenze+Gotisch:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bellefair&family=Germania+One&family=Grenze+Gotisch:wght@100..900&display=swap');
 
 :root {
-  font-family: "Cormorant", serif;
+  font-family: "Bellefair", serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -34,7 +34,7 @@ body {
 }
 
 button {
-  font-family: "Cormorant", serif;
+  font-family: "Bellefair", serif;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 10px;
