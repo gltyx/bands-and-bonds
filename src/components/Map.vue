@@ -11,6 +11,7 @@ import { store } from "../store.ts";
 img {
   border-radius: 40px;
   margin: 20px 0;
-  width: 500px;
+  width: 80vw;
+  max-width: 800px;
 }
 </style>
