@@ -104,8 +104,10 @@ const description = computed(() => {
 }
 
 .band-cell {
-  width: 100px;
-  height: 100px;
+  width: 16vw;
+  height: 16vw;
+  max-width: 100px;
+  max-height: 100px;
   margin: 0;
   color: #333;
   background-color: #000;

@@ -4,7 +4,7 @@ import { store } from "../store.ts";
 </script>
 
 <template>
-  <img src="/images/generated/map-preview.webp" alt="Map" />
+  <img src="/images/generated/map.webp" alt="Map" />
 </template>
 
 <style scoped>
