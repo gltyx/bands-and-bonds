@@ -18,7 +18,11 @@ const points: Point[] = [
   { x: 581, y: 413, type: "none" },
   { x: 641, y: 413, type: "pickup", name: "rescue" },
   { x: 641, y: 483, type: "pickup", name: "rescue" },
-  { x: 681, y: 483, type: "pickup", name: "campfire" },
+  { x: 661, y: 483, type: "pickup", name: "campfire" },
+  { x: 661, y: 313, type: "none" },
+  { x: 581, y: 313, type: "none" },
+  { x: 581, y: 363, type: "none" },
+  { x: 541, y: 363, type: "none" },
 ];
 
 const pos = ref({ x: 0, y: 0 });
@@ -40,17 +44,51 @@ function position(point: Point) {
 }
 
 const line = computed(() => {
-  const path = [];
-  let last: Point | null = null;
-  for (const p of points) {
-    if (last === null) {
-      path.push(`M ${p.x} ${p.y}`);
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length - 1; i++) {
+    const { x: x0, y: y0 } = points[i - 1];
+    const { x: x1, y: y1 } = points[i];
+    const { x: x2, y: y2 } = points[i + 1];
+
+    // Vector directions
+    const dx1 = x1 - x0;
+    const dy1 = y1 - y0;
+    const dx2 = x2 - x1;
+    const dy2 = y2 - y1;
+
+    // Ensure this is an L-bend (90 degrees)
+    if ((dx1 === 0 && dy2 === 0) || (dy1 === 0 && dx2 === 0)) {
+      // Inward direction
+      const len1 = Math.hypot(dx1, dy1);
+      const len2 = Math.hypot(dx2, dy2);
+
+      const RADIUS = 20;
+      const r = Math.min(RADIUS, len1 / 2, len2 / 2); // Avoid overshooting short segments
+
+      // Point before the corner
+      const xLine1 = x1 - Math.sign(dx1) * r;
+      const yLine1 = y1 - Math.sign(dy1) * r;
+
+      // Point after the corner
+      const xLine2 = x1 + Math.sign(dx2) * r;
+      const yLine2 = y1 + Math.sign(dy2) * r;
+
+      // Draw line to corner - r
+      d += ` L ${xLine1} ${yLine1}`;
+
+      // Arc to corner + r
+      const isClockwiseTurn = dx1 * dy2 - dy1 * dx2 > 0;
+      d += ` A ${r} ${r} 0 0 ${isClockwiseTurn ? 1 : 0} ${xLine2} ${yLine2}`;
     } else {
-      path.push(`L ${p.x} ${p.y}`);
+      // Not a corner (could be straight)
+      d += ` L ${x1} ${y1}`;
     }
-    last = p;
   }
-  return path.join(" ");
+
+  // Final segment
+  const last = points[points.length - 1];
+  d += ` L ${last.x} ${last.y}`;
+  return d;
 });
 
 </script>
