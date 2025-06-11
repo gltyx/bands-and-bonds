@@ -30,33 +30,32 @@ type Point = {
 };
 
 const allPoints: Point[] = [
-  { x: 402, y: 500, type: "none" },
-  { x: 402, y: 477, type: "combat", name: "Wild Slime" },
+  { x: 409, y: 507, type: "none" },
+  { x: 409, y: 484, type: "combat", name: "Wild Slime" },
   {
-    x: 402, y: 412, type: "combat", name: "Animated Skeleton",
+    x: 409, y: 419, type: "combat", name: "Animated Skeleton",
     next: { 'Turn right': 'right1', 'Turn left': 'left1', 'Go straight': 'straight1' }
   },
-  { x: 448, y: 412, type: "pickup", name: "fruit", label: 'right1' },
-  { x: 494, y: 412, type: "pickup", name: "gem" },
-  { x: 494, y: 470, type: "pickup", name: "gold" },
-  { x: 447, y: 470, type: "combat", end: true },
+  { x: 455, y: 419, type: "pickup", name: "fruit", label: 'right1' },
+  { x: 501, y: 419, type: "pickup", name: "gem" },
+  { x: 501, y: 477, type: "pickup", name: "gold" },
+  { x: 454, y: 477, type: "combat", end: true },
 
-  { x: 338, y: 412, type: "pickup", name: "rescue", label: 'left1' },
-  { x: 297, y: 412, type: "none" },
-  { x: 297, y: 486, type: "none" },
-  { x: 343, y: 486, type: "none" },
-  { x: 343, y: 454, type: "combat", end: true },
+  { x: 345, y: 419, type: "pickup", name: "rescue", label: 'left1' },
+  { x: 304, y: 419, type: "none" },
+  { x: 304, y: 493, type: "none" },
+  { x: 350, y: 493, type: "none" },
+  { x: 350, y: 461, type: "combat", end: true },
 
-  { x: 402, y: 352, type: "pickup", name: "rescue", label: 'straight1' },
-  { x: 340, y: 352, type: "pickup", name: "campfire" },
-  { x: 281, y: 352, type: "none" },
-  { x: 281, y: 336, type: "combat" },
-  { x: 281, y: 286, type: "combat" },
-  { x: 281, y: 229, type: "combat" },
-  { x: 281, y: 212, type: "none" },
-  { x: 344, y: 212, type: "combat", end: true },
+  { x: 409, y: 359, type: "pickup", name: "rescue", label: 'straight1' },
+  { x: 347, y: 359, type: "pickup", name: "campfire" },
+  { x: 288, y: 359, type: "none" },
+  { x: 288, y: 343, type: "combat" },
+  { x: 288, y: 293, type: "combat" },
+  { x: 288, y: 236, type: "combat" },
+  { x: 288, y: 219, type: "none" },
+  { x: 351, y: 219, type: "combat", end: true },
 ];
-
 const points = computed(() => {
   const points = [] as Point[];
   const steps = ['Go straight'];
