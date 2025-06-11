@@ -30,19 +30,21 @@ function set(row: number, col: number, name: string) {
   if (store.unassigned.includes(name) && available(row, col)) {
     store.band[col - 1 + (row - 1) * band.width] = name;
     store.unassigned.splice(store.unassigned.indexOf(name), 1);
-    friends[selected.value].onAdded?.(band, row - 1, col - 1);
+    friends[name].onAdded?.(band, row - 1, col - 1);
   }
 }
 function clear(row: number, col: number) {
   selected.value = get(row, col);
+  if (!selected.value) return;
   delete store.band[col - 1 + (row - 1) * band.width];
   store.unassigned.push(selected.value);
   friends[selected.value].onRemoved?.(band, row - 1, col - 1);
 }
 
 const description = computed(() => {
-  const description = friends?.[selected.value]?.description;
-  return description ? marked(description) : "";
+  if (!selected.value) return "";
+  const description = friends[selected.value]?.description ?? "";
+  return marked(description);
 });
 </script>
 
@@ -54,7 +56,7 @@ const description = computed(() => {
           @click="clear(row, col);">
           <img v-if="get(row, col)" :src="`/images/generated/${get(row, col)}.webp`" />
         </button>
-        <button v-else-if="available(row, col)" class="band-cell" @click="set(row, col, selected)">
+        <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)">
           ＋
         </button>
         <button v-else class="band-cell unavailable">
@@ -91,7 +93,6 @@ const description = computed(() => {
 
 <style scoped>
 .band-grid {
-  margin: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 3px;

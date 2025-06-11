@@ -4,46 +4,6 @@ import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
 
-
-const attacks: Record<string, Ability> = {
-  "Purple Spark": {
-    duration: 20,
-    damage: 5,
-    description: "A powerful spark that deals damage over time.",
-  },
-  "Acid Bolt": {
-    duration: 5,
-    damage: 10,
-    description: "A corrosive bolt that deals immediate damage.",
-  },
-  "Health Potion": {
-    duration: 1,
-    damage: 10,
-    description: "A potion that restores health over time.",
-  },
-  "Blessing of the Woods": {
-    duration: 2,
-    damage: 10,
-    description: "Calls the creatures of the forest to your aid.",
-  },
-  "Wooden Stick": {
-    duration: 0.5,
-    damage: 1,
-    description: "Whack it with a stick.",
-  },
-  "Lunar Portal": {
-    duration: 0.5,
-    damage: 1,
-    description: "Open a portal to the moon.",
-  },
-  Enscribe: {
-    duration: 0.5,
-    damage: 1,
-    description:
-      "Write down the name of the monster. Deals 3d6 points of damage.",
-  },
-};
-
 const enemy = computed(() => enemies[store.run.enemy]);
 const abilities = computed(() => {
   const abilities = [] as Ability[];
@@ -61,9 +21,11 @@ const abilities = computed(() => {
 
 function executeAbility(ab: Ability) {
   if (ab.onCompleted) {
-    return ab.onCompleted(store.run, enemy.value);
+    return ab.onCompleted();
   }
-  damage(ab.damage * store.run.weaponLevel);
+  if (ab.damage) {
+    damage(ab.damage * store.run.weaponLevel);
+  }
 }
 
 function retreat() {
@@ -86,7 +48,7 @@ function describe(ab: Ability): string {
 
 <template>
 
-  <div class="card enemy">
+  <div class="enemy">
     <div class="description">Currently fighting:</div>
     <h1>{{ enemy.name }}</h1>
     <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name" />

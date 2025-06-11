@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import Combat from './components/Combat.vue'
-import Map from './components/Map.vue'
+import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
 import { store, damage } from './store.ts'
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
 const lastPoisonTime = ref(performance.now());
-const page = ref<'combat' | 'map' | 'band'>('combat');
+
+type SelectedPage = 'combat' | 'map' | 'band';
+const loadedPage = localStorage.getItem('current page') as SelectedPage;
+const page = ref<SelectedPage>(loadedPage ?? 'combat');
+watch(page, (newValue) => {
+  localStorage.setItem('current page', newValue);
+});
 
 function mainLoop() {
   const currentTime = performance.now();
@@ -65,7 +71,9 @@ onUnmounted(() => {
   <div class="page-container" v-show="page === 'combat'">
     <Combat />
   </div>
-  <div class="page-container" v-show="page === 'map'"><Map /></div>
+  <div class="page-container" v-show="page === 'map'">
+    <MapPage />
+  </div>
   <div class="page-container" v-show="page === 'band'">
     <Band />
   </div>
@@ -136,5 +144,6 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 20px;
 }
 </style>

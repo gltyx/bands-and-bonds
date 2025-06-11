@@ -13,7 +13,7 @@ export type Band = {
   light: { [x: number]: number };
   [x: number]: string;
 }
-type Ability = {
+export type Ability = {
   name: string;
   description: string | (() => string);
   duration: number;
@@ -163,8 +163,15 @@ function startingUnlocked(): string[] {
   return Object.keys(friends);
 }
 
+export type Store = {
+  run: ReturnType<typeof runData>;
+  band: Band;
+  unlocked: string[];
+  unassigned: string[];
+};
+
 const loadedStore = localStorage.getItem('store');
-export const store = reactive(loadedStore ? JSON.parse(loadedStore) : {
+export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
   unlocked: startingUnlocked(),
