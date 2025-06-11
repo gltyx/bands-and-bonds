@@ -1,5 +1,5 @@
-export default function curvedLine(radius: number, points: { x: number; y: number }[]) {
-  let d = `M ${points[0].x} ${points[0].y}`;
+export default function curvedLine(radius: number, scale: number, points: { x: number; y: number }[]) {
+  let d = `M ${points[0].x * scale} ${points[0].y * scale}`;
   for (let i = 1; i < points.length - 1; i++) {
     const { x: x0, y: y0 } = points[i - 1];
     const { x: x1, y: y1 } = points[i];
@@ -28,19 +28,19 @@ export default function curvedLine(radius: number, points: { x: number; y: numbe
       const yLine2 = y1 + Math.sign(dy2) * r;
 
       // Draw line to corner - r
-      d += ` L ${xLine1} ${yLine1}`;
+      d += ` L ${xLine1 * scale} ${yLine1 * scale}`;
 
       // Arc to corner + r
       const isClockwiseTurn = dx1 * dy2 - dy1 * dx2 > 0;
-      d += ` A ${r} ${r} 0 0 ${isClockwiseTurn ? 1 : 0} ${xLine2} ${yLine2}`;
+      d += ` A ${r * scale} ${r * scale} 0 0 ${isClockwiseTurn ? 1 : 0} ${xLine2 * scale} ${yLine2 * scale}`;
     } else {
       // Not a corner (could be straight)
-      d += ` L ${x1} ${y1}`;
+      d += ` L ${x1 * scale} ${y1 * scale}`;
     }
   }
 
   // Final segment
   const last = points[points.length - 1];
-  d += ` L ${last.x} ${last.y}`;
+  d += ` L ${last.x * scale} ${last.y * scale}`;
   return d;
 }

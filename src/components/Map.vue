@@ -1,7 +1,23 @@
 <script setup lang="ts">
 import { store } from "../store.ts";
 import curvedLine from "./curved-line.ts";
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
+
+const mapElement = useTemplateRef('mapElement');
+const scale = ref(1.0);
+
+const resizeObserver = new ResizeObserver(() => {
+  if (!mapElement.value) return;
+  scale.value = mapElement.value.clientWidth / 800;
+});
+onMounted(() => {
+  if (!mapElement.value) return;
+  scale.value = mapElement.value.clientWidth / 800;
+  resizeObserver.observe(mapElement.value);
+});
+onUnmounted(() => {
+  resizeObserver.disconnect();
+});
 
 type Point = {
   x: number;
@@ -29,7 +45,10 @@ const points: Point[] = [
 const pos = ref({ x: 0, y: 0 });
 
 function onClick(e: MouseEvent) {
+  if (!mapElement.value) return;
   pos.value = { x: e.offsetX, y: e.offsetY };
+  points[0].x = e.pageX - mapElement.value.offsetLeft;
+  points[0].y = e.pageY - mapElement.value.offsetTop;
 }
 
 function icon(point: Point) {
@@ -37,26 +56,33 @@ function icon(point: Point) {
   if (point.type === "pickup") return point.name;
 }
 
-function position(point: Point) {
+function style(point: Point) {
+  if (!mapElement.value) return { display: 'none' };
+  const x = point.x * scale.value;
+  const y = point.y * scale.value;
+  const w = 30 * scale.value;
+  const h = 30 * scale.value;
   return {
-    left: `${point.x - 15}px`,
-    top: `${point.y - 15}px`,
+    left: `${x - w / 2}px`,
+    top: `${y - h / 2}px`,
+    width: `${w}px`,
+    height: `${h}px`,
   };
 }
 
-const line = computed(() => curvedLine(20, points));
+const line = computed(() => curvedLine(20, scale.value, points));
 
 </script>
 
 <template>
-  <div class="map" @click="onClick">
+  <div class="map" @click="onClick" ref="mapElement">
     <div class="map-backdrop" />
     { x: {{ pos.x }}, y: {{ pos.y }} }
     <svg width="100%" height="100%">
-      <path :d="line" stroke="white" stroke-width="5" fill="none" stroke-dasharray="15, 10" />
+      <path :d="line" stroke="white" :stroke-width="5 * scale" fill="none" />
     </svg>
     <template v-for="point in points" :key="point.name">
-      <img v-if="point.type !== 'none'" :alt="point.name" :style="position(point)"
+      <img v-if="point.type !== 'none'" :alt="point.name" :style="style(point)"
         :src="`/images/generated/${icon(point)}-outlined.webp`" class="marker" />
     </template>
   </div>
@@ -74,7 +100,7 @@ const line = computed(() => curvedLine(20, points));
 
 .map-backdrop {
   aspect-ratio: 1.5;
-  margin: 20px;
+  margin: calc(min(20px, 2vw));
   background-image: url('/images/generated/map.webp');
   background-size: cover;
 }
