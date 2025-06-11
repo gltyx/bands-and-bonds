@@ -24,31 +24,62 @@ type Point = {
   y: number;
   type: "combat" | "pickup" | "none";
   name?: string;
+  next?: Record<string, string>; // The path diverges.
+  label?: string; // Referenced from "next", like a goto label.
+  end?: boolean; // If true, this is the end of the path.
 };
 
-const points: Point[] = [
-  { x: 401, y: 483, type: "combat", name: "Wild Slime" },
-  { x: 441, y: 483, type: "combat", name: "Animated Skeleton" },
-  { x: 481, y: 483, type: "pickup", name: "fruit" },
-  { x: 541, y: 483, type: "pickup", name: "gem" },
-  { x: 581, y: 483, type: "pickup", name: "gold" },
-  { x: 581, y: 413, type: "none" },
-  { x: 641, y: 413, type: "pickup", name: "rescue" },
-  { x: 641, y: 483, type: "pickup", name: "rescue" },
-  { x: 661, y: 483, type: "pickup", name: "campfire" },
-  { x: 661, y: 313, type: "none" },
-  { x: 581, y: 313, type: "none" },
-  { x: 581, y: 363, type: "none" },
-  { x: 541, y: 363, type: "none" },
+const allPoints: Point[] = [
+  { x: 402, y: 500, type: "none" },
+  { x: 402, y: 477, type: "combat", name: "Wild Slime" },
+  {
+    x: 402, y: 412, type: "combat", name: "Animated Skeleton",
+    next: { 'Turn right': 'right1', 'Turn left': 'left1', 'Go straight': 'straight1' }
+  },
+  { x: 448, y: 412, type: "pickup", name: "fruit", label: 'right1' },
+  { x: 494, y: 412, type: "pickup", name: "gem" },
+  { x: 494, y: 470, type: "pickup", name: "gold" },
+  { x: 447, y: 470, type: "combat", end: true },
+
+  { x: 338, y: 412, type: "pickup", name: "rescue", label: 'left1' },
+  { x: 297, y: 412, type: "none" },
+  { x: 297, y: 486, type: "none" },
+  { x: 343, y: 486, type: "none" },
+  { x: 343, y: 454, type: "combat", end: true },
+
+  { x: 402, y: 352, type: "pickup", name: "rescue", label: 'straight1' },
+  { x: 340, y: 352, type: "pickup", name: "campfire" },
+  { x: 281, y: 352, type: "none" },
+  { x: 281, y: 336, type: "combat" },
+  { x: 281, y: 286, type: "combat" },
+  { x: 281, y: 229, type: "combat" },
+  { x: 281, y: 212, type: "none" },
+  { x: 344, y: 212, type: "combat", end: true },
 ];
 
+const points = computed(() => {
+  const points = [] as Point[];
+  const steps = ['Go straight'];
+  let target = undefined as string | undefined;
+  for (const point of allPoints) {
+    if (target && point.label === target) {
+      target = undefined;
+    }
+    if (target) continue;
+    points.push(point);
+    if (point.end) return points;
+    if (point.next) {
+      const step = steps.shift() ?? '';
+      target = point.next[step];
+    }
+  }
+  return points;
+});
 const pos = ref({ x: 0, y: 0 });
 
 function onClick(e: MouseEvent) {
   if (!mapElement.value) return;
-  pos.value = { x: e.offsetX, y: e.offsetY };
-  points[0].x = e.pageX - mapElement.value.offsetLeft;
-  points[0].y = e.pageY - mapElement.value.offsetTop;
+  pos.value = { x: e.pageX - mapElement.value.offsetLeft, y: e.pageY - mapElement.value.offsetTop };
 }
 
 function icon(point: Point) {
@@ -70,7 +101,7 @@ function style(point: Point) {
   };
 }
 
-const line = computed(() => curvedLine(20, scale.value, points));
+const line = computed(() => curvedLine(20, scale.value, points.value));
 
 </script>
 
@@ -110,6 +141,10 @@ img.marker {
   position: absolute;
   width: 30px;
   height: 30px;
+}
+
+img.marker.undiscovered {
+  filter: blur(2px) brightness(0.2);
 }
 
 svg {
