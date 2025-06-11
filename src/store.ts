@@ -1,4 +1,5 @@
-import { reactive, watch } from 'vue'
+import { reactive, watch } from 'vue';
+import { allRooms } from './rooms.ts';
 
 export type Timer = {
   time?: number;
@@ -29,7 +30,11 @@ export type Friend = {
   onRemoved?: (band: Band, row: number, col: number) => void;
 }
 
-export const enemies = [
+export type Enemy = {
+  name: string;
+  health: number;
+};
+export const allEnemies: Enemy[] = [
   { name: 'Wild Slime', health: 30 },
   { name: 'Poison Crow', health: 50 },
   { name: 'Animated Skeleton', health: 100 },
@@ -138,16 +143,26 @@ Abilities:
   },
 };
 
+export function roomData() {
+  // Everything specific to the current room. Deleted when leaving the room.
+  return {
+    damage: 0,
+    poison: 0,
+    timers: {} as Record<string, Timer>,
+  };
+}
 export function runData() {
   // Everything specific to the current run. Deleted when the run ends.
   return {
     weaponLevel: 1,
     speedLevel: 1,
-    damage: 0,
-    enemy: 0,
+    steps: 0,
+    turns: [] as string[],
     metal: 0,
-    poison: 0,
-    timers: {} as Record<string, Timer>,
+    // Precomputed for convenience.
+    room: allRooms[0],
+    enemy: undefined as Enemy | undefined,
+    ...roomData(),
   };
 }
 
@@ -195,10 +210,10 @@ function neighbors(band: Band, row: number, col: number): number[] {
 
 export function damage(x: number) {
   store.run.damage += x;
-  const enemy = enemies[store.run.enemy];
+  const enemy = store.run.enemy;
+  if (!enemy) return;
   if (store.run.damage >= enemy.health) {
-    store.run.damage = 0;
+    store.run.damage = enemy.health;
     store.run.poison = 0;
-    store.run.enemy += 1;
   }
 }
