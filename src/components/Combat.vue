@@ -54,9 +54,9 @@ const possibleTurns = computed(() => {
   }
   const room = store.run.room;
   if (room.next) {
-    return Object.keys(room.next);
+    return Object.entries(room.next).map(([title, { description }]) => ({ title, description }));
   }
-  return ['Keep going'];
+  return [{ title: 'Keep going', description: 'Continue exploring the dungeon.' }];
 });
 function takeTurn(turn: string) {
   store.run = { ...store.run, ...roomData() };
@@ -64,8 +64,14 @@ function takeTurn(turn: string) {
   if (turn !== 'Keep going') {
     store.run.turns.push(turn);
   }
-  const path = getPath(store.run.steps, store.run.turns);
-  const room = path[path.length - 1];
+  let path = getPath(store.run.steps, store.run.turns);
+  let room = path[path.length - 1];
+  while (room.type === 'none' && !room.next) {
+    // Skip rooms with nothing to do.
+    store.run.steps += 1;
+    path = getPath(store.run.steps, store.run.turns);
+    room = path[path.length - 1];
+  }
   store.run.room = room;
   store.run.enemy = room.type === 'combat' ? allEnemies.find((e) => e.name === room.name) : undefined;
 }
@@ -96,11 +102,12 @@ function takeTurn(turn: string) {
       </div>
     </button>
   </div>
-  <div class="card" v-for="turn in possibleTurns" :key="turn">
-    <button @click="takeTurn(turn)">
-      <img :src="`/images/generated/${turn}.webp`" />
+  <div class="card" v-for="turn in possibleTurns" :key="turn.title">
+    <button @click="takeTurn(turn.title)">
+      <img :src="`/images/generated/${turn.title}.webp`" />
       <div class="text">
-        <div class="title">{{ turn }}</div>
+        <div class="title">{{ turn.title }}</div>
+        <div class="description">{{ turn.description }}</div>
       </div>
     </button>
   </div>

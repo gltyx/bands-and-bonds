@@ -1,10 +1,14 @@
+export type Turn = {
+  label: string; // The label of the next room.
+  description?: string; // Description of the turn.
+};
 
 export type Room = {
   x: number;
   y: number;
   type: string;
   name?: string;
-  next?: Record<string, string>; // The path diverges.
+  next?: Record<string, Turn>; // The path diverges.
   label?: string; // Referenced from "next", like a goto label.
   end?: boolean; // If true, this is the end of the path.
 };
@@ -14,7 +18,11 @@ export const allRooms: Room[] = [
   { x: 407, y: 484, type: "combat", name: "Wild Slime" },
   {
     x: 407, y: 419, type: "combat", name: "Animated Skeleton",
-    next: { 'Turn right': 'right1', 'Turn left': 'left1', 'Go straight': 'straight1' },
+    next: {
+      'Turn right': { label: 'right1', description: 'A quiet corridor leads into an ill-maintained part of the dungeon.' },
+      'Turn left': { label: 'left1', description: 'You see a door to the left. It hangs ajar, and you can hear the sound of movement from beyond it.' },
+      'Go straight': { label: 'straight1', description: 'A heavy door stands in front of you. It is barred from this side. You can easily open it.' },
+    },
   },
   { x: 455, y: 419, type: "fruit", label: 'right1' },
   { x: 501, y: 419, type: "gem" },
@@ -29,7 +37,7 @@ export const allRooms: Room[] = [
 
   {
     x: 407, y: 359, type: "boss", label: 'straight1',
-    next: { 'Turn left': 'main-left', 'Turn right': 'main-right' }
+    next: { 'Turn left': { label: 'main-left' }, 'Turn right': { label: 'main-right' } }
   },
   { x: 342, y: 359, type: "campfire", label: 'main-left' },
   { x: 288, y: 359, type: "none" },
@@ -37,7 +45,7 @@ export const allRooms: Room[] = [
   { x: 288, y: 293, type: "combat" },
   {
     x: 288, y: 236, type: "combat",
-    next: { 'Turn left': 'left2', 'Go straight': 'straight2' },
+    next: { 'Turn left': { label: 'left2' }, 'Go straight': { label: 'straight2' } },
   },
   { x: 288, y: 219, type: "none", label: 'straight2' },
   { x: 351, y: 219, type: "combat" },
@@ -57,18 +65,18 @@ export const allRooms: Room[] = [
   { x: 277, y: 379, type: "none" },
   {
     x: 277, y: 413, type: "none",
-    next: { 'Turn left': 'left3', 'Go straight': 'straight3' },
+    next: { 'Turn left': { label: 'left3' }, 'Go straight': { label: 'straight3' } },
   },
   { x: 243, y: 413, type: "combat", label: 'left3', end: true },
   {
     x: 277, y: 459, type: "none", label: 'straight3',
-    next: { 'Turn left': 'left4', 'Go straight': 'straight4' },
+    next: { 'Turn left': { label: 'left4' }, 'Go straight': { label: 'straight4' } },
   },
   { x: 243, y: 459, type: "combat", label: 'left4', end: true },
   { x: 277, y: 498, type: "none", label: 'straight4' },
   {
     x: 196, y: 498, type: "none",
-    next: { 'Go straight': 'straight5', 'Turn right': 'right5' },
+    next: { 'Go straight': { label: 'straight5' }, 'Turn right': { label: 'right5' } },
   },
   { x: 196, y: 460, type: "combat", label: 'right5' },
   { x: 196, y: 410, type: "combat" },
@@ -76,7 +84,7 @@ export const allRooms: Room[] = [
   { x: 196, y: 300, type: "combat", end: true },
   {
     x: 126, y: 498, type: "none", label: 'straight5',
-    next: { 'Go straight': 'straight6', 'Turn right': 'right6' },
+    next: { 'Go straight': { label: 'straight6' }, 'Turn right': { label: 'right6' } },
   },
   { x: 126, y: 466, type: "combat", label: 'right6' },
   { x: 126, y: 390, type: "fruit", end: true },
@@ -87,7 +95,7 @@ export const allRooms: Room[] = [
   { x: 124, y: 206, type: "combat" },
   {
     x: 124, y: 160, type: "none",
-    next: { 'Turn left': 'left7', 'Turn right': 'right7' },
+    next: { 'Turn left': { label: 'left7' }, 'Turn right': { label: 'right7' } },
   },
   { x: 84, y: 160, type: "none", label: 'left7' },
   { x: 84, y: 193, type: "none", },
@@ -116,7 +124,7 @@ export const allRooms: Room[] = [
   { x: 210, y: 122, type: "combat" },
   {
     x: 246, y: 122, type: "combat",
-    next: { 'Turn left': 'left8', 'Go straight': 'straight8' },
+    next: { 'Turn left': { label: 'left8' }, 'Go straight': { label: 'straight8' } },
   },
   { x: 282, y: 122, type: "combat", label: 'straight8' },
   { x: 318, y: 122, type: "combat" },
@@ -126,7 +134,7 @@ export const allRooms: Room[] = [
 
   {
     x: 246, y: 79, type: "combat", label: 'left8',
-    next: { 'Turn left': 'left9', 'Turn right': 'right9' },
+    next: { 'Turn left': { label: 'left9' }, 'Turn right': { label: 'right9' } },
   },
   { x: 162, y: 79, type: "combat", label: 'left9' },
   { x: 162, y: 123, type: "combat" },
@@ -141,7 +149,7 @@ export const allRooms: Room[] = [
   { x: 501, y: 359, type: "none" },
   {
     x: 501, y: 322, type: "combat",
-    next: { 'Turn left': 'left10', 'Turn right': 'right10' },
+    next: { 'Turn left': { label: 'left10' }, 'Turn right': { label: 'right10' } },
   },
   { x: 459, y: 322, type: "combat", label: 'left10' },
   { x: 459, y: 277, type: "combat" },
@@ -228,7 +236,7 @@ export function getPath(numSteps: number, turns: string[]): Room[] {
     if (room.end || rooms.length === numSteps + 1) return rooms;
     if (room.next) {
       const step = _turns.shift() ?? '';
-      target = room.next[step];
+      target = room.next[step].label;
     }
   }
   return rooms;
