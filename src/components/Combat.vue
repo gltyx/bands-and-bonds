@@ -69,12 +69,12 @@ const possibleTurns = computed(() => {
       {{ enemy.health - store.run.damage }} / {{ enemy.health }} HP
     </Progress>
   </div>
-  <div class="card" v-if="fighting" v-for="ab in abilities" :key="ab.name">
-    <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
-      :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
-  </div>
-  <div class="card" v-if="store.run.steps > 0">
-    <button @click="retreat()">
+  <div class="actions">
+    <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
+      <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
+        :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+    </template>
+    <button @click="retreat()" v-if="store.run.steps > 0">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">
         <div class="title">Retreat</div>
@@ -83,9 +83,7 @@ const possibleTurns = computed(() => {
         </div>
       </div>
     </button>
-  </div>
-  <div class="card" v-for="turn in possibleTurns" :key="turn.title">
-    <button @click="takeTurn(turn.title)">
+    <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
       <img :src="`/images/generated/${turn.title}.webp`" />
       <div class="text">
         <div class="title">{{ turn.title }}</div>
@@ -93,7 +91,6 @@ const possibleTurns = computed(() => {
       </div>
     </button>
   </div>
-
 </template>
 
 <style scoped>
@@ -114,5 +111,15 @@ const possibleTurns = computed(() => {
     border: 2px outset #edb;
     box-shadow: 0 0 10px #000;
   }
+}
+
+.actions {
+  columns: 310px auto;
+  width: 80vw;
+}
+
+.actions>* {
+  display: flex;
+  margin: 10px auto;
 }
 </style>
