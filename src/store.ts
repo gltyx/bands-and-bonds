@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { allRooms } from './rooms.ts';
+import { allRooms, getPath } from './rooms.ts';
 
 export type Timer = {
   time?: number;
@@ -216,4 +216,22 @@ export function damage(x: number) {
     store.run.damage = enemy.health;
     store.run.poison = 0;
   }
+}
+
+export function takeTurn(turn: string) {
+  store.run = { ...store.run, ...roomData() };
+  store.run.steps += 1;
+  if (turn !== 'Keep going') {
+    store.run.turns.push(turn);
+  }
+  let path = getPath(store.run.steps, store.run.turns);
+  let room = path[path.length - 1];
+  while (room.type === 'none' && !room.next) {
+    // Skip rooms with nothing to do.
+    store.run.steps += 1;
+    path = getPath(store.run.steps, store.run.turns);
+    room = path[path.length - 1];
+  }
+  store.run.room = room;
+  store.run.enemy = room.type === 'combat' ? allEnemies.find((e) => e.name === room.name) : undefined;
 }

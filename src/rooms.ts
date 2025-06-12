@@ -14,8 +14,12 @@ export type Room = {
 };
 
 export const allRooms: Room[] = [
-  { x: 407, y: 527, type: "none" },
-  { x: 407, y: 484, type: "combat", name: "Wild Slime" },
+  {
+    x: 407, y: 527, type: "none", next: {
+      'Enter the Dungeon': { label: 'enter', description: 'Treasures and adventure await inside.' },
+    },
+  },
+  { x: 407, y: 484, type: "combat", name: "Wild Slime", label: 'enter', },
   {
     x: 407, y: 419, type: "combat", name: "Animated Skeleton",
     next: {
@@ -236,7 +240,7 @@ export function getPath(numSteps: number, turns: string[]): Room[] {
     if (room.end || rooms.length === numSteps + 1) return rooms;
     if (room.next) {
       const step = _turns.shift() ?? '';
-      target = room.next[step].label;
+      target = room.next[step]?.label;
     }
   }
   return rooms;

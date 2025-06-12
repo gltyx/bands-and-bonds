@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { store, friends, allEnemies, damage, runData, roomData, type Ability } from "../store.ts";
-import { getPath } from "../rooms.ts";
+import { store, friends, damage, runData, takeTurn, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -58,23 +57,6 @@ const possibleTurns = computed(() => {
   }
   return [{ title: 'Keep going', description: 'Continue exploring the dungeon.' }];
 });
-function takeTurn(turn: string) {
-  store.run = { ...store.run, ...roomData() };
-  store.run.steps += 1;
-  if (turn !== 'Keep going') {
-    store.run.turns.push(turn);
-  }
-  let path = getPath(store.run.steps, store.run.turns);
-  let room = path[path.length - 1];
-  while (room.type === 'none' && !room.next) {
-    // Skip rooms with nothing to do.
-    store.run.steps += 1;
-    path = getPath(store.run.steps, store.run.turns);
-    room = path[path.length - 1];
-  }
-  store.run.room = room;
-  store.run.enemy = room.type === 'combat' ? allEnemies.find((e) => e.name === room.name) : undefined;
-}
 </script>
 
 <template>
@@ -91,7 +73,7 @@ function takeTurn(turn: string) {
     <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
       :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
   </div>
-  <div class="card">
+  <div class="card" v-if="store.run.steps > 0">
     <button @click="retreat()">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">

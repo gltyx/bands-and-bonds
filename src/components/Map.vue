@@ -32,11 +32,11 @@ function icon(room: Room) {
   return room.type;
 }
 
-function style(room: Room) {
+function style(room: Room, factor?: number) {
   if (!mapElement.value) return { display: 'none' };
   const x = room.x * scale.value;
   const y = room.y * scale.value;
-  let s = 30 * scale.value;
+  let s = 30 * scale.value * (factor ?? 1);
   if (room.type === 'boss') {
     s *= 1.2;
   }
@@ -67,6 +67,8 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
         @mouseenter="pos = { x: room.x, y: room.y }" :src="`/images/generated/${icon(room)}-outlined.webp`"
         :class="{ marker: true, undiscovered: !rooms.includes(room) }" />
     </template>
+    <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
+      class="marker" />
   </div>
 </template>
 
@@ -89,8 +91,6 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
 
 img.marker {
   position: absolute;
-  width: 30px;
-  height: 30px;
 }
 
 img.marker.undiscovered {
