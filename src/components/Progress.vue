@@ -3,6 +3,7 @@ defineProps<{
   value: number
   max: number
   color?: string
+  label?: string
 }>()
 </script>
 
@@ -10,7 +11,7 @@ defineProps<{
   <div class="progress-container">
     <div class="progress-bar" :style="{ width: `${(value / max) * 100}%`, backgroundColor: color }"></div>
     <div class="progress-text">
-      <slot></slot>
+      {{ value }} / {{ max }} {{ label }}
     </div>
   </div>
 </template>
@@ -24,7 +25,7 @@ defineProps<{
   border-radius: 4px;
   border: 1px solid #000;
   overflow: hidden;
-  margin: 8px 0;
+  margin-top: 8px;
 }
 
 .progress-bar {

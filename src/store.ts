@@ -33,11 +33,18 @@ export type Friend = {
 export type Enemy = {
   name: string;
   health: number;
+  armor?: number;
+  immune?: string[];
+  regen?: number;
 };
 export const allEnemies: Enemy[] = [
-  { name: 'Wild Slime', health: 30 },
+  { name: 'Wild Slime', health: 30, armor: 12 },
   { name: 'Poison Crow', health: 50 },
-  { name: 'Animated Skeleton', health: 100 },
+  { name: 'Animated Skeleton', health: 100, immune: ['poison'] },
+  { name: 'Jaw Maw Maw', health: 100 },
+  { name: 'Clockomancer', health: 100, immune: ['speed'] },
+  { name: 'Lobster Daddy', health: 100, armor: 1000 },
+  { name: 'Trollish Maiden', health: 100, regen: 10 },
   { name: 'The Shroud', health: 1000 },
   { name: 'Dark Lord', health: 10000 },
   { name: 'Glass Dragon', health: 100000 },
@@ -147,6 +154,7 @@ export function roomData() {
   // Everything specific to the current room. Deleted when leaving the room.
   return {
     damage: 0,
+    armorDamage: 0,
     poison: 0,
     timers: {} as Record<string, Timer>,
   };
@@ -209,9 +217,12 @@ function neighbors(band: Band, row: number, col: number): number[] {
 }
 
 export function damage(x: number) {
-  store.run.damage += x;
   const enemy = store.run.enemy;
   if (!enemy) return;
+  let dmg = x;
+  dmg -= (enemy.armor ?? 0) - store.run.armorDamage;
+  if (dmg < 0) return;
+  store.run.damage += dmg;
   if (store.run.damage >= enemy.health) {
     store.run.damage = enemy.health;
     store.run.poison = 0;
@@ -219,6 +230,7 @@ export function damage(x: number) {
 }
 
 export function takeTurn(turn: string) {
+  if (!window.confirm(`${turn}?`)) return;
   store.run = { ...store.run, ...roomData() };
   store.run.steps += 1;
   if (turn !== 'Keep going') {

@@ -23,9 +23,9 @@ export const allRooms: Room[] = [
   {
     x: 407, y: 419, type: "combat", name: "Animated Skeleton",
     next: {
-      'Turn right': { label: 'right1', description: 'A quiet corridor leads into an ill-maintained part of the dungeon.' },
       'Turn left': { label: 'left1', description: 'You see a door to the left. It hangs ajar, and you can hear the sound of movement from beyond it.' },
       'Go straight': { label: 'straight1', description: 'A heavy door stands in front of you. It is barred from this side. You can easily open it.' },
+      'Turn right': { label: 'right1', description: 'A quiet corridor leads into an ill-maintained part of the dungeon.' },
     },
   },
   { x: 455, y: 419, type: "fruit", label: 'right1' },

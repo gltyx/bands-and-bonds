@@ -48,7 +48,7 @@ function describe(ab: Ability): string {
   return d;
 }
 const possibleTurns = computed(() => {
-  if (enemy.value && store.run.damage < enemy.value.health) {
+  if (fighting.value) {
     return [];
   }
   const room = store.run.room;
@@ -62,18 +62,26 @@ const possibleTurns = computed(() => {
 <template>
 
   <div class="enemy" v-if="enemy">
-    <div class="description">Currently fighting:</div>
+    <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
+    <div class="description" v-else>Defeated!</div>
     <h1>{{ enemy.name }}</h1>
     <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name" />
-    <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00">
-      {{ enemy.health - store.run.damage }} / {{ enemy.health }} HP
-    </Progress>
+    <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00" label="HP" />
+    <Progress v-if="enemy.armor" :value="enemy.armor - store.run.armorDamage" :max="enemy.armor" color="#666"
+      label="Armor" />
   </div>
   <div class="actions">
     <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
       <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
         :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
     </template>
+    <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
+      <img :src="`/images/generated/${turn.title}.webp`" />
+      <div class="text">
+        <div class="title">{{ turn.title }}</div>
+        <div class="description">{{ turn.description }}</div>
+      </div>
+    </button>
     <button @click="retreat()" v-if="store.run.steps > 0">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">
@@ -81,13 +89,6 @@ const possibleTurns = computed(() => {
         <div class="description">
           Leave the dungeon and return to safety. Live to fight another day.
         </div>
-      </div>
-    </button>
-    <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
-      <img :src="`/images/generated/${turn.title}.webp`" />
-      <div class="text">
-        <div class="title">{{ turn.title }}</div>
-        <div class="description">{{ turn.description }}</div>
       </div>
     </button>
   </div>
@@ -114,6 +115,7 @@ const possibleTurns = computed(() => {
 }
 
 .actions {
+  margin: 20px 0;
   columns: 310px auto;
   width: 80vw;
 }
