@@ -60,6 +60,12 @@ export const friends: Record<string, Friend> = {
       consumes: { metal: 1 },
       description: () => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
       onCompleted: () => { store.run.weaponLevel += 1; },
+    },
+    {
+      name: "Unforge",
+      duration: 5,
+      description: "Damages the armor of the enemy.",
+      onCompleted: () => { store.run.armorDamage = Math.min(store.run.enemy?.armor ?? 0, store.run.armorDamage + 1); },
     }],
   },
   'Azrekta': {
