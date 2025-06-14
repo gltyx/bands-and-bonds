@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, friends, damage, runData, takeTurn, type Ability } from "../store.ts";
+import { store, friendsByName, damage, runData, takeTurn, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -10,7 +10,7 @@ const abilities = computed(() => {
   for (let row = 0; row < store.band.height; row++) {
     for (let col = 0; col < store.band.width; col++) {
       const place = col + row * store.band.width;
-      const friend = friends[store.band[place]];
+      const friend = friendsByName[store.band[place]];
       for (const ab of friend?.abilities ?? []) {
         abilities.push(ab);
       }

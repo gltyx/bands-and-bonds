@@ -58,6 +58,7 @@ button {
   font-size: 15px;
   font-weight: 400;
   text-align: left;
+  line-height: normal;
 }
 
 button img {

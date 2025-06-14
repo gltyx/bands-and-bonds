@@ -1,5 +1,6 @@
 import { reactive, watch } from 'vue';
 import { allRooms, getPath } from './rooms.ts';
+import { marked } from 'marked';
 
 export type Timer = {
   time?: number;
@@ -24,10 +25,11 @@ export type Ability = {
 };
 
 export type Friend = {
+  name: string;
   description?: string;
   abilities?: Ability[];
-  onAdded?: (band: Band, row: number, col: number) => void;
-  onRemoved?: (band: Band, row: number, col: number) => void;
+  super?: Friend;
+  descriptionHtml?: string | Promise<string>;
 }
 
 export type Enemy = {
@@ -51,8 +53,9 @@ export const allEnemies: Enemy[] = [
   { name: 'Xaranthian Construct', health: 1000000 },
 ];
 
-export const friends: Record<string, Friend> = {
-  'Anvilomancer': {
+export const allFriends: Friend[] = [
+  {
+    name: 'Anvilomancer',
     description: "An expert Anvilomancer can upgrade your weapons in the midst of battle.",
     abilities: [{
       name: "Forge",
@@ -67,16 +70,21 @@ export const friends: Record<string, Friend> = {
       description: "Damages the armor of the enemy.",
       onCompleted: () => { store.run.armorDamage = Math.min(store.run.enemy?.armor ?? 0, store.run.armorDamage + 1); },
     }],
+    super: { name: 'Anvilominator' },
   },
-  'Azrekta': {
+  {
+    name: 'Azrekta',
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies get struck with a curse of that withers metals.
     `,
     abilities: [],
   },
-  'Coldblade': {},
-  'Dark Chef': {
+  {
+    name: 'Coldblade',
+  },
+  {
+    name: 'Dark Chef',
     description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
     abilities: [{
       name: "Poison Strike",
@@ -86,39 +94,37 @@ Her enemies get struck with a curse of that withers metals.
         store.run.poison += store.run.weaponLevel;
       },
     }],
+    super: { name: 'Dark Sommelier' },
   },
-  'Desert Rabbit': {
+  {
+    name: 'Desert Rabbit',
     description: "The Desert Rabbit is a master of traversing hostile environments. Having him in your band makes it possible to change the band composition at campfires.",
   },
-  'Friend of Metal and Fire': {},
-  'Friend of Metal': {},
-  'Knight of Claws': {},
-  'Lamplighter': {
+  {
+    name: 'Friend of Metal',
+    super: {
+      name: 'Friend of Metal and Fire',
+    },
+  },
+  {
+    name: 'Knight of Claws',
+  },
+  {
+    name: 'Lamplighter',
     description: "Lights up tiles around it, letting you extend your band.",
-    onAdded: (band: Band, row: number, col: number) => {
-      for (const p of neighbors(band, row, col)) {
-        band.light[p] = (band.light[p] ?? 0) + 1;
-      }
-    },
-    onRemoved: (band: Band, row: number, col: number) => {
-      for (const p of neighbors(band, row, col)) {
-        band.light[p] -= 1;
-        if (band.light[p] === 0 && band[p]) {
-          store.unassigned.push(band[p]);
-          delete band[p];
-        }
-      }
-    },
     abilities: [{
       name: "Illuminate",
       duration: 1,
       damage: 2,
       description: "Shines a light on the battlefield, damaging all enemies.",
     }],
+    super: { name: 'Lamperlighter' },
   },
-  'Royal Fruitbearer': {},
-  'Stick Grandmaster': {},
-  'Stick Master': {
+  {
+    name: 'Royal Fruitbearer',
+  },
+  {
+    name: 'Stick Master',
     description: "Stick Master is a master of **the wooden stick**, using it to _whack enemies_ with precision and skill.",
     abilities: [{
       name: "Wooden Stick",
@@ -126,10 +132,16 @@ Her enemies get struck with a curse of that withers metals.
       damage: 1,
       description: "Whack it with a stick.",
     }],
+    super: { name: 'Stick Grandmaster' },
   },
-  'The Silent Song': {},
-  'Lord of Gears': {},
-  'Pur Lion': {
+  {
+    name: 'The Silent Song',
+  },
+  {
+    name: 'Lord of Gears',
+  },
+  {
+    name: 'Pur Lion',
     description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him. He has the ability to _snatch_ items from enemies in the fray of the battle.",
     abilities: [{
       name: "Snatch",
@@ -140,7 +152,8 @@ Her enemies get struck with a curse of that withers metals.
       },
     }],
   },
-  'Kit Flash': {
+  {
+    name: 'Kit Flash',
     description: "A wizard of speed, Kit Flash can _run_ faster than the eye can see. He is able to speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
@@ -151,7 +164,15 @@ Her enemies get struck with a curse of that withers metals.
       },
     }],
   },
-};
+];
+export const friendsByName = {} as Record<string, Friend>;
+for (const f of allFriends) {
+  f.descriptionHtml = marked(f.description ?? '');
+  if (f.super?.description) {
+    f.super.descriptionHtml = marked(f.super.description);
+  }
+  friendsByName[f.name] = f;
+}
 
 export function roomData() {
   // Everything specific to the current room. Deleted when leaving the room.
@@ -186,7 +207,10 @@ function startingBand(): Band {
   };
 }
 function startingUnlocked(): string[] {
-  return Object.keys(friends);
+  return allFriends.map((f) => f.name);
+}
+function startingUnassigned(): string[] {
+  return allFriends.map((f) => f.name).filter((f) => f !== 'Stick Master');
 }
 
 export type Store = {
@@ -201,23 +225,11 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
   unlocked: startingUnlocked(),
-  unassigned: [] as string[],
+  unassigned: startingUnassigned(),
 });
 watch(store, (newValue) => {
   localStorage.setItem('store', JSON.stringify(newValue))
 }, { deep: true });
-
-function neighbors(band: Band, row: number, col: number): number[] {
-  const result: number[] = [];
-  for (let r = row - 1; r <= row + 1; r++) {
-    for (let c = col - 1; c <= col + 1; c++) {
-      if (r >= 0 && r < band.height && c >= 0 && c < band.width) {
-        result.push(r * band.width + c);
-      }
-    }
-  }
-  return result;
-}
 
 export function damage(x: number) {
   const enemy = store.run.enemy;
@@ -233,7 +245,7 @@ export function damage(x: number) {
 }
 
 export function takeTurn(turn: string) {
-  if (!window.confirm(`${turn}?`)) return;
+  if (turn !== 'Enter the Dungeon' && !window.confirm(`${turn}?`)) return;
   store.run = { ...store.run, ...roomData() };
   store.run.steps += 1;
   if (turn !== 'Keep going') {

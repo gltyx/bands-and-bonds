@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { marked } from 'marked';
-import { store, friends } from "../store.ts";
+import { store, friendsByName, type Friend } from "../store.ts";
 
 const selected = ref(undefined as string | undefined);
 const band = store.band;
 
-function get(row: number, col: number): string | undefined {
-  return band[col - 1 + (row - 1) * band.width];
+function get(row: number, col: number): Friend | undefined {
+  return friendsByName[band[col - 1 + (row - 1) * band.width]];
+}
+function imageFor(row: number, col: number): string | undefined {
+  const friend = get(row, col);
+  if (!friend) return undefined;
+  const imageName = nextToAzrekta(row, col) && friend.super?.name || friend.name;
+  return `/images/generated/${imageName}.webp`;
 }
 function available(row: number, col: number): boolean {
-  return band.light[col - 1 + (row - 1) * band.width] > 0;
+  const dist = Math.max(Math.abs(row - 3), Math.abs(col - 3));
+  if (lightRadius.value === 'radius3') return true;
+  if (lightRadius.value === 'radius2') return dist <= 1;
+  return dist === 0;
 }
 function unused(name: string): boolean {
   return !store.unassigned.includes(name) && !Object.values(store.band).includes(name);
@@ -30,36 +39,67 @@ function set(row: number, col: number, name: string) {
   if (store.unassigned.includes(name) && available(row, col)) {
     store.band[col - 1 + (row - 1) * band.width] = name;
     store.unassigned.splice(store.unassigned.indexOf(name), 1);
-    friends[name].onAdded?.(band, row - 1, col - 1);
   }
 }
 function clear(row: number, col: number) {
-  selected.value = get(row, col);
+  selected.value = get(row, col)?.name;
   if (!selected.value) return;
-  delete store.band[col - 1 + (row - 1) * band.width];
+  delete band[col - 1 + (row - 1) * band.width];
   store.unassigned.push(selected.value);
-  friends[selected.value].onRemoved?.(band, row - 1, col - 1);
+  // Drop anyone who is now on unlit tiles.
+  for (let r = 1; r <= band.height; r++) {
+    for (let c = 1; c <= band.width; c++) {
+      if (!available(r, c)) {
+        const place = c - 1 + (r - 1) * band.width;
+        const friend = band[place];
+        if (friend) {
+          delete band[place];
+          store.unassigned.push(friend);
+        }
+      }
+    }
+  }
 }
 
-const description = computed(() => {
-  if (!selected.value) return "";
-  const description = friends[selected.value]?.description ?? "";
-  return marked(description);
-});
-
 function nextToAzrekta(row: number, col: number): boolean {
-  const az = (x: number, y: number) => get(x, y) === 'Azrekta';
+  const az = (x: number, y: number) => get(x, y)?.name === 'Azrekta';
   return az(row - 1, col) || az(row + 1, col) || az(row, col - 1) || az(row, col + 1);
 }
 
 const lightRadius = computed(() => {
-  const lamplighter = get(3, 3) === 'Lamplighter';
+  const lamplighter = get(3, 3)?.name === 'Lamplighter';
   if (!lamplighter) return 'radius1';
   if (nextToAzrekta(3, 3)) {
     return 'radius3';
   }
   return 'radius2';
 });
+
+const selectedFriend = computed(() => {
+  for (let row = 0; row < store.band.height; row++) {
+    for (let col = 0; col < store.band.width; col++) {
+      const place = col + row * store.band.width;
+      const name = store.band[place];
+      const friend = friendsByName[name];
+      if (name === selected.value) {
+        if (nextToAzrekta(row + 1, col + 1)) {
+          return { ...friend, ...friend.super };
+        }
+        return friend;
+      }
+    }
+  }
+  return selected.value ? friendsByName[selected.value] : undefined;
+});
+
+function friendClicked(row: number, col: number) {
+  const friend = get(row, col);
+  if (selected.value === friend?.name) {
+    clear(row, col);
+  } else {
+    selected.value = friend?.name;
+  }
+}
 </script>
 
 <template>
@@ -68,8 +108,8 @@ const lightRadius = computed(() => {
       <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
       <template v-for="col in band.width" :key="col">
         <button v-if="get(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
-          @click="if (selected === get(row, col)) { clear(row, col) } else selected = get(row, col);">
-          <img v-if="get(row, col)" :src="`/images/generated/${get(row, col)}.webp`" />
+          @click="friendClicked(row, col)">
+          <img v-if="get(row, col)" :src="imageFor(row, col)" />
         </button>
         <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)">
           ＋
@@ -85,10 +125,10 @@ const lightRadius = computed(() => {
       <img :src="`/images/generated/${name}.webp`" />
     </button>
   </div>
-  <div class="band-details" v-if="selected">
-    <img :src="`/images/generated/${selected}.webp`" />
-    <h1>{{ selected }}</h1>
-    <div class="description" v-html="description"></div>
+  <div class="band-details" v-if="selected && selectedFriend">
+    <img :src="`/images/generated/${selectedFriend.name}.webp`" />
+    <h1>{{ selectedFriend.name }}</h1>
+    <div class="description" v-html="selectedFriend.descriptionHtml"></div>
     <button v-if="unused(selected)" @click="store.unassigned.push(selected)">
       ⬆ Add to band
     </button>
@@ -187,7 +227,7 @@ const lightRadius = computed(() => {
   margin: 20px 0;
   padding: 20px;
   box-sizing: border-box;
-  max-width: 600px;
+  width: 512px;
 
   img {
     width: 200px;
@@ -198,6 +238,10 @@ const lightRadius = computed(() => {
   h1 {
     margin-top: -15px;
     margin-bottom: 0;
+  }
+
+  .description {
+    margin-bottom: 20px;
   }
 }
 

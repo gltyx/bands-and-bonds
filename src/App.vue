@@ -96,7 +96,7 @@ onUnmounted(() => {
   padding: 10px;
   padding-bottom: 0;
   border-radius: 20px;
-  overflow: hidden;
+  width: 80vw;
 }
 
 .tabs {
