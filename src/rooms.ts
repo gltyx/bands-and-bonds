@@ -28,7 +28,7 @@ export const allRooms: Room[] = [
       'Turn right': { label: 'right1', description: 'A quiet corridor leads into an ill-maintained part of the dungeon.' },
     },
   },
-  { x: 455, y: 419, type: "fruit", label: 'right1' },
+  { x: 455, y: 419, type: "combat", name: 'Trollish Maiden', label: 'right1' },
   { x: 501, y: 419, type: "gem" },
   { x: 501, y: 477, type: "gold" },
   { x: 454, y: 477, type: "combat", end: true },
@@ -40,12 +40,12 @@ export const allRooms: Room[] = [
   { x: 350, y: 461, type: "combat", end: true },
 
   {
-    x: 407, y: 359, type: "boss", label: 'straight1',
+    x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dark Lord',
     next: { 'Turn left': { label: 'main-left' }, 'Turn right': { label: 'main-right' } }
   },
   { x: 342, y: 359, type: "campfire", label: 'main-left' },
   { x: 288, y: 359, type: "none" },
-  { x: 288, y: 343, type: "combat" },
+  { x: 288, y: 343, type: "combat", name: "Trollish Maiden" },
   { x: 288, y: 293, type: "combat" },
   {
     x: 288, y: 236, type: "combat",

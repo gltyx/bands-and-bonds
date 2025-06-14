@@ -47,11 +47,15 @@ const description = computed(() => {
   return marked(description);
 });
 
+function nextToAzrekta(row: number, col: number): boolean {
+  const az = (x: number, y: number) => get(x, y) === 'Azrekta';
+  return az(row - 1, col) || az(row + 1, col) || az(row, col - 1) || az(row, col + 1);
+}
+
 const lightRadius = computed(() => {
   const lamplighter = get(3, 3) === 'Lamplighter';
   if (!lamplighter) return 'radius1';
-  const az = (x: number, y: number) => get(x, y) === 'Azrekta';
-  if (az(3, 2) || az(2, 3) || az(4, 3) || az(3, 4)) {
+  if (nextToAzrekta(3, 3)) {
     return 'radius3';
   }
   return 'radius2';
@@ -64,7 +68,7 @@ const lightRadius = computed(() => {
       <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
       <template v-for="col in band.width" :key="col">
         <button v-if="get(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
-          @click="clear(row, col);">
+          @click="if (selected === get(row, col)) { clear(row, col) } else selected = get(row, col);">
           <img v-if="get(row, col)" :src="`/images/generated/${get(row, col)}.webp`" />
         </button>
         <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)">
@@ -88,8 +92,11 @@ const lightRadius = computed(() => {
     <button v-if="unused(selected)" @click="store.unassigned.push(selected)">
       ⬆ Add to band
     </button>
-    <button v-else @click="remove(selected)">
+    <button v-else-if="store.unassigned.includes(selected)" @click="remove(selected)">
       ⬇ Remove from band
+    </button>
+    <button v-else @click="remove(selected); store.unassigned.push(selected)">
+      ⬇ Remove from formation
     </button>
   </div>
   <h2 v-if="store.unlocked.some(name => unused(name))">Not in band:</h2>

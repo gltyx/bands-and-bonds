@@ -70,14 +70,11 @@ export const friends: Record<string, Friend> = {
   },
   'Azrekta': {
     description: `
-Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
-Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
-Azrekta is a fierce warrior with a cold blade, known for her swift and deadly strikes.
-
-Abilities:
-- Magic.
-- Cuteness.
-    ` },
+Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
+Her enemies get struck with a curse of that withers metals.
+    `,
+    abilities: [],
+  },
   'Coldblade': {},
   'Dark Chef': {
     description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
@@ -251,5 +248,5 @@ export function takeTurn(turn: string) {
     room = path[path.length - 1];
   }
   store.run.room = room;
-  store.run.enemy = room.type === 'combat' ? allEnemies.find((e) => e.name === room.name) : undefined;
+  store.run.enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;
 }

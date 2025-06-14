@@ -55,6 +55,9 @@ const possibleTurns = computed(() => {
   if (room.next) {
     return Object.entries(room.next).map(([title, { description }]) => ({ title, description }));
   }
+  if (room.end) {
+    return [];
+  }
   return [{ title: 'Keep going', description: 'Continue exploring the dungeon.' }];
 });
 </script>
