@@ -65,7 +65,8 @@ const possibleTurns = computed(() => {
     <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
     <div class="description" v-else>Defeated!</div>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name" />
+    <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name"
+      :style="enemy.health <= store.run.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.armorDamage" :max="enemy.armor" color="#666"
       label="Armor" />

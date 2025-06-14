@@ -7,7 +7,7 @@ import { store, damage } from './store.ts'
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
-const lastPoisonTime = ref(performance.now());
+const lastRegenTime = ref(performance.now());
 
 type SelectedPage = 'combat' | 'map' | 'band';
 const loadedPage = localStorage.getItem('current page') as SelectedPage;
@@ -28,18 +28,27 @@ function mainLoop() {
       delete store.run.timers[key];
     }
   }
-  let poison = (currentTime - lastPoisonTime.value) * store.run.poison / 1000;
-  while (poison > 1) {
-    damage(1);
-    if (store.run.poison === 0) {
-      // The enemy died.
-      poison = 0;
-      break;
+  const enemy = store.run.enemy;
+  if (enemy && store.run.damage < enemy.health) {
+    const regenPerSecond = (enemy.regen ?? 0) - store.run.poison;
+    let regen = (currentTime - lastRegenTime.value) * regenPerSecond / 1000;
+    while (regen > 1) {
+      store.run.damage = Math.max(0, store.run.damage - 1);
+      regen -= 1;
+      lastRegenTime.value += 1000 / regenPerSecond;
     }
-    poison -= 1;
-    lastPoisonTime.value += 1000 / store.run.poison;
+    while (regen < -1) {
+      damage(1);
+      if (store.run.poison === 0) {
+        // The enemy died.
+        regen = 0;
+        break;
+      }
+      regen += 1;
+      lastRegenTime.value -= 1000 / regenPerSecond;
+    }
+    if (regen === 0) lastRegenTime.value = currentTime;
   }
-  if (poison === 0) lastPoisonTime.value = currentTime;
   lastFrameTime.value = currentTime;
   animationFrameId.value = requestAnimationFrame(mainLoop);
 }

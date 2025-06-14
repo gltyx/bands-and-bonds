@@ -46,11 +46,22 @@ const description = computed(() => {
   const description = friends[selected.value]?.description ?? "";
   return marked(description);
 });
+
+const lightRadius = computed(() => {
+  const lamplighter = get(3, 3) === 'Lamplighter';
+  if (!lamplighter) return 'radius1';
+  const az = (x: number, y: number) => get(x, y) === 'Azrekta';
+  if (az(3, 2) || az(2, 3) || az(4, 3) || az(3, 4)) {
+    return 'radius3';
+  }
+  return 'radius2';
+});
 </script>
 
 <template>
   <div class="band-grid">
     <div class="band-row" v-for="row in band.height" :key="row">
+      <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
       <template v-for="col in band.width" :key="col">
         <button v-if="get(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
           @click="clear(row, col);">
@@ -96,6 +107,7 @@ const description = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  position: relative;
 }
 
 .band-row {
@@ -110,6 +122,7 @@ const description = computed(() => {
   max-width: 100px;
   max-height: 100px;
   margin: 0;
+  padding: 10px;
   color: #333;
   background-color: #000;
   border-radius: 10px;
@@ -118,6 +131,7 @@ const description = computed(() => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  z-index: 2;
 
   img {
     width: 100%;
@@ -128,6 +142,27 @@ const description = computed(() => {
 
 .band-cell.unavailable {
   border: 0;
+}
+
+.light-ring.radius1 {
+  width: 150px;
+}
+
+.light-ring.radius2 {
+  width: 306px;
+}
+
+.light-ring.radius3 {
+  width: 512px;
+}
+
+.light-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  border-radius: 10px;
 }
 
 .band-unassigned,

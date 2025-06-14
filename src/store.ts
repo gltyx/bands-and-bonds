@@ -38,7 +38,7 @@ export type Enemy = {
   regen?: number;
 };
 export const allEnemies: Enemy[] = [
-  { name: 'Wild Slime', health: 30, armor: 12 },
+  { name: 'Wild Slime', health: 30 },
   { name: 'Poison Crow', health: 50 },
   { name: 'Animated Skeleton', health: 100, immune: ['poison'] },
   { name: 'Jaw Maw Maw', health: 100 },
@@ -46,7 +46,7 @@ export const allEnemies: Enemy[] = [
   { name: 'Lobster Daddy', health: 100, armor: 1000 },
   { name: 'Trollish Maiden', health: 100, regen: 10 },
   { name: 'The Shroud', health: 1000 },
-  { name: 'Dark Lord', health: 10000 },
+  { name: 'Dark Lord', health: 10000, armor: 100 },
   { name: 'Glass Dragon', health: 100000 },
   { name: 'Xaranthian Construct', health: 1000000 },
 ];
@@ -97,7 +97,7 @@ Abilities:
   'Friend of Metal': {},
   'Knight of Claws': {},
   'Lamplighter': {
-    description: "Lights up the 8 tiles around it, letting you extend your band.",
+    description: "Lights up tiles around it, letting you extend your band.",
     onAdded: (band: Band, row: number, col: number) => {
       for (const p of neighbors(band, row, col)) {
         band.light[p] = (band.light[p] ?? 0) + 1;
