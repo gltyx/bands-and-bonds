@@ -56,7 +56,11 @@ export const allEnemies: Enemy[] = [
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
-    description: "An expert Anvilomancer can upgrade your weapons in the midst of battle.",
+    description: `
+An expert Anvilomancer can upgrade your weapons in the midst of battle.
+Upgrades are mostly lost when leaving the dungeon. The weapon level is reset to
+the square root of the highest level achieved.
+    `,
     abilities: [{
       name: "Forge",
       duration: 5,
@@ -70,7 +74,13 @@ export const allFriends: Friend[] = [
       description: "Damages the armor of the enemy.",
       onCompleted: () => { store.run.armorDamage = Math.min(store.run.enemy?.armor ?? 0, store.run.armorDamage + 1); },
     }],
-    super: { name: 'Anvilominator' },
+    super: {
+      name: 'Anvilominator',
+      description: `
+An expert Anvilominator can upgrade your weapons in the midst of battle.
+Upgrades are never lost as long as you have the Anvilominator in your band.
+    `,
+    },
   },
   {
     name: 'Azrekta',
@@ -82,6 +92,13 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Coldblade',
+    description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
+    abilities: [{
+      name: "Glacial Strike",
+      description: "A very cold blade with a very sharp edge.",
+      duration: 3600 * 24 * 365 * 1000,
+      damage: 1000000000,
+    }],
   },
   {
     name: 'Dark Chef',
@@ -122,6 +139,11 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Royal Fruitbearer',
+    description: "Whenever you find fruit in the dungeon, every member of the party gets one piece.",
+    super: {
+      name: 'Royal Fruitwearer',
+      description: "Whenever you find fruit in the dungeon, every member of the party gives one piece to every other member.",
+    },
   },
   {
     name: 'Stick Master',
@@ -163,6 +185,21 @@ Her enemies get struck with a curse of that withers metals.
         store.run.speedLevel += 1;
       },
     }],
+  },
+  {
+    name: 'Wayfinder',
+    description: `
+A master of navigation, Wayfinder will guide your band through a path without fail.
+With Wayfinder in your band, you can replace members of your band at campfires.
+    `,
+    super: {
+      name: 'Wayfindest',
+      abilities: [{
+        name: "Fall Back to Camp",
+        duration: 20,
+        description: 'Retreats to the last visited campfire.',
+      }],
+    }
   },
 ];
 export const friendsByName = {} as Record<string, Friend>;

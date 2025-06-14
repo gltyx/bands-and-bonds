@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
 defineProps<{
   value: number
   max: number
@@ -11,7 +15,7 @@ defineProps<{
   <div class="progress-container">
     <div class="progress-bar" :style="{ width: `${(value / max) * 100}%`, backgroundColor: color }"></div>
     <div class="progress-text">
-      {{ value }} / {{ max }} {{ label }}
+      {{ numberFormat.format(value) }} / {{ numberFormat.format(max) }} {{ label }}
     </div>
   </div>
 </template>

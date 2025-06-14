@@ -37,13 +37,17 @@ function retreat() {
   }
 }
 
+const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
 function describe(ab: Ability): string {
   let d = ab.description;
   if (typeof d === "function") {
     d = d();
   }
   if (ab.damage) {
-    d += `\n\n${ab.damage * store.run.weaponLevel} damage`;
+    d += `\n\n${numberFormat.format(ab.damage * store.run.weaponLevel)} damage`;
   }
   return d;
 }
@@ -126,6 +130,7 @@ const possibleTurns = computed(() => {
 
 .actions>* {
   display: flex;
-  margin: 10px auto;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 </style>
