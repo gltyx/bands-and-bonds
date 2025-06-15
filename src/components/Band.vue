@@ -223,7 +223,6 @@ function friendClicked(row: number, col: number) {
 .band-details {
   background-color: #000;
   border-radius: 30px;
-  /* overflow: hidden; */
   margin: 20px 0;
   padding: 20px;
   box-sizing: border-box;

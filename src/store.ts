@@ -255,6 +255,7 @@ export type Store = {
   band: Band;
   unlocked: string[];
   unassigned: string[];
+  discovered: string[];
 };
 
 const loadedStore = localStorage.getItem('store');
@@ -263,6 +264,7 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   band: startingBand(),
   unlocked: startingUnlocked(),
   unassigned: startingUnassigned(),
+  discovered: [],
 });
 watch(store, (newValue) => {
   localStorage.setItem('store', JSON.stringify(newValue))
@@ -295,6 +297,9 @@ export function takeTurn(turn: string) {
     store.run.steps += 1;
     path = getPath(store.run.steps, store.run.turns);
     room = path[path.length - 1];
+  }
+  if (!store.discovered.includes(`${room.x},${room.y}`)) {
+    store.discovered.push(`${room.x},${room.y}`);
   }
   store.run.room = room;
   store.run.enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;

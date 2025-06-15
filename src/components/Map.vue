@@ -23,11 +23,6 @@ onUnmounted(() => {
 const rooms = computed(() => getPath(store.run.steps, store.run.turns));
 const pos = ref({ x: 0, y: 0 });
 
-function onClick(e: MouseEvent) {
-  if (!mapElement.value) return;
-  pos.value = { x: e.pageX - mapElement.value.offsetLeft, y: e.pageY - mapElement.value.offsetTop };
-}
-
 function icon(room: Room) {
   return room.type;
 }
@@ -56,7 +51,7 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
 </script>
 
 <template>
-  <div class="map" @click="onClick" ref="mapElement">
+  <div class="map" ref="mapElement">
     <div class="map-backdrop" />
     { x: {{ pos.x }}, y: {{ pos.y }} }
     <svg width="100%" height="100%">
@@ -65,7 +60,7 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
     <template v-for="room in allRooms">
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
         @mouseenter="pos = { x: room.x, y: room.y }" :src="`/images/generated/${icon(room)}-outlined.webp`"
-        :class="{ marker: true, undiscovered: !rooms.includes(room) }" />
+        :class="{ marker: true, undiscovered: !store.discovered.includes(`${room.x},${room.y}`) }" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
       class="marker" />
