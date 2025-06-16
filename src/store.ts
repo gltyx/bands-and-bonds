@@ -128,7 +128,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Lamplighter',
-    description: "Lights up tiles around it, letting you extend your band.",
+    description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
       duration: 1,
@@ -246,16 +246,12 @@ function startingBand(): Band {
 function startingUnlocked(): string[] {
   return allFriends.map((f) => f.name);
 }
-function startingUnassigned(): string[] {
-  return allFriends.map((f) => f.name).filter((f) => f !== 'Stick Master');
-}
 
 export type Store = {
   run: ReturnType<typeof runData>;
   band: Band;
   fruit: number;
   unlocked: string[];
-  unassigned: string[];
   discovered: string[];
 };
 
@@ -265,7 +261,6 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   band: startingBand(),
   fruit: 0,
   unlocked: startingUnlocked(),
-  unassigned: startingUnassigned(),
   discovered: [],
 });
 watch(store, (newValue) => {

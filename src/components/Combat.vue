@@ -125,7 +125,6 @@ const possibleTurns = computed(() => {
 .actions {
   margin: 20px 0;
   columns: 310px auto;
-  width: 80vw;
 }
 
 .actions>* {

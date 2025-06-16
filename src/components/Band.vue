@@ -22,30 +22,24 @@ function available(row: number, col: number): boolean {
   return dist === 0;
 }
 function unused(name: string): boolean {
-  return !store.unassigned.includes(name) && !Object.values(store.band).includes(name);
+  return !Object.values(store.band).includes(name);
 }
 function remove(name: string) {
-  if (store.unassigned.includes(name)) {
-    store.unassigned.splice(store.unassigned.indexOf(name), 1);
-  } else {
-    for (const key in store.band) {
-      if (store.band[key] === name) {
-        delete store.band[key];
-      }
+  for (const key in store.band) {
+    if (store.band[key] === name) {
+      delete store.band[key];
     }
   }
 }
 function set(row: number, col: number, name: string) {
-  if (store.unassigned.includes(name) && available(row, col)) {
+  if (unused(name) && available(row, col)) {
     store.band[col - 1 + (row - 1) * band.width] = name;
-    store.unassigned.splice(store.unassigned.indexOf(name), 1);
   }
 }
 function clear(row: number, col: number) {
   selected.value = get(row, col)?.name;
   if (!selected.value) return;
   delete band[col - 1 + (row - 1) * band.width];
-  store.unassigned.push(selected.value);
   // Drop anyone who is now on unlit tiles.
   for (let r = 1; r <= band.height; r++) {
     for (let c = 1; c <= band.width; c++) {
@@ -54,7 +48,6 @@ function clear(row: number, col: number) {
         const friend = band[place];
         if (friend) {
           delete band[place];
-          store.unassigned.push(friend);
         }
       }
     }
@@ -104,8 +97,8 @@ function friendClicked(row: number, col: number) {
 
 <template>
   <div class="band-grid">
+    <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
     <div class="band-row" v-for="row in band.height" :key="row">
-      <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
       <template v-for="col in band.width" :key="col">
         <button v-if="get(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
           @click="friendClicked(row, col)">
@@ -119,33 +112,25 @@ function friendClicked(row: number, col: number) {
       </template>
     </div>
   </div>
-  <h2 v-if="store.unassigned.length">Not in formation:</h2>
-  <div class="band-unassigned">
-    <button class="band-cell" v-for="name in store.unassigned" :key="name" @click="selected = name">
-      <img :src="`/images/generated/${name}.webp`" />
-    </button>
-  </div>
-  <div class="band-details" v-if="selected && selectedFriend">
-    <img :src="`/images/generated/${selectedFriend.name}.webp`" />
-    <h1>{{ selectedFriend.name }}</h1>
-    <div class="description" v-html="selectedFriend.descriptionHtml"></div>
-    <button v-if="unused(selected)" @click="store.unassigned.push(selected)">
-      ⬆ Add to band
-    </button>
-    <button v-else-if="store.unassigned.includes(selected)" @click="remove(selected)">
-      ⬇ Remove from band
-    </button>
-    <button v-else @click="remove(selected); store.unassigned.push(selected)">
-      ⬇ Remove from formation
-    </button>
-  </div>
-  <h2 v-if="store.unlocked.some(name => unused(name))">Not in band:</h2>
-  <div class="band-unlocked">
-    <template v-for="name in store.unlocked" :key="name">
-      <button class="band-cell" v-if="unused(name)" @click="selected = name">
-        <img :src="`/images/generated/${name}.webp`" />
+  <div class="below-grid">
+    <div class="band-unlocked">
+      <template v-for="name in store.unlocked" :key="name">
+        <button class="band-cell" v-if="unused(name)" @click="selected = name">
+          <img :src="`/images/generated/${name}.webp`" />
+        </button>
+      </template>
+    </div>
+    <div class="band-details" v-if="selected && selectedFriend">
+      <img :src="`/images/generated/${selectedFriend.name}.webp`" />
+      <h1>{{ selectedFriend.name }}</h1>
+      <div class="description" v-html="selectedFriend.descriptionHtml"></div>
+      <button v-if="unused(selected)">
+        ⬆ Click on a cell to add {{ selected }} to your band
       </button>
-    </template>
+      <button v-else @click="remove(selected)">
+        ⬇ Remove from band
+      </button>
+    </div>
   </div>
 </template>
 
@@ -164,10 +149,8 @@ function friendClicked(row: number, col: number) {
 }
 
 .band-cell {
-  width: 16vw;
-  height: 16vw;
-  max-width: 100px;
-  max-height: 100px;
+  width: 100px;
+  height: 100px;
   margin: 0;
   padding: 10px;
   color: #333;
@@ -212,21 +195,23 @@ function friendClicked(row: number, col: number) {
   border-radius: 10px;
 }
 
-.band-unassigned,
 .band-unlocked {
+  flex: 1 1;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 3px;
   justify-content: center;
+  min-width: 350px;
 }
 
 .band-details {
+  flex: 1 1;
   background-color: #000;
   border-radius: 30px;
   margin: 20px 0;
   padding: 20px;
   box-sizing: border-box;
-  width: 512px;
 
   img {
     width: 200px;
@@ -242,6 +227,14 @@ function friendClicked(row: number, col: number) {
   .description {
     margin-bottom: 20px;
   }
+
+}
+
+.below-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 20px;
 }
 
 h2 {

@@ -105,13 +105,13 @@ const numberFormat = new Intl.NumberFormat("en-US", {
 <style scoped>
 .header {
   display: flex;
-  min-width: 350px;
+  min-width: 512px;
   flex-direction: column;
   background-color: #000;
   padding: 10px;
   padding-bottom: 0;
   border-radius: 20px;
-  width: 80vw;
+  width: 100%;
 
   .header-header {
     display: flex;
