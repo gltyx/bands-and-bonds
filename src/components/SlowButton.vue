@@ -42,4 +42,8 @@ const description = computed(() => {
   </button>
 </template>
 
-<style scoped></style>
+<style scoped>
+button {
+  margin-bottom: 10px;
+}
+</style>

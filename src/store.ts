@@ -301,3 +301,18 @@ export function takeTurn(turn: string) {
   store.run.room = room;
   store.run.enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;
 }
+export function describeAbility(ab: Ability): string {
+  let d = ab.description;
+  if (typeof d === "function") {
+    d = d();
+  }
+  if (ab.damage) {
+    d += `\n\n${numberFormat.format(ab.damage * store.run.weaponLevel)} damage`;
+  }
+  return d;
+}
+
+export const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { marked } from 'marked';
-import { store, friendsByName, type Friend } from "../store.ts";
+import SlowButton from "./SlowButton.vue";
+import { store, friendsByName, describeAbility, type Friend } from "../store.ts";
 
 const selected = ref(undefined as string | undefined);
 const band = store.band;
@@ -124,8 +124,12 @@ function friendClicked(row: number, col: number) {
       <img :src="`/images/generated/${selectedFriend.name}.webp`" />
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
+      <template v-for="ab in selectedFriend.abilities" :key="ab.name">
+        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
+          :image="`/images/generated/${ab.name}.webp`" />
+      </template>
       <button v-if="unused(selected)">
-        ⬆ Click on a cell to add {{ selected }} to your band
+        ⬆ Click on a tile to add {{ selected }} to your band
       </button>
       <button v-else @click="remove(selected)">
         ⬇ Remove from band

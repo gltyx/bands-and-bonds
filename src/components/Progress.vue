@@ -1,8 +1,6 @@
 <script setup lang="ts">
-const numberFormat = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
+import { numberFormat } from '../store.ts'
+
 defineProps<{
   value: number
   max: number

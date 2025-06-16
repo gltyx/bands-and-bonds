@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
-import { store, damage } from './store.ts'
+import { store, damage, numberFormat } from './store.ts'
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
@@ -61,10 +61,6 @@ onUnmounted(() => {
   if (animationFrameId.value) {
     cancelAnimationFrame(animationFrameId.value);
   }
-});
-const numberFormat = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
 });
 </script>
 

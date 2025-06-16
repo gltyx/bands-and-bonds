@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, friendsByName, damage, runData, takeTurn, type Ability } from "../store.ts";
+import { store, friendsByName, damage, runData, takeTurn, describeAbility, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -37,20 +37,6 @@ function retreat() {
   }
 }
 
-const numberFormat = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
-function describe(ab: Ability): string {
-  let d = ab.description;
-  if (typeof d === "function") {
-    d = d();
-  }
-  if (ab.damage) {
-    d += `\n\n${numberFormat.format(ab.damage * store.run.weaponLevel)} damage`;
-  }
-  return d;
-}
 const possibleTurns = computed(() => {
   if (fighting.value) {
     return [];
@@ -80,7 +66,7 @@ const possibleTurns = computed(() => {
   </div>
   <div class="actions">
     <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
-      <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describe(ab)"
+      <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
         :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
     </template>
     <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
