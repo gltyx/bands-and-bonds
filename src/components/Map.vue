@@ -69,7 +69,7 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
 
 <style scoped>
 .map {
-  width: 80vw;
+  width: 100%;
   max-width: 800px;
   position: relative;
   background-color: black;

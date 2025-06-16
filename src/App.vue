@@ -108,6 +108,7 @@ onUnmounted(() => {
   padding-bottom: 0;
   border-radius: 20px;
   width: 100%;
+  box-sizing: border-box;
 
   .header-header {
     display: flex;
@@ -217,5 +218,6 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
+  width: 100%;
 }
 </style>
