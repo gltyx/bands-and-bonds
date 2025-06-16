@@ -253,6 +253,7 @@ function startingUnassigned(): string[] {
 export type Store = {
   run: ReturnType<typeof runData>;
   band: Band;
+  fruit: number;
   unlocked: string[];
   unassigned: string[];
   discovered: string[];
@@ -262,6 +263,7 @@ const loadedStore = localStorage.getItem('store');
 export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
+  fruit: 0,
   unlocked: startingUnlocked(),
   unassigned: startingUnassigned(),
   discovered: [],

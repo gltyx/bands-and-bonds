@@ -62,14 +62,28 @@ onUnmounted(() => {
     cancelAnimationFrame(animationFrameId.value);
   }
 });
+const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
 </script>
 
 <template>
   <div class="header">
-    <div class="logo title">
-      <img src="/images/generated/logo.webp" alt="B" />ands
-      <span style="color: #edb;">&nbsp;&&nbsp;</span>
-      <img src="/images/generated/logo.webp" alt="B" />onds
+    <div class="header-header">
+      <div id="header-metal"><template v-if="store.run.metal">
+          <img src="/images/generated/gold.webp" class="header-icon" />
+          {{ numberFormat.format(store.run.metal) }}
+        </template></div>
+      <div class="logo title">
+        <img src="/images/generated/logo.webp" alt="B" />ands
+        <span style="color: #edb;">&nbsp;&&nbsp;</span>
+        <img src="/images/generated/logo.webp" alt="B" />onds
+      </div>
+      <div id="header-fruit"><template v-if="store.fruit">
+          {{ numberFormat.format(store.fruit) }}
+          <img src="/images/generated/fruit.webp" class="header-icon" />
+        </template></div>
     </div>
     <div class="tabs">
       <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>
@@ -91,12 +105,65 @@ onUnmounted(() => {
 <style scoped>
 .header {
   display: flex;
+  min-width: 350px;
   flex-direction: column;
   background-color: #000;
   padding: 10px;
   padding-bottom: 0;
   border-radius: 20px;
   width: 80vw;
+
+  .header-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: #edb;
+    font-size: 20px;
+  }
+
+  .header-icon {
+    width: 30px;
+    height: 30px;
+    vertical-align: top;
+  }
+
+  #header-metal {
+    text-align: left;
+  }
+
+  #header-fruit {
+    text-align: right;
+  }
+
+  #header-metal,
+  #header-fruit {
+    flex: 1 1 25%;
+  }
+
+  .logo {
+    flex: 1 1 50%;
+  }
+}
+
+
+@media (max-width: 800px) {
+  .header {
+    .header-header {
+      flex-wrap: wrap;
+    }
+
+    #header-metal,
+    #header-fruit {
+      order: 2;
+      flex: 1 1 50%;
+    }
+
+    .logo {
+      order: 1;
+      flex: 1 1 100%;
+    }
+  }
 }
 
 .tabs {
