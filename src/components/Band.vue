@@ -32,7 +32,8 @@ function remove(name: string) {
   }
 }
 function set(row: number, col: number, name: string) {
-  if (unused(name) && available(row, col)) {
+  const cost = friendsByName[name]?.cost ?? 0;
+  if (store.fruit >= fruitSpent.value + cost && unused(name) && available(row, col)) {
     store.band[col - 1 + (row - 1) * band.width] = name;
   }
 }
@@ -93,9 +94,26 @@ function friendClicked(row: number, col: number) {
     selected.value = friend?.name;
   }
 }
+
+const fruitSpent = computed(() => {
+  let spent = 0;
+  for (const name of Object.values(store.band)) {
+    const friend = friendsByName[name];
+    if (friend) {
+      spent += friend.cost;
+    }
+  }
+  return spent;
+});
 </script>
 
 <template>
+  <p>
+    The <u>Unnamed Band</u> is assembled at a total cost of
+    {{ fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" />,
+    leaving you with {{ store.fruit - fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" />
+    to hire more members.
+  </p>
   <div class="band-grid">
     <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
     <div class="band-row" v-for="row in band.height" :key="row">
@@ -121,6 +139,9 @@ function friendClicked(row: number, col: number) {
       </template>
     </div>
     <div class="band-details" v-if="selected && selectedFriend">
+      <div class="friend-cost" :class="{ unaffordable: store.fruit < selectedFriend.cost + fruitSpent }">
+        {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/fruit.webp" class="resource-icon" />
+      </div>
       <img :src="`images/generated/${selectedFriend.name}.webp`" />
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
@@ -129,10 +150,10 @@ function friendClicked(row: number, col: number) {
           :image="`images/generated/${ab.name}.webp`" />
       </template>
       <button v-if="unused(selected)">
-        ⬆ Click on a tile to add {{ selected }} to your band
+        Click on a tile to add to the band
       </button>
       <button v-else @click="remove(selected)">
-        ⬇ Remove from band
+        Remove from band
       </button>
     </div>
   </div>
@@ -216,8 +237,9 @@ function friendClicked(row: number, col: number) {
   margin: 20px 0;
   padding: 20px;
   box-sizing: border-box;
+  position: relative;
 
-  img {
+  >img {
     width: 200px;
     mix-blend-mode: lighten;
     margin-top: -45px;
@@ -232,6 +254,23 @@ function friendClicked(row: number, col: number) {
     margin-bottom: 20px;
   }
 
+  .friend-cost {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .friend-cost.unaffordable {
+    color: red;
+  }
+
+}
+
+.resource-icon {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  vertical-align: top;
 }
 
 .below-grid {

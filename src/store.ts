@@ -12,7 +12,6 @@ export type Timer = {
 export type Band = {
   width: number;
   height: number;
-  light: { [x: number]: number };
   [x: number]: string;
 }
 export type Ability = {
@@ -26,9 +25,10 @@ export type Ability = {
 
 export type Friend = {
   name: string;
+  cost: number;
   description?: string;
   abilities?: Ability[];
-  super?: Friend;
+  super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;
 }
 
@@ -56,6 +56,7 @@ export const allEnemies: Enemy[] = [
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
+    cost: 6,
     description: `
 An expert Anvilomancer can upgrade your weapons in the midst of battle.
 Upgrades are mostly lost when leaving the dungeon. The weapon level is reset to
@@ -84,6 +85,7 @@ Upgrades are never lost as long as you have the Anvilominator in your band.
   },
   {
     name: 'Azrekta',
+    cost: 120,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies get struck with a curse of that withers metals.
@@ -92,6 +94,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Coldblade',
+    cost: 31,
     description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
     abilities: [{
       name: "Glacial Strike",
@@ -102,6 +105,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Dark Chef',
+    cost: 37,
     description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
     abilities: [{
       name: "Poison Strike",
@@ -115,19 +119,23 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Desert Rabbit',
+    cost: 210,
     description: "The Desert Rabbit is a master of traversing hostile environments. Having him in your band makes it possible to change the band composition at campfires.",
   },
   {
     name: 'Friend of Metal',
+    cost: 97,
     super: {
       name: 'Friend of Metal and Fire',
     },
   },
   {
     name: 'Knight of Claws',
+    cost: 17,
   },
   {
     name: 'Lamplighter',
+    cost: 12,
     description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
@@ -139,6 +147,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Royal Fruitbearer',
+    cost: 64,
     description: "Whenever you find fruit in the dungeon, every member of the party gets one piece.",
     super: {
       name: 'Royal Fruitwearer',
@@ -147,6 +156,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Stick Master',
+    cost: 1,
     description: "Stick Master is a master of **the wooden stick**, using it to _whack enemies_ with precision and skill.",
     abilities: [{
       name: "Wooden Stick",
@@ -158,12 +168,15 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'The Silent Song',
+    cost: 87,
   },
   {
     name: 'Lord of Gears',
+    cost: 29,
   },
   {
     name: 'Pur Lion',
+    cost: 135,
     description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him. He has the ability to _snatch_ items from enemies in the fray of the battle.",
     abilities: [{
       name: "Snatch",
@@ -176,6 +189,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Kit Flash',
+    cost: 88,
     description: "A wizard of speed, Kit Flash can _run_ faster than the eye can see. He is able to speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
@@ -188,6 +202,7 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Wayfinder',
+    cost: 15,
     description: `
 A master of navigation, Wayfinder will guide your band through a path without fail.
 With Wayfinder in your band, you can replace members of your band at campfires.
@@ -239,7 +254,6 @@ function startingBand(): Band {
   return {
     width: 5,
     height: 5,
-    light: { 12: 1 },
     12: 'Stick Master',
   };
 }
@@ -259,7 +273,7 @@ const loadedStore = localStorage.getItem('store');
 export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
-  fruit: 0,
+  fruit: 999,
   unlocked: startingUnlocked(),
   discovered: [],
 });
