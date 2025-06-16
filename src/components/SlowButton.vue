@@ -6,17 +6,20 @@ const props = defineProps({
   timerKey: { type: String, required: true },
   title: { type: String, required: true },
   image: { type: String, required: true },
-  duration: { type: Number, required: true },
+  duration: { type: Number, required: false },
   description: { type: String, required: false }
 });
 const emit = defineEmits(['done']);
 function start() {
-  if (store.run.timers[props.timerKey]) {
+  if (!props.duration || store.run.timers[props.timerKey]) {
     return;
   }
   store.run.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
 }
 function style() {
+  if (!props.duration) {
+    return {};
+  }
   const percent = (store.run.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
   const color = '#486';
   const bgColor = '#333';
