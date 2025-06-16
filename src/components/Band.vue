@@ -13,7 +13,7 @@ function imageFor(row: number, col: number): string | undefined {
   const friend = get(row, col);
   if (!friend) return undefined;
   const imageName = nextToAzrekta(row, col) && friend.super?.name || friend.name;
-  return `/images/generated/${imageName}.webp`;
+  return `images/generated/${imageName}.webp`;
 }
 function available(row: number, col: number): boolean {
   const dist = Math.max(Math.abs(row - 3), Math.abs(col - 3));
@@ -97,7 +97,7 @@ function friendClicked(row: number, col: number) {
 
 <template>
   <div class="band-grid">
-    <img class="light-ring" :src="`/images/generated/light-ring.webp`" :class="lightRadius" />
+    <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
     <div class="band-row" v-for="row in band.height" :key="row">
       <template v-for="col in band.width" :key="col">
         <button v-if="get(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
@@ -116,17 +116,17 @@ function friendClicked(row: number, col: number) {
     <div class="band-unlocked">
       <template v-for="name in store.unlocked" :key="name">
         <button class="band-cell" v-if="unused(name)" @click="selected = name">
-          <img :src="`/images/generated/${name}.webp`" />
+          <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
     </div>
     <div class="band-details" v-if="selected && selectedFriend">
-      <img :src="`/images/generated/${selectedFriend.name}.webp`" />
+      <img :src="`images/generated/${selectedFriend.name}.webp`" />
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :image="`/images/generated/${ab.name}.webp`" />
+          :image="`images/generated/${ab.name}.webp`" />
       </template>
       <button v-if="unused(selected)">
         ⬆ Click on a tile to add {{ selected }} to your band

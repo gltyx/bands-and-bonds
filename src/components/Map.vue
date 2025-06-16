@@ -59,7 +59,7 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
     </svg>
     <template v-for="room in allRooms">
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
-        @mouseenter="pos = { x: room.x, y: room.y }" :src="`/images/generated/${icon(room)}-outlined.webp`"
+        @mouseenter="pos = { x: room.x, y: room.y }" :src="`images/generated/${icon(room)}-outlined.webp`"
         :class="{ marker: true, undiscovered: !store.discovered.includes(`${room.x},${room.y}`) }" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"

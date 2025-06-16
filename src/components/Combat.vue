@@ -58,7 +58,7 @@ const possibleTurns = computed(() => {
     <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
     <div class="description" v-else>Defeated!</div>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`/images/generated/${enemy.name}.webp`" :alt="enemy.name"
+    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name"
       :style="enemy.health <= store.run.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.armorDamage" :max="enemy.armor" color="#666"
@@ -67,10 +67,10 @@ const possibleTurns = computed(() => {
   <div class="actions">
     <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
       <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-        :image="`/images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+        :image="`images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
     </template>
     <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
-      <img :src="`/images/generated/${turn.title}.webp`" />
+      <img :src="`images/generated/${turn.title}.webp`" />
       <div class="text">
         <div class="title">{{ turn.title }}</div>
         <div class="description">{{ turn.description }}</div>
