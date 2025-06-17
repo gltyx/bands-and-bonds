@@ -24,8 +24,8 @@ function mainLoop() {
     t.time ??= 0;
     t.time += Math.floor(deltaTime) * store.run.speedLevel;
     if (t.time >= t.duration) {
-      t.cb?.(t);
       delete store.run.timers[key];
+      t.cb?.(t);
     }
   }
   const enemy = store.run.enemy;

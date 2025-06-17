@@ -21,6 +21,7 @@ export type Ability = {
   damage?: number;
   consumes?: { [x: string]: number };
   onCompleted?: () => void;
+  automatic?: boolean;
 };
 
 export type Friend = {
@@ -112,7 +113,7 @@ Her enemies get struck with a curse of that withers metals.
       duration: 5,
       description: "Damage over time.",
       onCompleted() {
-        store.run.poison += store.run.weaponLevel;
+        store.run.poison += Math.max(0, store.run.weaponLevel - (store.run.enemy?.armor ?? 0));
       },
     }],
     super: { name: 'Dark Sommelier' },
@@ -173,6 +174,16 @@ Her enemies get struck with a curse of that withers metals.
   {
     name: 'Lord of Gears',
     cost: 29,
+    description: `
+The Lord of Gears is a master of automation. The band members next to him need not do anything.
+Their abilities will be activated automatically.
+    `,
+    super: {
+      name: 'Gear of Lords',
+      description: `
+The Gear of Lords is the ultimate master of automation. All abilities will be activated automatically.
+    `,
+    },
   },
   {
     name: 'Pur Lion',
@@ -337,4 +348,7 @@ export function friendAt(row: number, col: number): Friend | undefined {
 export function nextTo(name: string, row: number, col: number): boolean {
   const az = (x: number, y: number) => friendAt(x, y)?.name === name;
   return az(row - 1, col) || az(row + 1, col) || az(row, col - 1) || az(row, col + 1);
+}
+export function onboard(name: string): boolean {
+  return Object.values(store.band).some((n) => n === name || friendsByName[n]?.super?.name === name);
 }

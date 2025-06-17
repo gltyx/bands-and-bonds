@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, friendsByName, damage, runData, takeTurn, describeAbility, type Ability } from "../store.ts";
+import { store, friendsByName, damage, runData, takeTurn, describeAbility, nextTo, onboard, type Ability } from "../store.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
@@ -7,19 +7,38 @@ import { computed } from "vue";
 const enemy = computed(() => store.run.enemy);
 const abilities = computed(() => {
   const abilities = [] as Ability[];
+  const allAutomatic = onboard('Gear of Lords');
   for (let row = 0; row < store.band.height; row++) {
     for (let col = 0; col < store.band.width; col++) {
       const place = col + row * store.band.width;
       const friend = friendsByName[store.band[place]];
+      const automatic = allAutomatic || nextTo('Lord of Gears', row, col);
       for (const ab of friend?.abilities ?? []) {
-        abilities.push(ab);
+        abilities.push({ ...ab, automatic });
+        if (automatic) {
+          startTimer(ab);
+        }
       }
     }
   }
   return abilities;
 });
 
+function startTimer(ab: Ability) {
+  const key = `ability-${ab.name}`;
+  if (!store.run.timers[key]) {
+    store.run.timers[key] = {
+      duration: ab.duration * 1000,
+      time: 0,
+      cb: () => executeAbility(ab),
+    };
+  }
+}
+
 function executeAbility(ab: Ability) {
+  if (ab.automatic && fighting.value) {
+    startTimer(ab);
+  }
   if (ab.onCompleted) {
     return ab.onCompleted();
   }

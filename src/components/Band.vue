@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import SlowButton from "./SlowButton.vue";
-import { store, friendsByName, describeAbility, friendAt, nextTo, type Friend } from "../store.ts";
+import { store, friendsByName, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
 
 const selected = ref(undefined as string | undefined);
 const band = store.band;
@@ -18,9 +18,6 @@ function available(row: number, col: number): boolean {
   if (lightRadius.value === 'radius2') return dist <= 1;
   return dist === 0;
 }
-function unused(name: string): boolean {
-  return !Object.values(store.band).includes(name);
-}
 function remove(name: string) {
   for (const key in store.band) {
     if (store.band[key] === name) {
@@ -30,7 +27,7 @@ function remove(name: string) {
 }
 function set(row: number, col: number, name: string) {
   const cost = friendsByName[name]?.cost ?? 0;
-  if (store.fruit >= fruitSpent.value + cost && unused(name) && available(row, col)) {
+  if (store.fruit >= fruitSpent.value + cost && !onboard(name) && available(row, col)) {
     store.band[col + row * band.width] = name;
   }
 }
@@ -126,7 +123,7 @@ const fruitSpent = computed(() => {
   <div class="below-grid">
     <div class="band-unlocked">
       <template v-for="name in store.unlocked" :key="name">
-        <button class="band-cell" v-if="unused(name)" @click="selected = name">
+        <button class="band-cell" v-if="!onboard(name)" @click="selected = name">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
@@ -142,11 +139,11 @@ const fruitSpent = computed(() => {
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
           :image="`images/generated/${ab.name}.webp`" />
       </template>
-      <button v-if="unused(selected)">
-        Click on a tile to add to the band
-      </button>
-      <button v-else @click="remove(selected)">
+      <button v-if="onboard(selected)" @click="remove(selected)">
         Remove from band
+      </button>
+      <button v-else>
+        Click on a tile to add to the band
       </button>
     </div>
   </div>
