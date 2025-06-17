@@ -330,3 +330,11 @@ export const numberFormat = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
 });
+
+export function friendAt(row: number, col: number): Friend | undefined {
+  return friendsByName[store.band[col + row * store.band.width]];
+}
+export function nextTo(name: string, row: number, col: number): boolean {
+  const az = (x: number, y: number) => friendAt(x, y)?.name === name;
+  return az(row - 1, col) || az(row + 1, col) || az(row, col - 1) || az(row, col + 1);
+}
