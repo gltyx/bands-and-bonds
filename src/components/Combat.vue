@@ -12,8 +12,11 @@ const abilities = computed(() => {
     for (let col = 0; col < store.band.width; col++) {
       const place = col + row * store.band.width;
       const friend = friendsByName[store.band[place]];
-      const automatic = allAutomatic || nextTo('Lord of Gears', row, col);
-      for (const ab of friend?.abilities ?? []) {
+      if (!friend) continue;
+      const automatic = allAutomatic || !!nextTo('Lord of Gears', row, col);
+      const az = nextTo('Azrekta', row, col);
+      const abs = (az && friend.super?.abilities) || friend.abilities || [];
+      for (const ab of abs) {
         abilities.push({ ...ab, automatic });
         if (automatic) {
           startTimer(ab);

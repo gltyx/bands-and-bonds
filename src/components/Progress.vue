@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <div class="progress-container">
     <div class="progress-bar" :style="{ width: `${(value / max) * 100}%`, backgroundColor: color }"></div>
-    <div class="progress-text">
+    <div class="progress-text numbers">
       {{ numberFormat.format(value) }} / {{ numberFormat.format(max) }} {{ label }}
     </div>
   </div>
@@ -41,7 +41,6 @@ defineProps<{
   position: absolute;
   padding: 0 8px;
   box-sizing: border-box;
-  font-family: "Germania One", system-ui;
   font-weight: bold;
   font-size: 20px;
   top: 0;

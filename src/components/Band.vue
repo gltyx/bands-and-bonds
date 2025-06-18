@@ -95,13 +95,41 @@ const fruitSpent = computed(() => {
   }
   return spent;
 });
+
+type Bond = {
+  image: string;
+  style: string;
+};
+
+const bonds = computed(() => {
+  const bonds: Bond[] = [];
+  for (let row = 0; row < store.band.height; row++) {
+    for (let col = 0; col < store.band.width; col++) {
+      const place = col + row * store.band.width;
+      if (!store.band[place]) continue;
+      const az = nextTo('Azrekta', row, col);
+      if (az) {
+        bonds.push({
+          image: 'chain',
+          style: az[0] === row ?
+            `left: ${(col + az[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
+            `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + az[0] + 1) * 103 / 2 - 15}px;`,
+        });
+      }
+    }
+  }
+  return bonds;
+});
+
 </script>
 
 <template>
   <p>
-    The <u>Unnamed Band</u> is assembled at a total cost of
-    {{ fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" />,
-    leaving you with {{ store.fruit - fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" />
+    The <u contenteditable="true">Unnamed Band</u> is assembled at a total cost of
+    <span class="numbers">{{ fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" /></span>,
+    leaving you with
+    <span class="numbers">{{ store.fruit - fruitSpent }} <img src="/images/generated/fruit.webp"
+        class="resource-icon" /></span>
     to hire more members.
   </p>
   <div class="band-grid">
@@ -119,6 +147,7 @@ const fruitSpent = computed(() => {
         </button>
       </template>
     </div>
+    <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <div class="below-grid">
     <div class="band-unlocked">
@@ -129,7 +158,7 @@ const fruitSpent = computed(() => {
       </template>
     </div>
     <div class="band-details" v-if="selected && selectedFriend">
-      <div class="friend-cost" :class="{ unaffordable: store.fruit < selectedFriend.cost + fruitSpent }">
+      <div class="friend-cost numbers" :class="{ unaffordable: store.fruit < selectedFriend.cost + fruitSpent }">
         {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/fruit.webp" class="resource-icon" />
       </div>
       <img :src="`images/generated/${selectedFriend.name}.webp`" />
@@ -185,6 +214,10 @@ const fruitSpent = computed(() => {
   }
 }
 
+u {
+  font-size: 1.2em;
+}
+
 .band-cell.unavailable {
   border: 0;
 }
@@ -208,6 +241,15 @@ const fruitSpent = computed(() => {
   transform: translate(-50%, -50%);
   z-index: 1;
   border-radius: 10px;
+}
+
+.chain {
+  position: absolute;
+  top: 293px;
+  left: 241px;
+  width: 30px;
+  height: 30px;
+  z-index: 3;
 }
 
 .band-unlocked {
@@ -257,9 +299,10 @@ const fruitSpent = computed(() => {
 }
 
 .resource-icon {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   border: 0;
+  margin-left: -5px;
   vertical-align: top;
 }
 
@@ -274,5 +317,9 @@ h2 {
   margin-bottom: 0;
   font-family: 'Grenze Gotisch', serif;
   font-weight: 200;
+}
+
+.numbers {
+  font-size: 18px;
 }
 </style>

@@ -207,12 +207,22 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     abilities: [{
       name: "Running Start",
       duration: 10,
-      description: () => `Speed up all abilities. (Currently ${store.run.speedLevel}×.)`,
+      description: () => `Speed up all abilities. (Currently ${numberFormat.format(store.run.speedLevel)}×.)`,
       onCompleted() {
         store.run.speedLevel += 1;
       },
     }],
-    // Super: double the speed level.
+    super: {
+      name: 'Kit Storming',
+      abilities: [{
+        name: "Running Start",
+        duration: 10,
+        description: () => `Speed up all abilities. (Currently ${numberFormat.format(store.run.speedLevel)}×.)`,
+        onCompleted() {
+          store.run.speedLevel *= 2;
+        },
+      }],
+    },
   },
   {
     name: 'Wayfinder',
@@ -371,10 +381,14 @@ export const numberFormat = new Intl.NumberFormat("en-US", {
 export function friendAt(row: number, col: number): Friend | undefined {
   return friendsByName[store.band[col + row * store.band.width]];
 }
-export function nextTo(name: string, row: number, col: number): boolean {
+export function nextTo(name: string, row: number, col: number): [number, number] | null {
   const az = (x: number, y: number) => friendAt(x, y)?.name === name;
-  return az(row - 1, col) || az(row + 1, col) || az(row, col - 1) || az(row, col + 1);
+  for (const p of [[row - 1, col], [row + 1, col], [row, col - 1], [row, col + 1]] as [number, number][]) {
+    if (az(p[0], p[1])) return p;
+  }
+  return null;
 }
 export function onboard(name: string): boolean {
+  // TODO: Only return super if the friend is supered.
   return Object.values(store.band).some((n) => n === name || friendsByName[n]?.super?.name === name);
 }

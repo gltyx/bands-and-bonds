@@ -103,3 +103,7 @@ h1 {
 p {
   margin: 10px 0;
 }
+
+.numbers {
+  font-family: "Germania One", system-ui;
+}
