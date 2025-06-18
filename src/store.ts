@@ -45,6 +45,8 @@ export const allEnemies: Enemy[] = [
   { name: 'Poison Crow', health: 50 },
   { name: 'Animated Skeleton', health: 100, immune: ['poison'] },
   { name: 'Jaw Maw Maw', health: 100 },
+  { name: 'Bandlings', health: 100 },
+  { name: 'Will-o-Wasp', health: 100 },
   { name: 'Clockomancer', health: 100, immune: ['speed'] },
   { name: 'Lobster Daddy', health: 100, armor: 1000 },
   { name: 'Trollish Maiden', health: 100, regen: 10 },
@@ -210,6 +212,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
         store.run.speedLevel += 1;
       },
     }],
+    // Super: double the speed level.
   },
   {
     name: 'Wayfinder',
@@ -227,6 +230,29 @@ With Wayfinder in your band, you can replace members of your band at campfires.
       }],
     }
   },
+  {
+    name: 'Bayla',
+    cost: 15,
+  },
+  {
+    name: 'Kin of Pump',
+    cost: 15,
+  },
+  {
+    name: 'Kevin',
+    cost: 220,
+    description: `
+Kevin is not so much a person as a phenomenon. When Kevin is present, all enemies are vulnerable to fire.
+    `,
+    // Super: "Kevout"?
+  },
+  {
+    name: 'Smiling Pilot',
+    cost: 50,
+    super: {
+      name: 'Smiling Admiral',
+    },
+  }
 ];
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
