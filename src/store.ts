@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { allRooms, getPath } from './rooms.ts';
+import { allRooms, turnsToPath, roomKey } from './rooms.ts';
 import { marked } from 'marked';
 
 export type Timer = {
@@ -307,6 +307,9 @@ function startingBand(): Band {
 function startingUnlocked(): string[] {
   return allFriends.map((f) => f.name);
 }
+function startingDiscovered(): string[] {
+  return allRooms.map(roomKey);
+}
 
 export type Store = {
   run: ReturnType<typeof runData>;
@@ -314,6 +317,7 @@ export type Store = {
   fruit: number;
   unlocked: string[];
   discovered: string[];
+  destination?: string, // Coordinate key for destination room.
 };
 
 const loadedStore = localStorage.getItem('store');
@@ -322,7 +326,7 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   band: startingBand(),
   fruit: 999,
   unlocked: startingUnlocked(),
-  discovered: [],
+  discovered: startingDiscovered(),
 });
 watch(store, (newValue) => {
   localStorage.setItem('store', JSON.stringify(newValue))
@@ -348,16 +352,16 @@ export function takeTurn(turn: string) {
   if (turn !== 'Keep going') {
     store.run.turns.push(turn);
   }
-  let path = getPath(store.run.steps, store.run.turns);
+  let path = turnsToPath(store.run.steps, store.run.turns);
   let room = path[path.length - 1];
   while (room.type === 'none' && !room.next) {
     // Skip rooms with nothing to do.
     store.run.steps += 1;
-    path = getPath(store.run.steps, store.run.turns);
+    path = turnsToPath(store.run.steps, store.run.turns);
     room = path[path.length - 1];
   }
-  if (!store.discovered.includes(`${room.x},${room.y}`)) {
-    store.discovered.push(`${room.x},${room.y}`);
+  if (!store.discovered.includes(roomKey(room))) {
+    store.discovered.push(roomKey(room));
   }
   store.run.room = room;
   store.run.enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;

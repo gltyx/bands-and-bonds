@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { store } from "../store.ts";
-import { type Room, allRooms, getPath } from "../rooms.ts";
+import { onboard, store } from "../store.ts";
+import { type Room, allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
 import curvedLine from "./curved-line.ts";
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 
@@ -20,7 +20,7 @@ onUnmounted(() => {
   resizeObserver.disconnect();
 });
 
-const rooms = computed(() => getPath(store.run.steps, store.run.turns));
+const rooms = computed(() => turnsToPath(store.run.steps, store.run.turns));
 const pos = ref({ x: 0, y: 0 });
 
 function icon(room: Room) {
@@ -46,7 +46,16 @@ function style(room: Room, factor?: number) {
   };
 }
 
+function roomClicked(room: Room) {
+  const key = roomKey(room);
+  if (onboard("Wayfinder") && store.discovered.includes(key)) {
+    store.destination = key;
+  }
+}
+
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
+const planRooms = computed(() => store.destination ? destinationToPath(store.destination) : []);
+const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 
 </script>
 
@@ -56,11 +65,12 @@ const line = computed(() => curvedLine(20, scale.value, rooms.value));
     { x: {{ pos.x }}, y: {{ pos.y }} }
     <svg width="100%" height="100%">
       <path :d="line" stroke="white" :stroke-width="5 * scale" fill="none" />
+      <path :d="planLine" stroke="white" :stroke-width="3 * scale" stroke-dasharray="3 5" fill="none" />
     </svg>
     <template v-for="room in allRooms">
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
         @mouseenter="pos = { x: room.x, y: room.y }" :src="`images/generated/${icon(room)}-outlined.webp`"
-        :class="{ marker: true, undiscovered: !store.discovered.includes(`${room.x},${room.y}`) }" />
+        :class="{ marker: true, undiscovered: !store.discovered.includes(roomKey(room)) }" @click="roomClicked(room)" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
       class="marker" />

@@ -1,4 +1,7 @@
-export default function curvedLine(radius: number, scale: number, points: { x: number; y: number }[]) {
+export default function curvedLine(radius: number, scale: number, points: { x: number; y: number }[]): string {
+  if (points.length < 2) {
+    return '';
+  }
   let d = `M ${points[0].x * scale} ${points[0].y * scale}`;
   for (let i = 1; i < points.length - 1; i++) {
     const { x: x0, y: y0 } = points[i - 1];

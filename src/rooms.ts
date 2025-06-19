@@ -236,7 +236,7 @@ export const allRooms: Room[] = [
   { x: 407, y: 127, type: "finalboss" },
 ];
 
-export function getPath(numSteps: number, turns: string[]): Room[] {
+export function turnsToPath(numSteps: number, turns: string[]): Room[] {
   const rooms = [] as Room[];
   const _turns = [...turns];
   let target = undefined as string | undefined;
@@ -252,5 +252,31 @@ export function getPath(numSteps: number, turns: string[]): Room[] {
       target = room.next[step]?.label;
     }
   }
+  return rooms;
+}
+
+export function roomKey(room: Room): string {
+  return `${room.x},${room.y}`;
+}
+
+export function destinationToPath(destination: string): Room[] {
+  const rooms = [] as Room[];
+  let i = allRooms.findIndex(room => roomKey(room) === destination);
+  while (i > 0) {
+    rooms.unshift(allRooms[i]);
+    const label = allRooms[i].label;
+    if (label) {
+      while (true) {
+        i -= 1;
+        const next = allRooms[i].next;
+        if (next && Object.values(next).some(turn => turn.label === label)) {
+          break;
+        }
+      }
+    } else {
+      i -= 1;
+    }
+  }
+  rooms.unshift(allRooms[0]);
   return rooms;
 }
