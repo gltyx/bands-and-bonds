@@ -1,6 +1,8 @@
 export type Turn = {
-  label: string; // The label of the next room.
+  title?: string; // Not included in Room.next, but added otherwise.
+  label?: string; // The label of the next room.
   description?: string; // Description of the turn.
+  skipConfirmation?: boolean;
 };
 
 export type Room = {
@@ -16,7 +18,7 @@ export type Room = {
 export const allRooms: Room[] = [
   {
     x: 407, y: 527, type: "none", next: {
-      'Enter the Dungeon': { label: 'enter', description: 'Treasures and adventure await inside.' },
+      'Enter the Dungeon': { label: 'enter', description: 'Treasures and adventure await inside.', skipConfirmation: true },
     },
   },
   { x: 407, y: 484, type: "combat", name: "Wild Slime", label: 'enter', },

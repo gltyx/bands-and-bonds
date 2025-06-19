@@ -345,8 +345,8 @@ export function damage(x: number) {
   }
 }
 
-export function takeTurn(turn: string) {
-  if (turn !== 'Enter the Dungeon' && !window.confirm(`${turn}?`)) return;
+export function takeTurn(turn: string, skipConfirmation?: boolean) {
+  if (!skipConfirmation && !window.confirm(`${turn}?`)) return;
   store.run = { ...store.run, ...roomData() };
   store.run.steps += 1;
   if (turn !== 'Keep going') {

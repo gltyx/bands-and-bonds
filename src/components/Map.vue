@@ -54,7 +54,7 @@ function roomClicked(room: Room) {
 }
 
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
-const planRooms = computed(() => store.destination ? destinationToPath(store.destination) : []);
+const planRooms = computed(() => onboard("Wayfinder") && store.destination ? destinationToPath(store.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 
 </script>

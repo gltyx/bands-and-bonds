@@ -3,6 +3,7 @@ import { store, friendsByName, damage, runData, takeTurn, describeAbility, nextT
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
+import { destinationToPath, type Turn } from "../rooms.ts";
 
 const enemy = computed(() => store.run.enemy);
 const abilities = computed(() => {
@@ -58,19 +59,32 @@ function retreat() {
     store.run = runData();
   }
 }
+const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
 
 const possibleTurns = computed(() => {
-  if (fighting.value) {
-    return [];
-  }
   const room = store.run.room;
   if (room.next) {
-    return Object.entries(room.next).map(([title, { description }]) => ({ title, description }));
+    return Object.entries(room.next).map(([title, next]) => ({ ...next, title }));
   }
   if (room.end) {
     return [];
   }
-  return [{ title: 'Keep going', description: 'Continue exploring the dungeon.' }];
+  return [KEEP_GOING];
+});
+
+const plannedTurn = computed(() => {
+  if (!onboard("Wayfinder") || !store.destination) return;
+  const room = store.run.room;
+  if (room.end) return;
+  if (!room.next) return KEEP_GOING;
+  const path = destinationToPath(store.destination);
+  if (path.length <= store.run.steps) return;
+  const nextRoom = path[store.run.steps + 1];
+  for (const [title, next] of Object.entries(room.next)) {
+    if (nextRoom.label === next.label) {
+      return { title, description: next.description };
+    }
+  }
 });
 </script>
 
@@ -91,22 +105,27 @@ const possibleTurns = computed(() => {
       <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
         :image="`images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
     </template>
-    <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title)">
-      <img :src="`images/generated/${turn.title}.webp`" />
-      <div class="text">
-        <div class="title">{{ turn.title }}</div>
-        <div class="description">{{ turn.description }}</div>
-      </div>
-    </button>
-    <button @click="retreat()" v-if="store.run.steps > 0">
-      <img src="/images/generated/Retreat.webp" />
-      <div class="text">
-        <div class="title">Retreat</div>
-        <div class="description">
-          Leave the dungeon and return to safety. Live to fight another day.
+    <SlowButton v-else-if="plannedTurn" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
+      :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
+      @done="takeTurn(plannedTurn.title!, true)" />
+    <template v-else>
+      <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
+        <img :src="`images/generated/${turn.title}.webp`" />
+        <div class="text">
+          <div class="title">{{ turn.title }}</div>
+          <div class="description">{{ turn.description }}</div>
         </div>
-      </div>
-    </button>
+      </button>
+      <button @click="retreat()" v-if="store.run.steps > 0">
+        <img src="/images/generated/Retreat.webp" />
+        <div class="text">
+          <div class="title">Retreat</div>
+          <div class="description">
+            Leave the dungeon and return to safety. Live to fight another day.
+          </div>
+        </div>
+      </button>
+    </template>
   </div>
 </template>
 
