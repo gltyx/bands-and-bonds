@@ -115,7 +115,6 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    color: #edb;
     font-size: 20px;
   }
 

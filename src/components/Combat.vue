@@ -3,7 +3,7 @@ import { store, friendsByName, damage, runData, takeTurn, describeAbility, nextT
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
-import { destinationToPath, type Turn } from "../rooms.ts";
+import { destinationToPath, roomKey, type Turn } from "../rooms.ts";
 
 const enemy = computed(() => store.run.enemy);
 const abilities = computed(() => {
@@ -76,9 +76,9 @@ const plannedTurn = computed(() => {
   if (!onboard("Wayfinder") || !store.destination) return;
   const room = store.run.room;
   if (room.end) return;
-  if (!room.next) return KEEP_GOING;
   const path = destinationToPath(store.destination);
-  if (path.length <= store.run.steps) return;
+  if (path.length <= store.run.steps + 1) return;
+  if (!room.next) return roomKey(room) === roomKey(path[store.run.steps]) ? KEEP_GOING : undefined;
   const nextRoom = path[store.run.steps + 1];
   for (const [title, next] of Object.entries(room.next)) {
     if (nextRoom.label === next.label) {
@@ -107,7 +107,7 @@ const plannedTurn = computed(() => {
     </template>
     <SlowButton v-else-if="plannedTurn" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
       :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
-      @done="takeTurn(plannedTurn.title!, true)" />
+      @done="takeTurn(plannedTurn.title!, true)" :autostart="true" />
     <template v-else>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
         <img :src="`images/generated/${turn.title}.webp`" />
@@ -116,16 +116,16 @@ const plannedTurn = computed(() => {
           <div class="description">{{ turn.description }}</div>
         </div>
       </button>
-      <button @click="retreat()" v-if="store.run.steps > 0">
-        <img src="/images/generated/Retreat.webp" />
-        <div class="text">
-          <div class="title">Retreat</div>
-          <div class="description">
-            Leave the dungeon and return to safety. Live to fight another day.
-          </div>
-        </div>
-      </button>
     </template>
+    <button @click="retreat()" v-if="store.run.steps > 0">
+      <img src="/images/generated/Retreat.webp" />
+      <div class="text">
+        <div class="title">Retreat</div>
+        <div class="description">
+          Leave the dungeon and return to safety. Live to fight another day.
+        </div>
+      </div>
+    </button>
   </div>
 </template>
 
@@ -146,6 +146,7 @@ const plannedTurn = computed(() => {
     border-radius: 40%;
     border: 2px outset #edb;
     box-shadow: 0 0 10px #000;
+    transition: filter 2s;
   }
 }
 

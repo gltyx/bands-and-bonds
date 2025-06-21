@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { store } from '../store.ts';
 import { marked } from 'marked';
 const props = defineProps({
@@ -7,14 +7,23 @@ const props = defineProps({
   title: { type: String, required: true },
   image: { type: String, required: true },
   duration: { type: Number, required: false },
-  description: { type: String, required: false }
+  description: { type: String, required: false },
+  autostart: { type: Boolean, default: false },
 });
 const emit = defineEmits(['done']);
-function start() {
-  if (!props.duration || store.run.timers[props.timerKey]) {
-    return;
+function done() {
+  emit('done');
+  if (props.autostart) {
+    start();
   }
-  store.run.timers[props.timerKey] = { duration: props.duration, cb: () => emit("done") };
+}
+function start() {
+  if (!props.duration) return;
+  if (store.run.timers[props.timerKey]) {
+    store.run.timers[props.timerKey].cb = done;
+  } else {
+    store.run.timers[props.timerKey] = { duration: props.duration, cb: done };
+  }
 }
 function style() {
   if (!props.duration) {
@@ -32,6 +41,16 @@ function style() {
 }
 const description = computed(() => {
   return props.description ? marked(props.description) : "";
+});
+onMounted(() => {
+  if (props.autostart) {
+    start();
+  }
+});
+onUnmounted(() => {
+  if (store.run.timers[props.timerKey]) {
+    delete store.run.timers[props.timerKey];
+  }
 });
 </script>
 

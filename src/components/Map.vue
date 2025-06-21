@@ -73,7 +73,7 @@ const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
         :class="{ marker: true, undiscovered: !store.discovered.includes(roomKey(room)) }" @click="roomClicked(room)" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
-      class="marker" />
+      class="marker ring" />
   </div>
 </template>
 
@@ -101,6 +101,11 @@ img.marker {
 img.marker.undiscovered {
   filter: blur(2px) brightness(0.2);
 }
+
+/* This would be cool if it didn't fly in from 0, 0.
+img.ring {
+  transition: left 0.2s ease-in-out, top 0.2s ease-in-out;
+} */
 
 svg {
   position: absolute;
