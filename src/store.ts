@@ -262,7 +262,20 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
     super: {
       name: 'Smiling Admiral',
     },
-  }
+  },
+  {
+    name: 'Mongreler',
+    cost: 50,
+    description: "A collector of unusual pets, Mongreler can capture weakened enemies and deploy them on the battlefield.",
+    abilities: [{
+      name: "Capture",
+      duration: 5,
+      description: "Captures a weakened enemy. The enemy will fight along your side for the rest of the run.",
+    }],
+    super: {
+      name: 'Monster Juggler',
+    },
+  },
 ];
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
