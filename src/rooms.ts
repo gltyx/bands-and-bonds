@@ -235,7 +235,7 @@ export const allRooms: Room[] = [
   { x: 503, y: 69, type: "fruit" },
   { x: 503, y: 127, type: "gold" },
 
-  { x: 407, y: 127, type: "finalboss" },
+  { x: 407, y: 127, type: "finalboss", end: true },
 ];
 
 export function turnsToPath(numSteps: number, turns: string[]): Room[] {

@@ -121,6 +121,10 @@ const bonds = computed(() => {
   return bonds;
 });
 
+const unusedFriends = computed(() => {
+  const used = new Set(Object.values(store.band));
+  return store.unlocked.filter(name => !used.has(name));
+});
 </script>
 
 <template>
@@ -150,9 +154,9 @@ const bonds = computed(() => {
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <div class="below-grid">
-    <div class="band-unlocked">
-      <template v-for="name in store.unlocked" :key="name">
-        <button class="band-cell" v-if="!onboard(name)" @click="selected = name">
+    <div class="band-unlocked" v-show="unusedFriends.length > 0">
+      <template v-for="name in unusedFriends" :key="name">
+        <button class="band-cell" @click="selected = name">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
@@ -220,18 +224,19 @@ u {
 
 .band-cell.unavailable {
   border: 0;
+  visibility: hidden;
 }
 
 .light-ring.radius1 {
-  width: 150px;
+  width: 110px;
 }
 
 .light-ring.radius2 {
-  width: 306px;
+  width: 316px;
 }
 
 .light-ring.radius3 {
-  width: 512px;
+  width: 522px;
 }
 
 .light-ring {
