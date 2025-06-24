@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted } from 'vue';
 import { store } from '../store.ts';
 import { marked } from 'marked';
+import Gold from './Gold.vue';
 const props = defineProps({
   timerKey: { type: String, required: true },
   title: { type: String, required: true },
@@ -9,6 +10,7 @@ const props = defineProps({
   duration: { type: Number, required: false },
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
+  cost: { type: Number, default: 0 },
 });
 const emit = defineEmits(['done']);
 function done() {
@@ -22,6 +24,7 @@ function start() {
   if (store.run.timers[props.timerKey]) {
     store.run.timers[props.timerKey].cb = done;
   } else {
+    store.run.gold -= props.cost;
     store.run.timers[props.timerKey] = { duration: props.duration, cb: done };
   }
 }
@@ -42,6 +45,9 @@ function style() {
 const description = computed(() => {
   return props.description ? marked(props.description) : "";
 });
+const affordable = computed(() => {
+  return store.run.gold >= props.cost;
+});
 onMounted(() => {
   if (props.autostart) {
     start();
@@ -55,13 +61,30 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <button @click="start()" :style="style()">
+  <button @click="start()" :style="style()" :disabled="!affordable">
     <img v-bind:src="props.image" />
     <div class="text">
+      <div class="cost" v-if="props.cost > 0" :class="{ unaffordable: !affordable }">
+        <Gold :amount="props.cost" />
+      </div>
       <div class="title">{{ props.title }}</div>
       <div class="description" v-html="description"></div>
     </div>
   </button>
 </template>
 
-<style scoped></style>
+<style scoped>
+.cost {
+  float: right;
+  margin: 5px;
+}
+
+.cost.unaffordable {
+  color: red;
+}
+
+button[disabled] {
+  border: none !important;
+  cursor: not-allowed;
+}
+</style>

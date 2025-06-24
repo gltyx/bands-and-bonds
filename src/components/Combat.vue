@@ -115,7 +115,8 @@ function reset() {
   <div class="actions">
     <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
       <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-        :image="`images/generated/${ab.name}.webp`" :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+        :cost="ab.consumes?.gold" :image="`images/generated/${ab.name}.webp`" :duration="ab.duration * 1000"
+        @done="executeAbility(ab)" />
     </template>
     <SlowButton v-else-if="plannedTurn" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
       :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"

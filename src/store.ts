@@ -171,7 +171,7 @@ Her enemies get struck with a curse of that withers metals.
     abilities: [{
       name: "Wooden Stick",
       duration: 0.5,
-      damage: 10000,
+      damage: 1,
       description: "Whack it with a stick.",
     }],
     super: { name: 'Stick Grandmaster' },
@@ -214,6 +214,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     abilities: [{
       name: "Running Start",
       duration: 10,
+      consumes: { gold: 1 },
       description: () => `Speed up all abilities. (Currently ${numberFormat.format(store.run.speedLevel)}×.)`,
       onCompleted() {
         store.run.speedLevel += 1;
@@ -224,6 +225,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       abilities: [{
         name: "Running Start",
         duration: 10,
+        consumes: { gold: 1 },
         description: () => `Speed up all abilities. (Currently ${numberFormat.format(store.run.speedLevel)}×.)`,
         onCompleted() {
           store.run.speedLevel *= 2;
