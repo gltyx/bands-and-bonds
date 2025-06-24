@@ -4,6 +4,9 @@ import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
 import { destinationToPath, roomKey, type Turn } from "../rooms.ts";
+import EnemyRewards from "./EnemyRewards.vue";
+import Gold from "./Gold.vue";
+import Fruit from "./Fruit.vue";
 
 const enemy = computed(() => store.run.enemy);
 const abilities = computed(() => {
@@ -92,7 +95,9 @@ const plannedTurn = computed(() => {
 
   <div class="enemy" v-if="enemy">
     <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
-    <div class="description" v-else>Defeated!</div>
+    <div class="description" v-else>Defeated! You gained
+      <EnemyRewards :enemy="enemy" />.
+    </div>
     <h1>{{ enemy.name }}</h1>
     <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name"
       :style="enemy.health <= store.run.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
@@ -123,6 +128,19 @@ const plannedTurn = computed(() => {
         <div class="title">Retreat</div>
         <div class="description">
           Leave the dungeon and return to safety. Live to fight another day.
+          <template v-if="store.run.gold > 0 && store.run.fruit > 0">
+            You will lose
+            <Gold :amount="store.run.gold" /> but keep the
+            <Fruit :amount="store.run.fruit" /> you've collected.
+          </template>
+          <template v-else-if="store.run.gold > 0">
+            You will lose
+            <Gold :amount="store.run.gold" />.
+          </template>
+          <template v-else-if="store.run.fruit > 0">
+            You keep the
+            <Fruit :amount="store.run.fruit" /> you've collected.
+          </template>
         </div>
       </div>
     </button>

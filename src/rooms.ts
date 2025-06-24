@@ -39,16 +39,16 @@ export const allRooms: Room[] = [
       },
     },
   },
-  { x: 455, y: 419, type: "combat", name: 'Trollish Maiden', label: 'right1' },
+  { x: 455, y: 419, type: "combat", name: 'Bandlings', label: 'right1' },
   { x: 501, y: 419, type: "gem" },
   { x: 501, y: 477, type: "gold" },
   { x: 454, y: 477, type: "combat", end: true },
 
-  { x: 345, y: 419, type: "rescue", label: 'left1' },
+  { x: 345, y: 419, type: "rescue", name: 'Lamplighter', label: 'left1' },
   { x: 304, y: 419, type: "none" },
   { x: 304, y: 493, type: "none" },
   { x: 350, y: 493, type: "none" },
-  { x: 350, y: 461, type: "combat", end: true },
+  { x: 350, y: 461, type: "combat", name: 'Poison Crow', end: true },
 
   {
     x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dark Lord',
@@ -57,32 +57,32 @@ export const allRooms: Room[] = [
   { x: 342, y: 359, type: "campfire", label: 'main-left' },
   { x: 288, y: 359, type: "none" },
   { x: 288, y: 343, type: "combat", name: "Trollish Maiden" },
-  { x: 288, y: 293, type: "combat" },
+  { x: 288, y: 293, type: "combat", name: 'Jaw Maw Maw' },
   {
-    x: 288, y: 236, type: "combat",
+    x: 288, y: 236, type: "combat", name: 'Will-o-Wasp',
     next: { 'Turn left': { label: 'left2' }, 'Go straight': { label: 'straight2' } },
   },
   { x: 288, y: 219, type: "none", label: 'straight2' },
-  { x: 351, y: 219, type: "combat" },
+  { x: 351, y: 219, type: "combat", name: 'Clockomancer' },
   { x: 351, y: 244, type: "none" },
   { x: 332, y: 244, type: "none" },
-  { x: 332, y: 279, type: "combat" },
-  { x: 332, y: 318, type: "combat" },
+  { x: 332, y: 279, type: "combat", name: 'Lobster Daddy' },
+  { x: 332, y: 318, type: "combat", name: 'The Shroud' },
   { x: 358, y: 318, type: "none" },
   { x: 358, y: 289, type: "none" },
   { x: 407, y: 289, type: "boss", end: true },
 
   { x: 288, y: 243, type: "none", label: 'left2' },
-  { x: 248, y: 243, type: "combat" },
+  { x: 248, y: 243, type: "combat", name: 'Glass Dragon' },
   { x: 243, y: 243, type: "none" },
-  { x: 243, y: 341, type: "combat" },
+  { x: 243, y: 341, type: "combat", name: 'Xaranthian Construct' },
   { x: 243, y: 379, type: "none" },
   { x: 277, y: 379, type: "none" },
   {
     x: 277, y: 413, type: "none",
     next: { 'Turn left': { label: 'left3' }, 'Go straight': { label: 'straight3' } },
   },
-  { x: 243, y: 413, type: "combat", label: 'left3', end: true },
+  { x: 243, y: 413, type: "combat", name: 'Frog Assassin', label: 'left3', end: true },
   {
     x: 277, y: 459, type: "none", label: 'straight3',
     next: { 'Turn left': { label: 'left4' }, 'Go straight': { label: 'straight4' } },
@@ -93,10 +93,10 @@ export const allRooms: Room[] = [
     x: 196, y: 498, type: "none",
     next: { 'Go straight': { label: 'straight5' }, 'Turn right': { label: 'right5' } },
   },
-  { x: 196, y: 460, type: "combat", label: 'right5' },
-  { x: 196, y: 410, type: "combat" },
-  { x: 196, y: 350, type: "combat" },
-  { x: 196, y: 300, type: "combat", end: true },
+  { x: 196, y: 460, type: "combat", name: 'Fortified Door', label: 'right5' },
+  { x: 196, y: 410, type: "rescue" },
+  { x: 196, y: 350, type: "combat", name: 'Master of Doors' },
+  { x: 196, y: 300, type: "rescue", end: true },
   {
     x: 126, y: 498, type: "none", label: 'straight5',
     next: { 'Go straight': { label: 'straight6' }, 'Turn right': { label: 'right6' } },
@@ -173,7 +173,7 @@ export const allRooms: Room[] = [
   { x: 459, y: 230, type: "combat" },
   { x: 407, y: 230, type: "rescue", end: true },
 
-  { x: 547, y: 322, type: "combat", label: 'right10' },
+  { x: 547, y: 322, type: "combat", name: 'Frozen Centurion', label: 'right10' },
   { x: 547, y: 277, type: "combat" },
   { x: 547, y: 230, type: "combat" },
   { x: 601, y: 230, type: "combat" },
@@ -235,7 +235,7 @@ export const allRooms: Room[] = [
   { x: 503, y: 69, type: "fruit" },
   { x: 503, y: 127, type: "gold" },
 
-  { x: 407, y: 127, type: "finalboss", end: true },
+  { x: 407, y: 127, type: "finalboss", name: 'Skelemasterion', end: true },
 ];
 
 export function turnsToPath(numSteps: number, turns: string[]): Room[] {

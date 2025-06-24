@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onboard, store } from "../store.ts";
+import { onboard, store, enemiesByName, friendsByName } from "../store.ts";
 import { type Room, allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
 import curvedLine from "./curved-line.ts";
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
+import EnemyRewards from "./EnemyRewards.vue";
 
 const mapElement = useTemplateRef('mapElement');
 const scale = ref(1.0);
@@ -56,6 +57,7 @@ function roomClicked(room: Room) {
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
 const planRooms = computed(() => onboard("Wayfinder") && store.destination ? destinationToPath(store.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
+const hoveredRoom = ref<Room | null>(null);
 
 </script>
 
@@ -69,11 +71,21 @@ const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
     </svg>
     <template v-for="room in allRooms">
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
-        @mouseenter="pos = { x: room.x, y: room.y }" :src="`images/generated/${icon(room)}-outlined.webp`"
+        @mouseenter="pos = { x: room.x, y: room.y }; hoveredRoom = room" @mouseleave="hoveredRoom = null"
+        :src="`images/generated/${icon(room)}-outlined.webp`"
         :class="{ marker: true, undiscovered: !store.discovered.includes(roomKey(room)) }" @click="roomClicked(room)" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
       class="marker ring" />
+    <div v-if="hoveredRoom?.name" class="hovered-room"
+      :style="{ top: `${hoveredRoom.y}px`, left: `${hoveredRoom.x}px` }">
+      <img class="enemy-portrait" :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
+      <h1>{{ hoveredRoom.name }}</h1>
+      <p v-if="enemiesByName[hoveredRoom.name]?.rewards">Rewards when defeated:
+        <EnemyRewards :enemy="enemiesByName[hoveredRoom.name]" />
+      </p>
+      <p v-if="friendsByName[hoveredRoom.name]">{{ friendsByName[hoveredRoom.name].name }} was rescued here.</p>
+    </div>
   </div>
 </template>
 
@@ -84,7 +96,6 @@ const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
   position: relative;
   background-color: black;
   border-radius: 20px;
-  overflow: hidden;
 }
 
 .map-backdrop {
@@ -102,10 +113,34 @@ img.marker.undiscovered {
   filter: blur(2px) brightness(0.2);
 }
 
-/* This would be cool if it didn't fly in from 0, 0.
-img.ring {
-  transition: left 0.2s ease-in-out, top 0.2s ease-in-out;
-} */
+img.marker.ring {
+  pointer-events: none;
+}
+
+.hovered-room {
+  pointer-events: none;
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 0 10px;
+  border-radius: 10px;
+  z-index: 10;
+
+  .enemy-portrait {
+    margin-top: -30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 40%;
+    border: 2px outset #edb;
+    box-shadow: 0 0 10px #000;
+    transition: filter 2s;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 20px;
+  }
+}
 
 svg {
   position: absolute;

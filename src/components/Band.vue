@@ -303,14 +303,6 @@ u {
 
 }
 
-.resource-icon {
-  width: 25px;
-  height: 25px;
-  border: 0;
-  margin-left: -5px;
-  vertical-align: top;
-}
-
 .below-grid {
   display: flex;
   flex-wrap: wrap;

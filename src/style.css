@@ -107,3 +107,11 @@ p {
 .numbers {
   font-family: "Germania One", system-ui;
 }
+
+.resource-icon {
+  width: 1.4em;
+  height: 1.4em;
+  border: 0;
+  margin-left: -0.3em;
+  vertical-align: middle;
+}

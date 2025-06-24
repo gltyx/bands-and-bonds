@@ -67,9 +67,9 @@ onUnmounted(() => {
 <template>
   <div class="header">
     <div class="header-header">
-      <div id="header-metal" class="numbers"><template v-if="store.run.metal">
+      <div id="header-gold" class="numbers"><template v-if="store.run.gold">
           <img src="/images/generated/gold.webp" class="header-icon" />
-          {{ numberFormat.format(store.run.metal) }}
+          {{ numberFormat.format(store.run.gold) }}
         </template></div>
       <div class="logo title">
         <img src="/images/generated/logo.webp" alt="B" />ands
@@ -124,7 +124,7 @@ onUnmounted(() => {
     vertical-align: top;
   }
 
-  #header-metal {
+  #header-gold {
     text-align: left;
   }
 
@@ -132,7 +132,7 @@ onUnmounted(() => {
     text-align: right;
   }
 
-  #header-metal,
+  #header-gold,
   #header-fruit {
     flex: 1 1 25%;
   }
@@ -149,7 +149,7 @@ onUnmounted(() => {
       flex-wrap: wrap;
     }
 
-    #header-metal,
+    #header-gold,
     #header-fruit {
       order: 2;
       flex: 1 1 50%;

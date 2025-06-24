@@ -39,21 +39,28 @@ export type Enemy = {
   armor?: number;
   immune?: string[];
   regen?: number;
+  rewards?: { gold?: number, fruit?: number };
 };
 export const allEnemies: Enemy[] = [
-  { name: 'Wild Slime', health: 30 },
-  { name: 'Poison Crow', health: 50 },
-  { name: 'Animated Skeleton', health: 100, immune: ['poison'] },
-  { name: 'Jaw Maw Maw', health: 100 },
-  { name: 'Bandlings', health: 100 },
-  { name: 'Will-o-Wasp', health: 100 },
-  { name: 'Clockomancer', health: 100, immune: ['speed'] },
-  { name: 'Lobster Daddy', health: 100, armor: 1000 },
-  { name: 'Trollish Maiden', health: 100, regen: 10 },
-  { name: 'The Shroud', health: 1000 },
-  { name: 'Dark Lord', health: 10000, armor: 100 },
-  { name: 'Glass Dragon', health: 100000 },
-  { name: 'Xaranthian Construct', health: 1000000 },
+  { name: 'Wild Slime', health: 30, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Poison Crow', health: 50, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Animated Skeleton', health: 100, immune: ['poison'], rewards: { gold: 1, fruit: 1 } },
+  { name: 'Jaw Maw Maw', health: 100, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Bandlings', health: 100, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Will-o-Wasp', health: 100, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Clockomancer', health: 100, immune: ['speed'], rewards: { gold: 1, fruit: 1 } },
+  { name: 'Lobster Daddy', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Trollish Maiden', health: 100, regen: 10, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Thick Door', health: 100, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Fortified Door', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Master of Doors', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'The Shroud', health: 1000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Dark Lord', health: 10000, armor: 100, rewards: { gold: 10, fruit: 10 } },
+  { name: 'Glass Dragon', health: 100000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Xaranthian Construct', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Frog Assassin', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Frozen Centurion', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Skelemasterion', health: 1000000, rewards: { gold: 1000, fruit: 1000 } },
 ];
 
 export const allFriends: Friend[] = [
@@ -68,7 +75,7 @@ the square root of the highest level achieved.
     abilities: [{
       name: "Forge",
       duration: 5,
-      consumes: { metal: 1 },
+      consumes: { gold: 1 },
       description: () => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
       onCompleted: () => { store.run.weaponLevel += 1; },
     },
@@ -164,7 +171,7 @@ Her enemies get struck with a curse of that withers metals.
     abilities: [{
       name: "Wooden Stick",
       duration: 0.5,
-      damage: 1,
+      damage: 10000,
       description: "Whack it with a stick.",
     }],
     super: { name: 'Stick Grandmaster' },
@@ -194,9 +201,9 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     abilities: [{
       name: "Snatch",
       duration: 0.5,
-      description: "Steals a piece of metal.",
+      description: "Steals a piece of gold.",
       onCompleted() {
-        store.run.metal += 1;
+        store.run.gold += 1;
       },
     }],
   },
@@ -266,7 +273,7 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   {
     name: 'Mongreler',
     cost: 50,
-    description: "A collector of unusual pets, Mongreler can capture weakened enemies and deploy them on the battlefield.",
+    description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
     abilities: [{
       name: "Capture",
       duration: 5,
@@ -285,6 +292,10 @@ for (const f of allFriends) {
   }
   friendsByName[f.name] = f;
 }
+export const enemiesByName = {} as Record<string, Enemy>;
+for (const e of allEnemies) {
+  enemiesByName[e.name] = e;
+}
 
 export function roomData() {
   // Everything specific to the current room. Deleted when leaving the room.
@@ -302,7 +313,8 @@ export function runData() {
     speedLevel: 1,
     steps: 0,
     turns: [] as string[],
-    metal: 0,
+    gold: 0,
+    fruit: 0, // Fruit collected in this run. Only for statistics.
     // Precomputed for convenience.
     room: allRooms[0],
     enemy: undefined as Enemy | undefined,
@@ -348,6 +360,7 @@ watch(store, (newValue) => {
 export function damage(x: number) {
   const enemy = store.run.enemy;
   if (!enemy) return;
+  if (store.run.damage >= enemy.health) return; // Already defeated.
   let dmg = x;
   dmg -= (enemy.armor ?? 0) - store.run.armorDamage;
   if (dmg < 0) return;
@@ -355,6 +368,9 @@ export function damage(x: number) {
   if (store.run.damage >= enemy.health) {
     store.run.damage = enemy.health;
     store.run.poison = 0;
+    store.run.gold += enemy.rewards?.gold ?? 0;
+    store.run.fruit += enemy.rewards?.fruit ?? 0;
+    store.fruit += enemy.rewards?.fruit ?? 0;
   }
 }
 
