@@ -396,6 +396,9 @@ export function takeTurn(turn: string, skipConfirmation?: boolean) {
   }
   store.run.room = room;
   store.run.enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;
+  if (room.type === 'rescue' && room.name && !store.unlocked.includes(room.name)) {
+    store.unlocked.push(room.name);
+  }
 }
 export function describeAbility(ab: Ability): string {
   let d = ab.description;

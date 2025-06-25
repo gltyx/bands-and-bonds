@@ -9,6 +9,9 @@ import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
 
 const enemy = computed(() => store.run.enemy);
+const rescue = computed(() => {
+  return store.run.room.type === 'rescue' && store.run.room.name && friendsByName[store.run.room.name];
+});
 const abilities = computed(() => {
   const abilities = [] as Ability[];
   const allAutomatic = onboard('Gear of Lords');
@@ -99,7 +102,6 @@ function reset() {
 </script>
 
 <template>
-
   <div class="enemy" v-if="enemy">
     <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
     <div class="description" v-else>Defeated! You gained
@@ -111,6 +113,12 @@ function reset() {
     <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.armorDamage" :max="enemy.armor" color="#666"
       label="Armor" />
+  </div>
+  <div class="rescue" v-if="rescue">
+    <img :src="`images/generated/${rescue.name}.webp`" :alt="rescue.name" />
+    <h1>{{ rescue.name }}</h1>
+    <div class="description">Is rescued and joins your band!</div>
+    <div class="description" v-html="rescue.descriptionHtml"></div>
   </div>
   <div class="actions">
     <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
@@ -182,6 +190,28 @@ function reset() {
     border: 2px outset #edb;
     box-shadow: 0 0 10px #000;
     transition: filter 2s;
+  }
+}
+
+.rescue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000;
+  border-radius: 10px;
+  padding: 10px 30px;
+  padding-top: 0;
+  margin: 10px 0;
+
+  img {
+    width: 200px;
+    mix-blend-mode: lighten;
+    margin-top: -45px;
+  }
+
+  h1 {
+    margin-top: -15px;
+    margin-bottom: 0px;
   }
 }
 
