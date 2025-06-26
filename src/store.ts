@@ -342,6 +342,7 @@ export type Store = {
   run: ReturnType<typeof runData>;
   band: Band;
   fruit: number;
+  packs: number;
   unlocked: string[];
   discovered: string[];
   destination?: string, // Coordinate key for destination room.
@@ -352,6 +353,7 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
   fruit: 999,
+  packs: 1,
   unlocked: startingUnlocked(),
   discovered: startingDiscovered(),
 });

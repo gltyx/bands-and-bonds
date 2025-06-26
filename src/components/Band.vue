@@ -2,6 +2,8 @@
 import { computed, ref } from "vue";
 import SlowButton from "./SlowButton.vue";
 import { store, friendsByName, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
+import Fruit from "./Fruit.vue";
+import Packs from "./Packs.vue";
 
 const selected = ref(undefined as string | undefined);
 const band = store.band;
@@ -27,7 +29,7 @@ function remove(name: string) {
 }
 function set(row: number, col: number, name: string) {
   const cost = friendsByName[name]?.cost ?? 0;
-  if (store.fruit >= fruitSpent.value + cost && !onboard(name) && available(row, col)) {
+  if (store.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
     store.band[col + row * band.width] = name;
   }
 }
@@ -48,7 +50,6 @@ function clear(row: number, col: number) {
     }
   }
 }
-
 
 const lightRadius = computed(() => {
   const lamplighter = friendAt(2, 2)?.name === 'Lamplighter';
@@ -85,7 +86,7 @@ function friendClicked(row: number, col: number) {
   }
 }
 
-const fruitSpent = computed(() => {
+const packsSpent = computed(() => {
   let spent = 0;
   for (const name of Object.values(store.band)) {
     const friend = friendsByName[name];
@@ -125,16 +126,32 @@ const unusedFriends = computed(() => {
   const used = new Set(Object.values(store.band));
   return store.unlocked.filter(name => !used.has(name));
 });
+
+const packPrice = computed(() => {
+  const packs = store.packs;
+  return Math.floor(1 + 1.3 ** packs);
+});
+
+function buyPack() {
+  if (store.fruit >= packPrice.value) {
+    store.fruit -= packPrice.value;
+    store.packs += 1;
+  }
+}
 </script>
 
 <template>
   <p>
     The <u contenteditable="true">Unnamed Band</u> is assembled at a total cost of
-    <span class="numbers">{{ fruitSpent }} <img src="/images/generated/fruit.webp" class="resource-icon" /></span>,
+    <Packs :amount="packsSpent" />,
     leaving you with
-    <span class="numbers">{{ store.fruit - fruitSpent }} <img src="/images/generated/fruit.webp"
-        class="resource-icon" /></span>
+    <Packs :amount="store.packs - packsSpent" />
     to hire more members.
+    <button class="buy-pack-button" @click="buyPack()" :disabled="store.fruit < packPrice">Buy
+      <Packs :amount="1" />
+      for
+      <Fruit :amount="packPrice" />
+    </button>
   </p>
   <div class="band-grid">
     <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
@@ -157,14 +174,15 @@ const unusedFriends = computed(() => {
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
         <button class="band-cell" @click="selected = name"
-          :class="{ unaffordable: store.fruit < friendsByName[name].cost + fruitSpent }">
+          :class="{ unaffordable: store.packs < friendsByName[name].cost + packsSpent }">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
     </div>
     <div class="band-details" v-if="selected && selectedFriend">
-      <div class="friend-cost numbers" :class="{ unaffordable: store.fruit < selectedFriend.cost + fruitSpent }">
-        {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/fruit.webp" class="resource-icon" />
+      <div class="friend-cost numbers"
+        :class="{ unaffordable: store.packs < selectedFriend.cost + packsSpent && !onboard(selected) }">
+        {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/pack.webp" class="resource-icon" />
       </div>
       <img :src="`images/generated/${selectedFriend.name}.webp`" />
       <h1>{{ selectedFriend.name }}</h1>
@@ -321,7 +339,12 @@ h2 {
   font-weight: 200;
 }
 
-.numbers {
+.friend-cost {
   font-size: 18px;
+}
+
+.buy-pack-button {
+  width: auto;
+  font-size: 15px;
 }
 </style>

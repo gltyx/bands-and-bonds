@@ -79,6 +79,8 @@ onUnmounted(() => {
       <div id="header-fruit" class="numbers"><template v-if="store.fruit">
           {{ numberFormat.format(store.fruit) }}
           <img src="/images/generated/fruit.webp" class="header-icon" />
+          {{ numberFormat.format(store.packs) }}
+          <img src="/images/generated/pack.webp" class="header-icon" />
         </template></div>
     </div>
     <div class="tabs">

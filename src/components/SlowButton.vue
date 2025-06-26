@@ -82,9 +82,4 @@ onUnmounted(() => {
 .cost.unaffordable {
   color: red;
 }
-
-button[disabled] {
-  border: none !important;
-  cursor: not-allowed;
-}
 </style>

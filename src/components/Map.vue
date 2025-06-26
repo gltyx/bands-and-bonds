@@ -25,7 +25,7 @@ const rooms = computed(() => turnsToPath(store.run.steps, store.run.turns));
 const pos = ref({ x: 0, y: 0 });
 
 function icon(room: Room) {
-  return room.type;
+  return room.type.replace('rescue', 'pack');
 }
 
 function style(room: Room, factor?: number) {
