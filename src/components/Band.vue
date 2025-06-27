@@ -129,7 +129,7 @@ const unusedFriends = computed(() => {
 
 const packPrice = computed(() => {
   const packs = store.packs;
-  return Math.floor(1 + 1.3 ** packs);
+  return Math.floor(1 + 1.2 ** packs);
 });
 
 function buyPack() {

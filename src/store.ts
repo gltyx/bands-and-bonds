@@ -60,6 +60,10 @@ export const allEnemies: Enemy[] = [
   { name: 'Xaranthian Construct', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Frog Assassin', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Frozen Centurion', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Striped Horror', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Zakatrixos', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'King of Tadpoles', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Dead Gladiator', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Skelemasterion', health: 1000000, rewards: { gold: 1000, fruit: 1000 } },
 ];
 
@@ -130,7 +134,11 @@ Her enemies get struck with a curse of that withers metals.
   {
     name: 'Desert Rabbit',
     cost: 210,
-    description: "The Desert Rabbit is a master of traversing hostile environments. Having him in your band makes it possible to change the band composition at campfires.",
+    description: `
+The Desert Rabbit is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
+
+With the Desert Rabbit in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
+    `,
   },
   {
     name: 'Friend of Metal',
@@ -285,6 +293,35 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
       name: 'Monster Juggler',
     },
   },
+  {
+    name: 'Eighth Swimmer',
+    cost: 50,
+    description: "",
+    super: {
+      name: 'Seventh Swimmer',
+    },
+  },
+  {
+    name: 'Pequer',
+    cost: 50,
+    description: "",
+    super: {
+      name: 'Le Pequer',
+    },
+  },
+  {
+    name: 'Hedge Lost',
+    cost: 11,
+    description: "",
+    super: {
+      name: 'Hedge Found',
+    },
+  },
+  {
+    name: 'Zaktar Kadoque',
+    cost: 20,
+    description: "",
+  },
 ];
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
@@ -353,7 +390,7 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
   fruit: 999,
-  packs: 1,
+  packs: 99,
   unlocked: startingUnlocked(),
   discovered: startingDiscovered(),
 });
