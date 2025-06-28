@@ -390,7 +390,7 @@ export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
   fruit: 999,
-  packs: 99,
+  packs: 999,
   unlocked: startingUnlocked(),
   discovered: startingDiscovered(),
 });
@@ -466,6 +466,14 @@ export function nextTo(name: string, row: number, col: number): [number, number]
   return null;
 }
 export function onboard(name: string): boolean {
-  // TODO: Only return super if the friend is supered.
-  return Object.values(store.band).some((n) => n === name || friendsByName[n]?.super?.name === name);
+  for (let row = 0; row < store.band.height; row++) {
+    for (let col = 0; col < store.band.width; col++) {
+      const place = col + row * store.band.width;
+      const n = store.band[place];
+      if (n === name) return true;
+      const friend = friendsByName[n];
+      if (friend?.super?.name === name && nextTo(name, row, col)) return true;
+    }
+  }
+  return false;
 }
