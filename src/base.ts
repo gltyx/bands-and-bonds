@@ -25,6 +25,7 @@ export type RunData = {
   turns: string[];
   gold: number;
   fruit: number; // Fruit collected in this run. Only for statistics.
+  capturedAbilities: Ability[];
   room: RoomData;
   timers: Record<string, Timer>;
 };
@@ -58,6 +59,7 @@ export type Room = {
 
 export type Ability = {
   name: string;
+  image?: string;
   description: string | ((store: Store) => string);
   duration: number;
   damage?: number;
@@ -73,6 +75,7 @@ export type Friend = {
   abilities?: Ability[];
   super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;
+  passiveEffects?: string[];
 }
 
 export type Enemy = {
@@ -82,6 +85,8 @@ export type Enemy = {
   immune?: string[];
   regen?: number;
   rewards?: { gold?: number, fruit?: number };
+  abilities?: Ability[];
+  passiveEffects?: string[];
 };
 
 const _numberFormat = new Intl.NumberFormat("en-US", {
@@ -95,4 +100,5 @@ export function numberFormat(x: number) {
 export type DecoratedStore = Store & {
   currentEnemy?: Enemy;
   currentRoom: Room;
+  currentPath: Room[];
 };

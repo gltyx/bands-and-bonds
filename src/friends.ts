@@ -114,7 +114,7 @@ With the Desert Rabbit in your band, you will see the weaknesses of enemies and 
     abilities: [{
       name: "Wooden Stick",
       duration: 0.5,
-      damage: 10000,
+      damage: 1,
       description: "Whack it with a stick.",
     }],
     super: { name: 'Stick Grandmaster' },
@@ -219,13 +219,10 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
     name: 'Mongreler',
     cost: 50,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
-    abilities: [{
-      name: "Capture",
-      duration: 5,
-      description: "Captures a weakened enemy. The enemy will fight along your side for the rest of the run.",
-    }],
+    passiveEffects: ['Mongreler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
     super: {
       name: 'Monster Juggler',
+      passiveEffects: ['Monster Juggler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
     },
   },
   {

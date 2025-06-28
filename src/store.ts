@@ -31,9 +31,10 @@ export function runData(): RunData {
     weaponLevel: 1,
     speedLevel: 1,
     steps: 0,
-    turns: [] as string[],
+    turns: [],
     gold: 0,
     fruit: 0, // Fruit collected in this run. Only for statistics.
+    capturedAbilities: [],
     room: roomData(),
     timers: {} as Record<string, Timer>,
   };
@@ -80,6 +81,9 @@ export const decoratedStore = new Proxy(store, {
     if (p === 'currentEnemy') {
       return current.value.enemy;
     }
+    if (p === 'currentPath') {
+      return current.value.path ?? allRooms[0];
+    }
     return Reflect.get(target, p, receiver);
   },
 }) as DecoratedStore;
@@ -89,6 +93,10 @@ export function damage(x: number) {
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.
   let dmg = x;
+  const capturing = onboard("Mongreler") || onboard("Monster Juggler");
+  if (capturing) {
+    dmg *= 0.01;
+  }
   dmg -= (enemy.armor ?? 0) - store.run.room.armorDamage;
   if (dmg < 0) return;
   store.run.room.damage += dmg;
@@ -98,6 +106,9 @@ export function damage(x: number) {
     store.run.gold += enemy.rewards?.gold ?? 0;
     store.run.fruit += enemy.rewards?.fruit ?? 0;
     store.fruit += enemy.rewards?.fruit ?? 0;
+    if (capturing) {
+      store.run.capturedAbilities.push(...enemy.abilities ?? []);
+    }
   }
 }
 

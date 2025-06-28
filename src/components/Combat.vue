@@ -9,6 +9,7 @@ import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
+import { enemiesByName } from "../enemies.ts";
 
 const enemy = computed(() => store.currentEnemy);
 const rescue = computed(() => {
@@ -95,6 +96,23 @@ const plannedTurn = computed(() => {
   }
 });
 
+const passiveEffects = computed(() => {
+  const effects = [] as string[];
+  if (enemy.value?.passiveEffects) {
+    effects.push(...enemy.value.passiveEffects);
+  }
+  for (let row = 0; row < store.band.height; row++) {
+    for (let col = 0; col < store.band.width; col++) {
+      const place = col + row * store.band.width;
+      const friend = friendsByName[store.band[place]];
+      if (friend?.passiveEffects) {
+        effects.push(...friend.passiveEffects);
+      }
+    }
+  }
+  return effects;
+});
+
 function reset() {
   if (window.confirm("Are you sure you want to reset your progress? This cannot be undone.") && window.confirm("Double checking: Are you sure you want to reset your progress? This cannot be undone.")) {
     localStorage.clear();
@@ -122,16 +140,32 @@ function reset() {
     <div class="description">Is rescued and joins your band!</div>
     <div class="description" v-html="rescue.descriptionHtml"></div>
   </div>
+  <div class="passive-effect" v-for="effect in passiveEffects">
+    {{ effect }}
+  </div>
   <div class="actions">
-    <template v-if="fighting" v-for="ab in abilities" :key="ab.name">
-      <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-        :cost="ab.consumes?.gold" :image="`images/generated/${ab.name}.webp`" :duration="ab.duration * 1000"
-        @done="executeAbility(ab)" />
+    <template v-if="fighting">
+      <template v-for="ab in abilities" :key="ab.name">
+        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
+          :cost="ab.consumes?.gold" :image="`images/generated/${ab.image ?? ab.name}.webp`"
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+      </template>
+      <div v-if="store.run.capturedAbilities.length > 0" class="section">Captured Monsters</div>
+      <template v-for="ab in store.run.capturedAbilities">
+        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
+          :cost="ab.consumes?.gold" :image="`images/generated/${ab.image ?? ab.name}.webp`"
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+      </template>
+      <div class="section">Navigation</div>
     </template>
-    <SlowButton v-else-if="plannedTurn" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
-      :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
-      @done="takeTurn(plannedTurn.title!, true)" :autostart="true" />
+    <template v-else-if="plannedTurn">
+      <div class="section">Navigation</div>
+      <SlowButton timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
+        :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
+        @done="takeTurn(plannedTurn.title!, true)" :autostart="true" />
+    </template>
     <template v-else>
+      <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
         <img :src="`images/generated/${turn.title}.webp`" />
         <div class="text">
@@ -221,11 +255,27 @@ function reset() {
   margin: 20px 0;
   columns: 310px auto;
   width: 100%;
+
+  .section {
+    display: block;
+    color: #edb;
+    break-after: avoid;
+  }
+
+  .section:before,
+  .section:after {
+    content: ' — ';
+  }
 }
 
 .actions>* {
   display: flex;
   margin: 0 auto;
   margin-bottom: 10px;
+}
+
+.passive-effect {
+  color: #edb;
+  margin-top: 10px;
 }
 </style>
