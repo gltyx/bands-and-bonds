@@ -1,19 +1,4 @@
-export type Turn = {
-  title?: string; // Not included in Room.next, but added otherwise.
-  label?: string; // The label of the next room.
-  description?: string; // Description of the turn.
-  skipConfirmation?: boolean;
-};
-
-export type Room = {
-  x: number;
-  y: number;
-  type: string;
-  name?: string;
-  next?: Record<string, Turn>; // The path diverges.
-  label?: string; // Referenced from "next", like a goto label.
-  end?: boolean; // If true, this is the end of the path.
-};
+import type { Room } from './base';
 
 export const allRooms: Room[] = [
   {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import SlowButton from "./SlowButton.vue";
-import { store, friendsByName, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
+import { store, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
+import { friendsByName } from "../friends.ts";
 import Fruit from "./Fruit.vue";
 import Packs from "./Packs.vue";
 
@@ -108,13 +109,13 @@ const bonds = computed(() => {
     for (let col = 0; col < store.band.width; col++) {
       const place = col + row * store.band.width;
       if (!store.band[place]) continue;
-      const az = nextTo('Azrekta', row, col);
-      if (az) {
+      const bond = nextTo('Azrekta', row, col) || nextTo('Lord of Gears', row, col);
+      if (bond) {
         bonds.push({
           image: 'chain',
-          style: az[0] === row ?
-            `left: ${(col + az[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
-            `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + az[0] + 1) * 103 / 2 - 15}px;`,
+          style: bond[0] === row ?
+            `left: ${(col + bond[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
+            `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + bond[0] + 1) * 103 / 2 - 15}px;`,
         });
       }
     }

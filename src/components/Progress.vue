@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { numberFormat } from '../store.ts'
+import { numberFormat } from '../base.ts'
 
 defineProps<{
   value: number
@@ -13,7 +13,7 @@ defineProps<{
   <div class="progress-container">
     <div class="progress-bar" :style="{ width: `${(value / max) * 100}%`, backgroundColor: color }"></div>
     <div class="progress-text numbers">
-      {{ numberFormat.format(value) }} / {{ numberFormat.format(max) }} {{ label }}
+      {{ numberFormat(value) }} / {{ numberFormat(max) }} {{ label }}
     </div>
   </div>
 </template>

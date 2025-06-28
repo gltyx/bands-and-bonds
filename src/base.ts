@@ -1,0 +1,98 @@
+export type Timer = {
+  time?: number;
+  duration: number;
+  cb?: (timer: Timer) => void;
+  [x: string]: unknown;
+};
+
+export type Band = {
+  width: number;
+  height: number;
+  [x: number]: string;
+};
+
+export type RoomData = {
+  // Everything specific to the current room. Deleted when leaving the room.
+  damage: number;
+  armorDamage: number;
+  poison: number;
+};
+export type RunData = {
+  // Everything specific to the current run. Deleted when the run ends.
+  weaponLevel: number;
+  speedLevel: number;
+  steps: number;
+  turns: string[];
+  gold: number;
+  fruit: number; // Fruit collected in this run. Only for statistics.
+  room: RoomData;
+  timers: Record<string, Timer>;
+};
+
+export type Store = {
+  run: RunData;
+  band: Band;
+  fruit: number;
+  packs: number;
+  unlocked: string[];
+  discovered: string[];
+  destination?: string, // Coordinate key for destination room.
+};
+
+export type Turn = {
+  title?: string; // Not included in Room.next, but added otherwise.
+  label?: string; // The label of the next room.
+  description?: string; // Description of the turn.
+  skipConfirmation?: boolean;
+};
+
+export type Room = {
+  x: number;
+  y: number;
+  type: string;
+  name?: string;
+  next?: Record<string, Turn>; // The path diverges.
+  label?: string; // Referenced from "next", like a goto label.
+  end?: boolean; // If true, this is the end of the path.
+};
+
+export type Ability = {
+  name: string;
+  description: string | ((store: Store) => string);
+  duration: number;
+  damage?: number;
+  consumes?: { [x: string]: number };
+  onCompleted?: (store: DecoratedStore) => void;
+  automatic?: boolean;
+};
+
+export type Friend = {
+  name: string;
+  cost: number;
+  description?: string;
+  abilities?: Ability[];
+  super?: Partial<Friend>;
+  descriptionHtml?: string | Promise<string>;
+}
+
+export type Enemy = {
+  name: string;
+  health: number;
+  armor?: number;
+  immune?: string[];
+  regen?: number;
+  rewards?: { gold?: number, fruit?: number };
+};
+
+const _numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+export function numberFormat(x: number) {
+  return _numberFormat.format(x);
+}
+
+export type DecoratedStore = Store & {
+  currentEnemy?: Enemy;
+  currentRoom: Room;
+};

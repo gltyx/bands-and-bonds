@@ -3,7 +3,8 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
-import { store, damage, numberFormat } from './store.ts'
+import { decoratedStore as store, damage } from './store.ts'
+import { numberFormat } from './base';
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
@@ -28,18 +29,18 @@ function mainLoop() {
       t.cb?.(t);
     }
   }
-  const enemy = store.run.enemy;
-  if (enemy && store.run.damage < enemy.health) {
-    const regenPerSecond = (enemy.regen ?? 0) - store.run.poison;
+  const enemy = store.currentEnemy;
+  if (enemy && store.run.room.damage < enemy.health) {
+    const regenPerSecond = (enemy.regen ?? 0) - store.run.room.poison;
     let regen = (currentTime - lastRegenTime.value) * regenPerSecond / 1000;
     while (regen > 1) {
-      store.run.damage = Math.max(0, store.run.damage - 1);
+      store.run.room.damage = Math.max(0, store.run.room.damage - 1);
       regen -= 1;
       lastRegenTime.value += 1000 / regenPerSecond;
     }
     while (regen < -1) {
       damage(1);
-      if (store.run.poison === 0) {
+      if (store.run.room.poison === 0) {
         // The enemy died.
         regen = 0;
         break;
@@ -69,7 +70,7 @@ onUnmounted(() => {
     <div class="header-header">
       <div id="header-gold" class="numbers"><template v-if="store.run.gold">
           <img src="/images/generated/gold.webp" class="header-icon" />
-          {{ numberFormat.format(store.run.gold) }}
+          {{ numberFormat(store.run.gold) }}
         </template></div>
       <div class="logo title">
         <img src="/images/generated/logo.webp" alt="B" />ands
@@ -77,9 +78,9 @@ onUnmounted(() => {
         <img src="/images/generated/logo.webp" alt="B" />onds
       </div>
       <div id="header-fruit" class="numbers"><template v-if="store.fruit">
-          {{ numberFormat.format(store.fruit) }}
+          {{ numberFormat(store.fruit) }}
           <img src="/images/generated/fruit.webp" class="header-icon" />
-          {{ numberFormat.format(store.packs) }}
+          {{ numberFormat(store.packs) }}
           <img src="/images/generated/pack.webp" class="header-icon" />
         </template></div>
     </div>

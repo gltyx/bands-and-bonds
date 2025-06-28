@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { onboard, store, enemiesByName, friendsByName } from "../store.ts";
-import { type Room, allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
+import { onboard, store } from "../store.ts";
+import { enemiesByName } from "../enemies.ts";
+import { friendsByName } from "../friends.ts";
+import { allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
+import type { Room } from "../base.ts";
 import curvedLine from "./curved-line.ts";
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
@@ -49,13 +52,13 @@ function style(room: Room, factor?: number) {
 
 function roomClicked(room: Room) {
   const key = roomKey(room);
-  if (onboard("Wayfinder") && store.discovered.includes(key)) {
+  if ((onboard("Wayfinder") || onboard("Wayfindest")) && store.discovered.includes(key)) {
     store.destination = key;
   }
 }
 
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
-const planRooms = computed(() => onboard("Wayfinder") && store.destination ? destinationToPath(store.destination) : []);
+const planRooms = computed(() => (onboard("Wayfinder") || onboard("Wayfindest")) && store.destination ? destinationToPath(store.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 const hoveredRoom = ref<Room | null>(null);
 

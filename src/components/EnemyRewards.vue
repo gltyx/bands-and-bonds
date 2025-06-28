@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
-import type { Enemy } from '../store.ts';
+import type { Enemy } from '../base.ts';
 import Gold from './Gold.vue';
 import Fruit from './Fruit.vue';
 const props = defineProps<{

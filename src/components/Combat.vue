@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { store, friendsByName, damage, runData, takeTurn, describeAbility, nextTo, onboard, type Ability } from "../store.ts";
+import { decoratedStore as store, damage, runData, takeTurn, describeAbility, nextTo, onboard } from "../store.ts";
+import { friendsByName } from "../friends.ts";
+import type { Ability, Turn } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed } from "vue";
-import { destinationToPath, roomKey, type Turn } from "../rooms.ts";
+import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
 
-const enemy = computed(() => store.run.enemy);
+const enemy = computed(() => store.currentEnemy);
 const rescue = computed(() => {
-  return store.run.room.type === 'rescue' && store.run.room.name && friendsByName[store.run.room.name];
+  return store.currentRoom?.type === 'rescue' && store.currentRoom.name && friendsByName[store.currentRoom.name];
 });
 const abilities = computed(() => {
   const abilities = [] as Ability[];
-  const allAutomatic = onboard('Gear of Lords');
+  const allAutomatic = !!onboard('Gear of Lords');
   for (let row = 0; row < store.band.height; row++) {
     for (let col = 0; col < store.band.width; col++) {
       const place = col + row * store.band.width;
@@ -50,14 +52,14 @@ function executeAbility(ab: Ability) {
     startTimer(ab);
   }
   if (ab.onCompleted) {
-    return ab.onCompleted();
+    return ab.onCompleted(store);
   }
   if (ab.damage) {
     damage(ab.damage * store.run.weaponLevel);
   }
 }
 const fighting = computed(() => {
-  return enemy.value && store.run.damage < enemy.value.health;
+  return enemy.value && store.run.room.damage < enemy.value.health;
 });
 
 function retreat() {
@@ -68,7 +70,7 @@ function retreat() {
 const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
 
 const possibleTurns = computed(() => {
-  const room = store.run.room;
+  const room = store.currentRoom;
   if (room.next) {
     return Object.entries(room.next).map(([title, next]) => ({ ...next, title }));
   }
@@ -79,8 +81,8 @@ const possibleTurns = computed(() => {
 });
 
 const plannedTurn = computed(() => {
-  if (!onboard("Wayfinder") || !store.destination) return;
-  const room = store.run.room;
+  if (!onboard("Wayfinder") && !onboard("Wayfindest") || !store.destination) return;
+  const room = store.currentRoom;
   if (room.end) return;
   const path = destinationToPath(store.destination);
   if (path.length <= store.run.steps + 1) return;
@@ -103,15 +105,15 @@ function reset() {
 
 <template>
   <div class="enemy" v-if="enemy">
-    <div class="description" v-if="enemy.health > store.run.damage">Currently fighting:</div>
+    <div class="description" v-if="enemy.health > store.run.room.damage">Currently fighting:</div>
     <div class="description" v-else>Defeated! You gained
       <EnemyRewards :enemy="enemy" />.
     </div>
     <h1>{{ enemy.name }}</h1>
     <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name"
-      :style="enemy.health <= store.run.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
-    <Progress :value="enemy.health - store.run.damage" :max="enemy.health" color="#c00" label="HP" />
-    <Progress v-if="enemy.armor" :value="enemy.armor - store.run.armorDamage" :max="enemy.armor" color="#666"
+      :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
+    <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
+    <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
       label="Armor" />
   </div>
   <div class="rescue" v-if="rescue">
