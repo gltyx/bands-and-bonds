@@ -120,3 +120,8 @@ p {
   margin-left: -0.2em;
   vertical-align: middle;
 }
+
+u {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}

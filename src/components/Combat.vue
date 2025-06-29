@@ -26,7 +26,7 @@ const abilities = computed(() => {
       const az = nextTo('Azrekta', row, col);
       const abs = (az && friend.super?.abilities) || friend.abilities || [];
       for (const ab of abs) {
-        abilities.push({ ...ab, automatic });
+        abilities.push({ ...ab, automatic, source: { name: friend.name, row, col } });
         if (automatic) {
           startTimer(ab);
         }
@@ -61,7 +61,26 @@ function executeAbility(ab: Ability) {
         return;
       }
     }
-    damage(ab.damage * store.run.weaponLevel);
+    let dmg = ab.damage * store.run.weaponLevel;
+    if (enemy.value?.weaknesses && onboard("Desert Rabbit")) {
+      for (const weakness of enemy.value.weaknesses) {
+        if (ab.tags?.includes(weakness)) {
+          dmg *= 2;
+        }
+        const center = onboard("Lamplighter") || onboard("Lamperlighter");
+        if (!center || !ab.source) continue;
+        if (weakness === 'left' && ab.source.col < center.col) {
+          dmg *= 2;
+        } else if (weakness === 'right' && ab.source.col > center.col) {
+          dmg *= 2;
+        } else if (weakness === 'front' && ab.source.row < center.row) {
+          dmg *= 2;
+        } else if (weakness === 'back' && ab.source.row > center.row) {
+          dmg *= 2;
+        }
+      }
+      damage(dmg);
+    }
   }
 }
 const fighting = computed(() => {
@@ -115,6 +134,17 @@ const passiveEffects = computed(() => {
       effects.push(...friend.passiveEffects);
     }
   }
+  if (enemy.value?.weaknesses && onboard("Desert Rabbit")) {
+    const weaknesses = [];
+    for (const weakness of enemy.value.weaknesses) {
+      if (['left', 'right', 'front', 'back'].includes(weakness)) {
+        weaknesses.push(`<u>attacks from the ${weakness}</u>`);
+      } else {
+        weaknesses.push(`<u>${weakness} attacks</u>`);
+      }
+    }
+    effects.push(`Desert Rabbit tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
+  }
   return effects;
 });
 
@@ -127,7 +157,7 @@ function reset() {
 function nth(n: number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
-  return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+  return `${n}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
 }
 </script>
 
@@ -135,7 +165,8 @@ function nth(n: number) {
   <div class="enemy" v-if="enemy">
     <template v-if="enemy.count && enemy.count > 1">
       <div class="description" v-if="store.run.room.kills < enemy.count">Currently fighting the
-        {{ nth(store.run.room.kills + 1) }} of {{ enemy.count }}
+        <span class="numbers" v-html="nth(store.run.room.kills + 1)" /> of
+        <span class="numbers">{{ enemy.count }}</span>
       </div>
       <div class="description" v-else>Defeated {{ enemy.count }} enemies! You gained
         <EnemyRewards :enemy="enemy" />.
@@ -160,9 +191,7 @@ function nth(n: number) {
     <div class="description">Is rescued and joins your band!</div>
     <div class="description" v-html="rescue.descriptionHtml"></div>
   </div>
-  <div class="passive-effect" v-for="effect in passiveEffects">
-    {{ effect }}
-  </div>
+  <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
   <div class="actions">
     <template v-if="fighting">
       <template v-for="ab in abilities" :key="ab.name">

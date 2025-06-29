@@ -9,7 +9,7 @@ export const allEnemies: Enemy[] = [
         damage: 1,
         description: 'Cover the enemy in slime.',
       },
-    ]
+    ], weaknesses: ['fire', 'ice', 'left', 'right'],
   },
   { name: 'Poison Crow', health: 50, rewards: { gold: 1, fruit: 1 } },
   {
@@ -20,7 +20,8 @@ export const allEnemies: Enemy[] = [
         damage: 3,
         description: 'Bones to bones. Ashes to ashes.',
       },
-    ]
+    ],
+    weaknesses: ['front', 'blunt'],
   },
   { name: 'Jaw Maw Maw', health: 100, rewards: { gold: 1, fruit: 1 } },
   { name: 'Bandlings', health: 100, rewards: { gold: 1, fruit: 1 }, count: 5 },

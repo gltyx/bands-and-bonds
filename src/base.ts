@@ -66,6 +66,8 @@ export type Ability = {
   consumes?: { [x: string]: number };
   onCompleted?: (store: DecoratedStore) => void;
   automatic?: boolean;
+  tags?: string[];
+  source?: { name: string; row: number; col: number }; // The friend this comes from.
 };
 
 export type Friend = {
@@ -89,6 +91,7 @@ export type Enemy = {
   rewards?: { gold?: number, fruit?: number };
   abilities?: Ability[];
   passiveEffects?: string[];
+  weaknesses?: string[];
 };
 
 const _numberFormat = new Intl.NumberFormat("en-US", {

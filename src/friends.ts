@@ -49,6 +49,7 @@ Her enemies get struck with a curse of that withers metals.
       description: "A very cold blade with a very sharp edge.",
       duration: 3600 * 24 * 365 * 1000,
       damage: 1000000000,
+      tags: ['sharp', 'cold'],
     }],
   },
   {
@@ -106,6 +107,7 @@ He regrets learning it, for it has cost the life of his master.
       duration: 1,
       damage: 2,
       description: "Shines a light on the battlefield, damaging all enemies.",
+      tags: ['light'],
     }],
     super: { name: 'Lamperlighter' },
   },
@@ -129,6 +131,7 @@ He regrets learning it, for it has cost the life of his master.
       duration: 0.5,
       damage: 1,
       description: "Whack it with a stick.",
+      tags: ['blunt'],
     }],
     super: { name: 'Stick Grandmaster' },
   },

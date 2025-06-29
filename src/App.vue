@@ -10,7 +10,7 @@ const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
 const lastRegenTime = ref(performance.now());
 
-type SelectedPage = 'combat' | 'map' | 'band';
+type SelectedPage = 'combat' | 'map' | 'band' | 'settings';
 const loadedPage = localStorage.getItem('current page') as SelectedPage;
 const page = ref<SelectedPage>(loadedPage ?? 'combat');
 watch(page, (newValue) => {
@@ -88,6 +88,7 @@ onUnmounted(() => {
       <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>
       <button :class="{ selected: page === 'map' }" @click="page = 'map'">Map</button>
       <button :class="{ selected: page === 'band' }" @click="page = 'band'">Band</button>
+      <button :class="{ selected: page === 'settings' }" @click="page = 'settings'">Settings</button>
     </div>
   </div>
   <div class="page-container" v-show="page === 'combat'">
