@@ -104,8 +104,16 @@ export function damage(x: number) {
     store.run.room.damage = enemy.health;
     store.run.room.poison = 0;
     store.run.gold += enemy.rewards?.gold ?? 0;
-    store.run.fruit += enemy.rewards?.fruit ?? 0;
-    store.fruit += enemy.rewards?.fruit ?? 0;
+    let fruit = enemy.rewards?.fruit ?? 0;
+    if (onboard("Royal Fruitbearer")) {
+      fruit *= Object.keys(bandByName.value).length;
+    }
+    if (onboard("Royal Fruitwearer")) {
+      fruit *= Object.keys(bandByName.value).length;
+      fruit *= Object.keys(bandByName.value).length - 1;
+    }
+    store.run.fruit += fruit;
+    store.fruit += fruit;
     if (capturing) {
       store.run.capturedAbilities.push(...enemy.abilities ?? []);
     }

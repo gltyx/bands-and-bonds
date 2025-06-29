@@ -102,9 +102,11 @@ With the Desert Rabbit in your band, you will see the weaknesses of enemies and 
     name: 'Royal Fruitbearer',
     cost: 64,
     description: "Whenever you find fruit in the dungeon, every member of the party gets one piece.",
+    passiveEffects: ["When you find fruit, every member of the party gets one piece. (Thanks to the Royal Fruitbearer.)"],
     super: {
       name: 'Royal Fruitwearer',
       description: "Whenever you find fruit in the dungeon, every member of the party gives one piece to every other member.",
+      passiveEffects: ["When you find fruit, every member of the party gives one piece to every other member. (Thanks to the Royal Fruitwearer.)"],
     },
   },
   {
