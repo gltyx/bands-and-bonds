@@ -2,7 +2,6 @@ export type Timer = {
   time?: number;
   duration: number;
   cb?: (timer: Timer) => void;
-  [x: string]: unknown;
 };
 
 export type Band = {
@@ -86,6 +85,7 @@ export type Enemy = {
   immune?: string[];
   regen?: number;
   count?: number;
+  dodge?: number; // Attacks slower than this will miss. Chance to hit ramps to 100% as duration approaches 0.
   rewards?: { gold?: number, fruit?: number };
   abilities?: Ability[];
   passiveEffects?: string[];

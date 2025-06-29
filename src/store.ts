@@ -2,20 +2,7 @@ import { computed, reactive, watch } from 'vue';
 import { allRooms, turnsToPath, roomKey } from './rooms.ts';
 import { allEnemies } from './enemies.ts';
 import { allFriends, friendsByName } from './friends.ts';
-import { type DecoratedStore, numberFormat, type Ability, type Friend, type Store, type RoomData, type RunData } from './base';
-
-export type Timer = {
-  time?: number;
-  duration: number;
-  cb?: (timer: Timer) => void;
-  [x: string]: unknown;
-};
-
-export type Band = {
-  width: number;
-  height: number;
-  [x: number]: string;
-}
+import { type DecoratedStore, numberFormat, type Ability, type Friend, type Store, type RoomData, type RunData, type Timer, type Band } from './base';
 
 export function roomData(): RoomData {
   // Everything specific to the current room. Deleted when leaving the room.

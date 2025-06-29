@@ -9,7 +9,6 @@ import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
-import { enemiesByName } from "../enemies.ts";
 
 const enemy = computed(() => store.currentEnemy);
 const rescue = computed(() => {
@@ -56,6 +55,12 @@ function executeAbility(ab: Ability) {
     return ab.onCompleted(store);
   }
   if (ab.damage) {
+    if (enemy.value?.dodge) {
+      const dodgeChance = Math.min(1, ab.duration / enemy.value.dodge);
+      if (Math.random() < dodgeChance) {
+        return;
+      }
+    }
     damage(ab.damage * store.run.weaponLevel);
   }
 }
@@ -100,6 +105,9 @@ const passiveEffects = computed(() => {
   const effects = [] as string[];
   if (enemy.value?.passiveEffects) {
     effects.push(...enemy.value.passiveEffects);
+  }
+  if (enemy.value?.dodge) {
+    effects.push(`${enemy.value.name} dodges attacks that take longer than ${enemy.value.dodge} seconds. Faster attacks have a chance to hit.`);
   }
   for (const name of Object.keys(bandByName.value)) {
     const friend = friendsByName[name];
