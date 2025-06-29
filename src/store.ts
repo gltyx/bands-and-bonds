@@ -84,6 +84,9 @@ export const decoratedStore = new Proxy(store, {
     if (p === 'currentPath') {
       return current.value.path ?? allRooms[0];
     }
+    if (p === 'damage') {
+      return damage;
+    }
     return Reflect.get(target, p, receiver);
   },
 }) as DecoratedStore;

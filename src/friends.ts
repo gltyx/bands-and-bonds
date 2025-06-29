@@ -1,7 +1,6 @@
 import { marked } from 'marked';
 import { numberFormat, type Friend } from './base';
 
-
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
@@ -84,7 +83,19 @@ With the Desert Rabbit in your band, you will see the weaknesses of enemies and 
   },
   {
     name: 'Knight of Claws',
-    cost: 17,
+    cost: 170,
+    description: `
+Trained as an assassin, the Knight of Claws is the only person in the world who knows the deadly art of "Vulture's Claw".
+He regrets learning it, for it has cost the life of his master.
+    `,
+    abilities: [{
+      name: "Vulture's Claw",
+      duration: 100,
+      description: "Kills the enemy.",
+      onCompleted(store) {
+        store.damage(store.currentEnemy?.health ?? 0);
+      },
+    }],
   },
   {
     name: 'Lamplighter',
@@ -259,9 +270,12 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
 ];
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
-  f.descriptionHtml = marked(f.description ?? '');
-  if (f.super?.description) {
-    f.super.descriptionHtml = marked(f.super.description);
-  }
   friendsByName[f.name] = f;
+  f.descriptionHtml = marked(f.description ?? '');
+  if (f.super?.name) {
+    friendsByName[f.super.name] = { ...f, ...f.super };
+    if (f.super.description) {
+      f.super.descriptionHtml = marked(f.super.description);
+    }
+  }
 }

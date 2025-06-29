@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { decoratedStore as store, damage, runData, takeTurn, describeAbility, nextTo, onboard } from "../store.ts";
+import { decoratedStore as store, damage, runData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import type { Ability, Turn } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
@@ -101,13 +101,10 @@ const passiveEffects = computed(() => {
   if (enemy.value?.passiveEffects) {
     effects.push(...enemy.value.passiveEffects);
   }
-  for (let row = 0; row < store.band.height; row++) {
-    for (let col = 0; col < store.band.width; col++) {
-      const place = col + row * store.band.width;
-      const friend = friendsByName[store.band[place]];
-      if (friend?.passiveEffects) {
-        effects.push(...friend.passiveEffects);
-      }
+  for (const name of Object.keys(bandByName.value)) {
+    const friend = friendsByName[name];
+    if (friend?.passiveEffects) {
+      effects.push(...friend.passiveEffects);
     }
   }
   return effects;

@@ -101,4 +101,5 @@ export type DecoratedStore = Store & {
   currentEnemy?: Enemy;
   currentRoom: Room;
   currentPath: Room[];
+  damage: (amount: number) => void;
 };
