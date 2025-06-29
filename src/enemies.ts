@@ -23,7 +23,7 @@ export const allEnemies: Enemy[] = [
     ]
   },
   { name: 'Jaw Maw Maw', health: 100, rewards: { gold: 1, fruit: 1 } },
-  { name: 'Bandlings', health: 100, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Bandlings', health: 100, rewards: { gold: 1, fruit: 1 }, count: 5 },
   { name: 'Will-o-Wasp', health: 100, rewards: { gold: 1, fruit: 1 } },
   { name: 'Clockomancer', health: 100, immune: ['speed'], rewards: { gold: 1, fruit: 1 } },
   { name: 'Lobster Daddy', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },

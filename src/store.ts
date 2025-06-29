@@ -23,6 +23,7 @@ export function roomData(): RoomData {
     damage: 0,
     armorDamage: 0,
     poison: 0,
+    kills: 0,
   };
 }
 export function runData(): RunData {
@@ -104,21 +105,29 @@ export function damage(x: number) {
   if (dmg < 0) return;
   store.run.room.damage += dmg;
   if (store.run.room.damage >= enemy.health) {
-    store.run.room.damage = enemy.health;
-    store.run.room.poison = 0;
-    store.run.gold += enemy.rewards?.gold ?? 0;
-    let fruit = enemy.rewards?.fruit ?? 0;
-    if (onboard("Royal Fruitbearer")) {
-      fruit *= Object.keys(bandByName.value).length;
-    }
-    if (onboard("Royal Fruitwearer")) {
-      fruit *= Object.keys(bandByName.value).length;
-      fruit *= Object.keys(bandByName.value).length - 1;
-    }
-    store.run.fruit += fruit;
-    store.fruit += fruit;
-    if (capturing) {
-      store.run.capturedAbilities.push(...enemy.abilities ?? []);
+    store.run.room.kills += 1;
+    const remaining = (enemy.count ?? 1) - store.run.room.kills;
+    if (remaining > 0) {
+      store.run.room.damage = 0;
+      store.run.room.armorDamage = 0;
+      store.run.room.poison = 0;
+    } else {
+      store.run.room.damage = enemy.health;
+      store.run.room.poison = 0;
+      store.run.gold += enemy.rewards?.gold ?? 0;
+      let fruit = enemy.rewards?.fruit ?? 0;
+      if (onboard("Royal Fruitbearer")) {
+        fruit *= Object.keys(bandByName.value).length;
+      }
+      if (onboard("Royal Fruitwearer")) {
+        fruit *= Object.keys(bandByName.value).length;
+        fruit *= Object.keys(bandByName.value).length - 1;
+      }
+      store.run.fruit += fruit;
+      store.fruit += fruit;
+      if (capturing) {
+        store.run.capturedAbilities.push(...enemy.abilities ?? []);
+      }
     }
   }
 }

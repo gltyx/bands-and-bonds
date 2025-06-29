@@ -16,6 +16,7 @@ export type RoomData = {
   damage: number;
   armorDamage: number;
   poison: number;
+  kills: number;
 };
 export type RunData = {
   // Everything specific to the current run. Deleted when the run ends.
@@ -84,6 +85,7 @@ export type Enemy = {
   armor?: number;
   immune?: string[];
   regen?: number;
+  count?: number;
   rewards?: { gold?: number, fruit?: number };
   abilities?: Ability[];
   passiveEffects?: string[];

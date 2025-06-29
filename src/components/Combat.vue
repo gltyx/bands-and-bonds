@@ -116,14 +116,29 @@ function reset() {
     window.location.reload();
   }
 }
+function nth(n: number) {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+}
 </script>
 
 <template>
   <div class="enemy" v-if="enemy">
-    <div class="description" v-if="enemy.health > store.run.room.damage">Currently fighting:</div>
-    <div class="description" v-else>Defeated! You gained
-      <EnemyRewards :enemy="enemy" />.
-    </div>
+    <template v-if="enemy.count && enemy.count > 1">
+      <div class="description" v-if="store.run.room.kills < enemy.count">Currently fighting the
+        {{ nth(store.run.room.kills + 1) }} of {{ enemy.count }}
+      </div>
+      <div class="description" v-else>Defeated {{ enemy.count }} enemies! You gained
+        <EnemyRewards :enemy="enemy" />.
+      </div>
+    </template>
+    <template v-else>
+      <div class="description" v-if="enemy.health > store.run.room.damage">Currently fighting:</div>
+      <div class="description" v-else>Defeated! You gained
+        <EnemyRewards :enemy="enemy" />.
+      </div>
+    </template>
     <h1>{{ enemy.name }}</h1>
     <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name"
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
