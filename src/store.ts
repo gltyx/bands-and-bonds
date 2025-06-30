@@ -2,9 +2,10 @@ import { computed, reactive, watch } from 'vue';
 import { allRooms, turnsToPath, roomKey } from './rooms.ts';
 import { allEnemies } from './enemies.ts';
 import { allFriends, friendsByName } from './friends.ts';
-import { type DecoratedStore, numberFormat, type Ability, type Friend, type Store, type RoomData, type RunData, type Timer, type Band } from './base';
+import * as base from './base';
+import { costOfPacks } from './base';
 
-export function roomData(): RoomData {
+export function roomData(): base.RoomData {
   // Everything specific to the current room. Deleted when leaving the room.
   return {
     damage: 0,
@@ -13,7 +14,7 @@ export function roomData(): RoomData {
     kills: 0,
   };
 }
-export function runData(): RunData {
+export function runData(): base.RunData {
   // Everything specific to the current run. Deleted when the run ends.
   return {
     weaponLevel: 1,
@@ -24,11 +25,11 @@ export function runData(): RunData {
     fruit: 0, // Fruit collected in this run. Only for statistics.
     capturedAbilities: [],
     room: roomData(),
-    timers: {} as Record<string, Timer>,
+    timers: {} as Record<string, base.Timer>,
   };
 }
 
-function startingBand(): Band {
+function startingBand(): base.Band {
   return {
     width: 5,
     height: 5,
@@ -41,15 +42,23 @@ function startingUnlocked(): string[] {
 function startingDiscovered(): string[] {
   return allRooms.map(roomKey);
 }
+function startingSettings(): base.Settings {
+  return {
+    blurImages: false,
+    online: false,
+    sound: true,
+  };
+}
 
 const loadedStore = localStorage.getItem('store');
-export const store = reactive<Store>(loadedStore ? JSON.parse(loadedStore) : {
+export const store = reactive<base.Store>(loadedStore ? JSON.parse(loadedStore) : {
   run: runData(),
   band: startingBand(),
-  fruit: 999,
-  packs: 999,
+  fruit: 999999,
+  packs: 1,
   unlocked: startingUnlocked(),
   discovered: startingDiscovered(),
+  settings: startingSettings(),
 });
 watch(store, (newValue) => {
   localStorage.setItem('store', JSON.stringify(newValue))
@@ -77,7 +86,7 @@ export const decoratedStore = new Proxy(store, {
     }
     return Reflect.get(target, p, receiver);
   },
-}) as DecoratedStore;
+}) as base.DecoratedStore;
 
 export function damage(x: number) {
   const enemy = decoratedStore.currentEnemy;
@@ -142,13 +151,13 @@ export function takeTurn(turn: string, skipConfirmation?: boolean) {
   }
 }
 
-export function describeAbility(ab: Ability): string {
+export function describeAbility(ab: base.Ability): string {
   let d = ab.description;
   if (typeof d === "function") {
     d = d(decoratedStore);
   }
   if (ab.damage) {
-    d += `\n\n${numberFormat(ab.damage * store.run.weaponLevel)} damage`;
+    d += `\n\n${base.numberFormat(ab.damage * store.run.weaponLevel)} damage`;
   }
   return d;
 }
@@ -180,7 +189,7 @@ export const bandByName = computed(() => {
   return byName;
 });
 
-export function friendAt(row: number, col: number): Friend | undefined {
+export function friendAt(row: number, col: number): base.Friend | undefined {
   return friendsByName[store.band[col + row * store.band.width]];
 }
 export function nextTo(name: string, row: number, col: number): [number, number] | null {
@@ -190,3 +199,6 @@ export function nextTo(name: string, row: number, col: number): [number, number]
 export function onboard(name: string): { row: number, col: number } | undefined {
   return bandByName.value[name];
 }
+export const fruitAvailable = computed(() => {
+  return store.fruit - costOfPacks(store.packs);
+});

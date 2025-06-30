@@ -30,6 +30,13 @@ export type RunData = {
   timers: Record<string, Timer>;
 };
 
+export type Settings = {
+  blurImages: boolean;
+  online: boolean;
+  sound: boolean;
+  teamId?: string;
+}
+
 export type Store = {
   run: RunData;
   band: Band;
@@ -38,6 +45,7 @@ export type Store = {
   unlocked: string[];
   discovered: string[];
   destination?: string, // Coordinate key for destination room.
+  settings: Settings;
 };
 
 export type Turn = {
@@ -100,6 +108,9 @@ const _numberFormat = new Intl.NumberFormat("en-US", {
 });
 export function numberFormat(x: number) {
   return _numberFormat.format(x);
+}
+export function costOfPacks(packs: number): number {
+  return Math.floor(1.2 ** packs) + packs;
 }
 
 export type DecoratedStore = Store & {

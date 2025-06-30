@@ -125,3 +125,9 @@ u {
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
+
+.blur-images img,
+.blur-images .map-backdrop {
+  filter: blur(7px);
+  transition: filter 0.3s ease-in-out;
+}

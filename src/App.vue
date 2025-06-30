@@ -3,7 +3,8 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
-import { decoratedStore as store, damage } from './store.ts'
+import Settings from './components/Settings.vue'
+import { decoratedStore as store, damage, fruitAvailable } from './store.ts'
 import { numberFormat } from './base';
 
 const animationFrameId = ref<number | null>(null);
@@ -66,39 +67,44 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="header">
-    <div class="header-header">
-      <div id="header-gold" class="numbers"><template v-if="store.run.gold">
-          <img src="/images/generated/gold.webp" class="header-icon" />
-          {{ numberFormat(store.run.gold) }}
-        </template></div>
-      <div class="logo title">
-        <img src="/images/generated/logo.webp" alt="B" />ands
-        <span style="color: #edb;">&nbsp;&&nbsp;</span>
-        <img src="/images/generated/logo.webp" alt="B" />onds
+  <div style="display: contents;" :class="{ 'blur-images': store.settings.blurImages }" class="app">
+    <div class="header">
+      <div class="header-header">
+        <div id="header-gold" class="numbers"><template v-if="store.run.gold">
+            <img src="/images/generated/gold.webp" class="header-icon" />
+            {{ numberFormat(store.run.gold) }}
+          </template></div>
+        <div class="logo title">
+          <img src="/images/generated/logo.webp" alt="B" />ands
+          <span style="color: #edb;">&nbsp;&&nbsp;</span>
+          <img src="/images/generated/logo.webp" alt="B" />onds
+        </div>
+        <div id="header-fruit" class="numbers"><template v-if="store.fruit">
+            {{ numberFormat(fruitAvailable) }}
+            <img src="/images/generated/fruit.webp" class="header-icon" />
+            {{ numberFormat(store.packs) }}
+            <img src="/images/generated/pack.webp" class="header-icon" />
+          </template></div>
       </div>
-      <div id="header-fruit" class="numbers"><template v-if="store.fruit">
-          {{ numberFormat(store.fruit) }}
-          <img src="/images/generated/fruit.webp" class="header-icon" />
-          {{ numberFormat(store.packs) }}
-          <img src="/images/generated/pack.webp" class="header-icon" />
-        </template></div>
+      <div class="tabs">
+        <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>
+        <button :class="{ selected: page === 'map' }" @click="page = 'map'">Map</button>
+        <button :class="{ selected: page === 'band' }" @click="page = 'band'">Band</button>
+        <button :class="{ selected: page === 'settings' }" @click="page = 'settings'">Settings</button>
+      </div>
     </div>
-    <div class="tabs">
-      <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>
-      <button :class="{ selected: page === 'map' }" @click="page = 'map'">Map</button>
-      <button :class="{ selected: page === 'band' }" @click="page = 'band'">Band</button>
-      <button :class="{ selected: page === 'settings' }" @click="page = 'settings'">Settings</button>
+    <div class="page-container" v-show="page === 'combat'">
+      <Combat />
     </div>
-  </div>
-  <div class="page-container" v-show="page === 'combat'">
-    <Combat />
-  </div>
-  <div class="page-container" v-show="page === 'map'">
-    <MapPage />
-  </div>
-  <div class="page-container" v-show="page === 'band'">
-    <Band />
+    <div class="page-container" v-show="page === 'map'">
+      <MapPage />
+    </div>
+    <div class="page-container" v-show="page === 'band'">
+      <Band />
+    </div>
+    <div class="page-container" v-show="page === 'settings'">
+      <Settings />
+    </div>
   </div>
 </template>
 

@@ -148,12 +148,6 @@ const passiveEffects = computed(() => {
   return effects;
 });
 
-function reset() {
-  if (window.confirm("Are you sure you want to reset your progress? This cannot be undone.") && window.confirm("Double checking: Are you sure you want to reset your progress? This cannot be undone.")) {
-    localStorage.clear();
-    window.location.reload();
-  }
-}
 function nth(n: number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
@@ -242,15 +236,6 @@ function nth(n: number) {
             You keep the
             <Fruit :amount="store.run.fruit" /> you've collected.
           </template>
-        </div>
-      </div>
-    </button>
-    <button @click="reset()">
-      <img src="/images/generated/reset.webp" />
-      <div class="text">
-        <div class="title">Reset data</div>
-        <div class="description">
-          Throw away all your progress and start over.
         </div>
       </div>
     </button>

@@ -5,6 +5,7 @@ import { store, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import Fruit from "./Fruit.vue";
 import Packs from "./Packs.vue";
+import { costOfPacks } from "../base.ts";
 
 const selected = ref(undefined as string | undefined);
 const band = store.band;
@@ -129,13 +130,11 @@ const unusedFriends = computed(() => {
 });
 
 const packPrice = computed(() => {
-  const packs = store.packs;
-  return Math.floor(1.2 ** packs);
+  return costOfPacks(store.packs + 1) - costOfPacks(store.packs);
 });
 
 function buyPack() {
-  if (store.fruit >= packPrice.value) {
-    store.fruit -= packPrice.value;
+  if (store.fruit >= costOfPacks(store.packs + 1)) {
     store.packs += 1;
   }
 }
