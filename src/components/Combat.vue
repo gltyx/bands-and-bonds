@@ -82,7 +82,7 @@ function executeAbility(ab: Ability) {
         }
       }
     }
-    store.damage(dmg);
+    store.addDamage(dmg);
   }
 }
 const fighting = computed(() => {
@@ -186,7 +186,7 @@ function nth(n: number) {
   <div class="rescue" v-if="rescue">
     <img :src="`images/generated/${rescue.name}.webp`" :alt="rescue.name" />
     <h1>{{ rescue.name }}</h1>
-    <div class="description">Is rescued and joins your band!</div>
+    <div class="description">Has joined your band!</div>
     <div class="description" v-html="rescue.descriptionHtml"></div>
   </div>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />

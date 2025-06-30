@@ -23,4 +23,5 @@ const fruit = computed(() => {
 <template>
   <Gold v-if="props.enemy.rewards?.gold" :amount="props.enemy.rewards?.gold" />
   <Fruit v-if="props.enemy.rewards?.fruit" :amount="fruit" />
+  <span v-if="!props.enemy.rewards?.fruit && !props.enemy.rewards?.gold">nothing</span>
 </template>

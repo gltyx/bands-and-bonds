@@ -58,7 +58,8 @@ export type Store = {
   currentEnemy: () => Enemy | undefined;
   currentRoom: () => Room;
   currentPath: () => Room[];
-  damage: (amount: number) => void;
+  addDamage: (amount: number) => void;
+  addPoison: (amount: number) => void;
 };
 
 export type Turn = {
@@ -123,5 +124,5 @@ export function numberFormat(x: number) {
   return _numberFormat.format(x);
 }
 export function costOfPacks(packs: number): number {
-  return Math.floor(1.2 ** packs) + packs;
+  return Math.floor(1.2 ** packs) + packs - 1;
 }

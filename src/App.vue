@@ -4,7 +4,7 @@ import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
 import Settings from './components/Settings.vue'
-import { store, damage, fruitAvailable } from './store.ts'
+import { store, fruitAvailable } from './store.ts'
 import { numberFormat } from './base';
 
 const animationFrameId = ref<number | null>(null);
@@ -40,7 +40,7 @@ function mainLoop() {
       lastRegenTime.value += 1000 / regenPerSecond;
     }
     while (regen < -1) {
-      damage(1);
+      store.addDamage(1);
       if (store.run.room.poison === 0) {
         // The enemy died.
         regen = 0;
@@ -79,12 +79,13 @@ onUnmounted(() => {
           <span style="color: #edb;">&nbsp;&&nbsp;</span>
           <img src="/images/generated/logo.webp" alt="B" />onds
         </div>
-        <div id="header-fruit" class="numbers"><template v-if="store.team.fruit">
-            {{ numberFormat(fruitAvailable) }}
+        <div id="header-fruit" class="numbers">
+          <template v-if="fruitAvailable">{{ numberFormat(fruitAvailable) }}
             <img src="/images/generated/fruit.webp" class="header-icon" />
-            {{ numberFormat(store.team.packs) }}
-            <img src="/images/generated/pack.webp" class="header-icon" />
-          </template></div>
+          </template>
+          {{ numberFormat(store.team.packs) }}
+          <img src="/images/generated/pack.webp" class="header-icon" />
+        </div>
       </div>
       <div class="tabs">
         <button :class="{ selected: page === 'combat' }" @click="page = 'combat'">Fight</button>

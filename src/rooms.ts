@@ -8,7 +8,7 @@ export const allRooms: Room[] = [
   },
   { x: 407, y: 484, type: "combat", name: "Wild Slime", label: 'enter', },
   {
-    x: 407, y: 419, type: "combat", name: "Animated Skeleton",
+    x: 407, y: 419, type: "rescue", name: "Friend of Metal",
     next: {
       'Turn left': {
         label: 'left1',
@@ -16,7 +16,7 @@ export const allRooms: Room[] = [
       },
       'Go straight': {
         label: 'straight1',
-        description: 'A heavy door stands in front of you. It is barred from this side. You can easily open it.',
+        description: 'A heavy door stands in front of you. It is barred from this side. You can open it if you dare.',
       },
       'Turn right': {
         label: 'right1',
@@ -24,24 +24,24 @@ export const allRooms: Room[] = [
       },
     },
   },
-  { x: 455, y: 419, type: "combat", name: 'Bandlings', label: 'right1' },
-  { x: 501, y: 419, type: "gem" },
-  { x: 501, y: 477, type: "gold" },
-  { x: 454, y: 477, type: "combat", end: true },
+  { x: 455, y: 419, type: "combat", name: 'Poison Crow', label: 'right1' },
+  { x: 501, y: 419, type: "combat", name: 'Animated Skeleton' },
+  { x: 501, y: 477, type: "combat", name: 'Thick Door' },
+  { x: 454, y: 477, type: "rescue", name: 'Lamplighter', end: true },
 
-  { x: 345, y: 419, type: "rescue", name: 'Lamplighter', label: 'left1' },
+  { x: 345, y: 419, type: "combat", name: 'Bandlings', label: 'left1' },
   { x: 304, y: 419, type: "none" },
   { x: 304, y: 493, type: "none" },
   { x: 350, y: 493, type: "none" },
-  { x: 350, y: 461, type: "combat", name: 'Poison Crow', end: true },
+  { x: 350, y: 461, type: "rescue", name: 'Dark Chef', end: true },
 
   {
-    x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dark Lord',
+    x: 407, y: 359, type: "boss", label: 'straight1', name: 'Trollish Maiden',
     next: { 'Turn left': { label: 'main-left' }, 'Turn right': { label: 'main-right' } }
   },
-  { x: 342, y: 359, type: "campfire", label: 'main-left' },
+  { x: 342, y: 359, type: "rescue", name: 'Royal Fruitbearer', label: 'main-left' },
   { x: 288, y: 359, type: "none" },
-  { x: 288, y: 343, type: "combat", name: "Trollish Maiden" },
+  { x: 288, y: 343, type: "combat", name: "Lobster Daddy" },
   { x: 288, y: 293, type: "combat", name: 'Jaw Maw Maw' },
   {
     x: 288, y: 236, type: "combat", name: 'Will-o-Wasp',
@@ -51,7 +51,7 @@ export const allRooms: Room[] = [
   { x: 351, y: 219, type: "combat", name: 'Clockomancer' },
   { x: 351, y: 244, type: "none" },
   { x: 332, y: 244, type: "none" },
-  { x: 332, y: 279, type: "combat", name: 'Lobster Daddy' },
+  { x: 332, y: 279, type: "combat", name: 'Dark Lord' },
   { x: 332, y: 318, type: "combat", name: 'The Shroud' },
   { x: 358, y: 318, type: "none" },
   { x: 358, y: 289, type: "none" },
@@ -145,7 +145,7 @@ export const allRooms: Room[] = [
   { x: 282, y: 70, type: "combat" },
   { x: 314, y: 70, type: "gold", end: true },
 
-  { x: 474, y: 359, type: "combat", label: 'main-right', },
+  { x: 474, y: 359, type: "rescue", name: 'Anvilomancer', label: 'main-right', },
   { x: 501, y: 359, type: "none" },
   {
     x: 501, y: 322, type: "combat",

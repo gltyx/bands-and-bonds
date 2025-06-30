@@ -20,7 +20,7 @@ the square root of the highest level achieved.
     {
       name: "Unforge",
       duration: 5,
-      description: (store) => `Damages the armor of the enemy. (Currently ${store.run.room.armorDamage}.)`,
+      description: 'Damages the armor of the enemy.',
       onCompleted: (store) => { store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1); },
     }],
     super: {
@@ -54,14 +54,14 @@ Her enemies get struck with a curse of that withers metals.
   },
   {
     name: 'Dark Chef',
-    cost: 37,
+    cost: 4,
     description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
     abilities: [{
       name: "Poison Strike",
       duration: 5,
-      description: "Damage over time.",
+      description: (store) => store.run.room.poison ? `Damage over time. (Currently ${store.run.room.poison} damage per second.)` : 'Damage over time.',
       onCompleted(store) {
-        store.run.room.poison += Math.max(0, store.run.weaponLevel - (store.currentEnemy()?.armor ?? 0));
+        store.addPoison(1);
       },
     }],
     super: { name: 'Dark Sommelier' },
@@ -77,7 +77,15 @@ With the Desert Rabbit in your band, you will see the weaknesses of enemies and 
   },
   {
     name: 'Friend of Metal',
-    cost: 97,
+    description: 'A warrior equipped with high-quality metal armor and weapons.',
+    cost: 2,
+    abilities: [{
+      name: "Steel Jab",
+      duration: 3,
+      damage: 10,
+      description: "A finely crafted sword in the hands of a Friend of Metal.",
+      tags: ['sharp', 'steel'],
+    }],
     super: {
       name: 'Friend of Metal and Fire',
     },
@@ -94,7 +102,7 @@ He regrets learning it, for it has cost the life of his master.
       duration: 100,
       description: "Kills the enemy.",
       onCompleted(store) {
-        store.damage(store.currentEnemy()?.health ?? 0);
+        store.addDamage(store.currentEnemy()?.health ?? 0);
       },
     }],
   },
@@ -113,7 +121,7 @@ He regrets learning it, for it has cost the life of his master.
   },
   {
     name: 'Royal Fruitbearer',
-    cost: 64,
+    cost: 6,
     description: "Whenever you find fruit in the dungeon, every member of the party gets one piece.",
     passiveEffects: ["When you find fruit, every member of the party gets one piece. (Thanks to the Royal Fruitbearer.)"],
     super: {

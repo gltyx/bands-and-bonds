@@ -1,7 +1,7 @@
 import { computed, reactive, watch } from 'vue';
 import { allRooms, turnsToPath, roomKey } from './rooms.ts';
 import { allEnemies } from './enemies.ts';
-import { allFriends, friendsByName } from './friends.ts';
+import { friendsByName } from './friends.ts';
 import * as base from './base';
 import * as online from './online.ts';
 import { costOfPacks } from './base';
@@ -38,10 +38,10 @@ function startingBand(): base.Band {
   };
 }
 function startingUnlocked(): string[] {
-  return allFriends.map((f) => f.name);
+  return ['Stick Master'];
 }
 function startingDiscovered(): string[] {
-  return allRooms.map(roomKey);
+  return [];
 }
 function startingSettings(): base.Settings {
   return {
@@ -58,7 +58,7 @@ export function startingLocalData(): base.LocalData {
 }
 function startingTeamData(): base.TeamData {
   return {
-    fruit: 999999,
+    fruit: 1,
     packs: 1,
     unlocked: startingUnlocked(),
     discovered: startingDiscovered(),
@@ -85,8 +85,12 @@ export const store: base.Store = {
   currentPath() {
     return current.value.path ?? allRooms[0];
   },
-  damage(x: number) {
-    return damage(x);
+  addDamage(x: number) {
+    return addDamage(x);
+  },
+  addPoison(x: number) {
+    const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
+    store.run.room.poison += Math.max(0, x * store.run.weaponLevel - armor);
   },
 };
 watch(store.run, (newValue) => {
@@ -115,7 +119,7 @@ const current = computed(() => {
   return { path, room, enemy };
 });
 
-export function damage(x: number) {
+export function addDamage(x: number) {
   const enemy = store.currentEnemy();
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.

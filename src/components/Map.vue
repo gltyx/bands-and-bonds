@@ -89,7 +89,7 @@ const hoveredRoom = ref<Room | null>(null);
       <p v-if="enemiesByName[hoveredRoom.name]?.rewards">Rewards when defeated:
         <EnemyRewards :enemy="enemiesByName[hoveredRoom.name]" />
       </p>
-      <p v-if="friendsByName[hoveredRoom.name]">{{ friendsByName[hoveredRoom.name].name }} was rescued here.</p>
+      <p v-if="friendsByName[hoveredRoom.name]">has joined your band</p>
     </div>
   </div>
 </template>
@@ -144,6 +144,10 @@ img.marker.ring {
   h1 {
     margin: 0;
     font-size: 20px;
+  }
+
+  p {
+    margin-top: 0;
   }
 }
 
