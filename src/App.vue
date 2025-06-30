@@ -4,7 +4,7 @@ import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
 import Settings from './components/Settings.vue'
-import { decoratedStore as store, damage, fruitAvailable } from './store.ts'
+import { store, damage, fruitAvailable } from './store.ts'
 import { numberFormat } from './base';
 
 const animationFrameId = ref<number | null>(null);
@@ -30,7 +30,7 @@ function mainLoop() {
       t.cb?.(t);
     }
   }
-  const enemy = store.currentEnemy;
+  const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
     const regenPerSecond = (enemy.regen ?? 0) - store.run.room.poison;
     let regen = (currentTime - lastRegenTime.value) * regenPerSecond / 1000;
@@ -67,7 +67,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div style="display: contents;" :class="{ 'blur-images': store.settings.blurImages }" class="app">
+  <div style="display: contents;" :class="{ 'blur-images': store.local.settings.blurImages }" class="app">
     <div class="header">
       <div class="header-header">
         <div id="header-gold" class="numbers"><template v-if="store.run.gold">
@@ -79,10 +79,10 @@ onUnmounted(() => {
           <span style="color: #edb;">&nbsp;&&nbsp;</span>
           <img src="/images/generated/logo.webp" alt="B" />onds
         </div>
-        <div id="header-fruit" class="numbers"><template v-if="store.fruit">
+        <div id="header-fruit" class="numbers"><template v-if="store.team.fruit">
             {{ numberFormat(fruitAvailable) }}
             <img src="/images/generated/fruit.webp" class="header-icon" />
-            {{ numberFormat(store.packs) }}
+            {{ numberFormat(store.team.packs) }}
             <img src="/images/generated/pack.webp" class="header-icon" />
           </template></div>
       </div>

@@ -52,13 +52,14 @@ function style(room: Room, factor?: number) {
 
 function roomClicked(room: Room) {
   const key = roomKey(room);
-  if ((onboard("Wayfinder") || onboard("Wayfindest")) && store.discovered.includes(key)) {
-    store.destination = key;
+  if ((onboard("Wayfinder") || onboard("Wayfindest")) && store.team.discovered.includes(key)) {
+    store.local.destination = key;
   }
 }
 
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
-const planRooms = computed(() => (onboard("Wayfinder") || onboard("Wayfindest")) && store.destination ? destinationToPath(store.destination) : []);
+const planRooms = computed(() => (
+  onboard("Wayfinder") || onboard("Wayfindest")) && store.local.destination ? destinationToPath(store.local.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 const hoveredRoom = ref<Room | null>(null);
 
@@ -76,7 +77,8 @@ const hoveredRoom = ref<Room | null>(null);
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
         @mouseenter="pos = { x: room.x, y: room.y }; hoveredRoom = room" @mouseleave="hoveredRoom = null"
         :src="`images/generated/${icon(room)}-outlined.webp`"
-        :class="{ marker: true, undiscovered: !store.discovered.includes(roomKey(room)) }" @click="roomClicked(room)" />
+        :class="{ marker: true, undiscovered: !store.team.discovered.includes(roomKey(room)) }"
+        @click="roomClicked(room)" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
       class="marker ring" />

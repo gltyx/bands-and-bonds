@@ -8,7 +8,6 @@ import Packs from "./Packs.vue";
 import { costOfPacks } from "../base.ts";
 
 const selected = ref(undefined as string | undefined);
-const band = store.band;
 
 function imageFor(row: number, col: number): string | undefined {
   const friend = friendAt(row, col);
@@ -23,21 +22,22 @@ function available(row: number, col: number): boolean {
   return dist === 0;
 }
 function remove(name: string) {
-  for (const key in store.band) {
-    if (store.band[key] === name) {
-      delete store.band[key];
+  for (const key in store.local.band) {
+    if (store.local.band[key] === name) {
+      delete store.local.band[key];
     }
   }
 }
 function set(row: number, col: number, name: string) {
   const cost = friendsByName[name]?.cost ?? 0;
-  if (store.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
-    store.band[col + row * band.width] = name;
+  if (store.team.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
+    store.local.band[col + row * store.local.band.width] = name;
   }
 }
 function clear(row: number, col: number) {
   selected.value = friendAt(row, col)?.name;
   if (!selected.value) return;
+  const band = store.local.band;
   delete band[col + row * band.width];
   // Drop anyone who is now on unlit tiles.
   for (let r = 0; r < band.height; r++) {
@@ -63,10 +63,11 @@ const lightRadius = computed(() => {
 });
 
 const selectedFriend = computed(() => {
-  for (let row = 0; row < store.band.height; row++) {
-    for (let col = 0; col < store.band.width; col++) {
-      const place = col + row * store.band.width;
-      const name = store.band[place];
+  const band = store.local.band;
+  for (let row = 0; row < band.height; row++) {
+    for (let col = 0; col < band.width; col++) {
+      const place = col + row * band.width;
+      const name = band[place];
       const friend = friendsByName[name];
       if (name === selected.value) {
         if (nextTo('Azrekta', row, col)) {
@@ -90,7 +91,7 @@ function friendClicked(row: number, col: number) {
 
 const packsSpent = computed(() => {
   let spent = 0;
-  for (const name of Object.values(store.band)) {
+  for (const name of Object.values(store.local.band)) {
     const friend = friendsByName[name];
     if (friend) {
       spent += friend.cost;
@@ -106,10 +107,11 @@ type Bond = {
 
 const bonds = computed(() => {
   const bonds: Bond[] = [];
-  for (let row = 0; row < store.band.height; row++) {
-    for (let col = 0; col < store.band.width; col++) {
-      const place = col + row * store.band.width;
-      if (!store.band[place]) continue;
+  const band = store.local.band;
+  for (let row = 0; row < band.height; row++) {
+    for (let col = 0; col < band.width; col++) {
+      const place = col + row * band.width;
+      if (!band[place]) continue;
       const bond = nextTo('Azrekta', row, col) || nextTo('Lord of Gears', row, col);
       if (bond) {
         bonds.push({
@@ -125,17 +127,17 @@ const bonds = computed(() => {
 });
 
 const unusedFriends = computed(() => {
-  const used = new Set(Object.values(store.band));
-  return store.unlocked.filter(name => !used.has(name));
+  const used = new Set(Object.values(store.local.band));
+  return store.team.unlocked.filter(name => !used.has(name));
 });
 
 const packPrice = computed(() => {
-  return costOfPacks(store.packs + 1) - costOfPacks(store.packs);
+  return costOfPacks(store.team.packs + 1) - costOfPacks(store.team.packs);
 });
 
 function buyPack() {
-  if (store.fruit >= costOfPacks(store.packs + 1)) {
-    store.packs += 1;
+  if (store.team.fruit >= costOfPacks(store.team.packs + 1)) {
+    store.team.packs += 1;
   }
 }
 </script>
@@ -145,9 +147,9 @@ function buyPack() {
     The <u contenteditable="true">Unnamed Band</u> is assembled at a total cost of
     <Packs :amount="packsSpent" />,
     leaving you with
-    <Packs :amount="store.packs - packsSpent" />
+    <Packs :amount="store.team.packs - packsSpent" />
     to hire more members.
-    <button class="buy-pack-button" @click="buyPack()" :disabled="store.fruit < packPrice">Buy
+    <button class="buy-pack-button" @click="buyPack()" :disabled="store.team.fruit < packPrice">Buy
       <Packs :amount="1" />
       for
       <Fruit :amount="packPrice" />
@@ -155,8 +157,8 @@ function buyPack() {
   </p>
   <div class="band-grid">
     <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
-    <div class="band-row" v-for="(_, row) in band.height" :key="row">
-      <template v-for="(_, col) in band.width" :key="col">
+    <div class="band-row" v-for="(_, row) in store.local.band.height" :key="row">
+      <template v-for="(_, col) in store.local.band.width" :key="col">
         <button v-if="friendAt(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
           @click="friendClicked(row, col)">
           <img v-if="friendAt(row, col)" :src="imageFor(row, col)" />
@@ -174,14 +176,14 @@ function buyPack() {
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
         <button class="band-cell" @click="selected = name"
-          :class="{ unaffordable: store.packs < friendsByName[name].cost + packsSpent }">
+          :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent }">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
     </div>
     <div class="band-details" v-if="selected && selectedFriend">
       <div class="friend-cost numbers"
-        :class="{ unaffordable: store.packs < selectedFriend.cost + packsSpent && !onboard(selected) }">
+        :class="{ unaffordable: store.team.packs < selectedFriend.cost + packsSpent && !onboard(selected) }">
         {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/pack.webp" class="resource-icon" />
       </div>
       <img :src="`images/generated/${selectedFriend.name}.webp`" />

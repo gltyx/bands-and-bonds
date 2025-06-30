@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { decoratedStore as store, damage, runData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
+import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import type { Ability, Turn } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
@@ -10,17 +10,19 @@ import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
 
-const enemy = computed(() => store.currentEnemy);
+const enemy = computed(() => store.currentEnemy());
 const rescue = computed(() => {
-  return store.currentRoom?.type === 'rescue' && store.currentRoom.name && friendsByName[store.currentRoom.name];
+  const room = store.currentRoom();
+  return room?.type === 'rescue' && room.name && friendsByName[room.name];
 });
 const abilities = computed(() => {
   const abilities = [] as Ability[];
   const allAutomatic = !!onboard('Gear of Lords');
-  for (let row = 0; row < store.band.height; row++) {
-    for (let col = 0; col < store.band.width; col++) {
-      const place = col + row * store.band.width;
-      const friend = friendsByName[store.band[place]];
+  const band = store.local.band;
+  for (let row = 0; row < band.height; row++) {
+    for (let col = 0; col < band.width; col++) {
+      const place = col + row * band.width;
+      const friend = friendsByName[band[place]];
       if (!friend) continue;
       const automatic = allAutomatic || !!nextTo('Lord of Gears', row, col);
       const az = nextTo('Azrekta', row, col);
@@ -79,8 +81,8 @@ function executeAbility(ab: Ability) {
           dmg *= 2;
         }
       }
-      damage(dmg);
     }
+    store.damage(dmg);
   }
 }
 const fighting = computed(() => {
@@ -89,13 +91,13 @@ const fighting = computed(() => {
 
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
-    store.run = runData();
+    Object.assign(store.run, startingRunData());
   }
 }
 const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
 
 const possibleTurns = computed(() => {
-  const room = store.currentRoom;
+  const room = store.currentRoom();
   if (room.next) {
     return Object.entries(room.next).map(([title, next]) => ({ ...next, title }));
   }
@@ -106,10 +108,10 @@ const possibleTurns = computed(() => {
 });
 
 const plannedTurn = computed(() => {
-  if (!onboard("Wayfinder") && !onboard("Wayfindest") || !store.destination) return;
-  const room = store.currentRoom;
+  if (!onboard("Wayfinder") && !onboard("Wayfindest") || !store.local.destination) return;
+  const room = store.currentRoom();
   if (room.end) return;
-  const path = destinationToPath(store.destination);
+  const path = destinationToPath(store.local.destination);
   if (path.length <= store.run.steps + 1) return;
   if (!room.next) return roomKey(room) === roomKey(path[store.run.steps]) ? KEEP_GOING : undefined;
   const nextRoom = path[store.run.steps + 1];
@@ -126,7 +128,9 @@ const passiveEffects = computed(() => {
     effects.push(...enemy.value.passiveEffects);
   }
   if (enemy.value?.dodge) {
-    effects.push(`${enemy.value.name} dodges attacks that take longer than ${enemy.value.dodge} seconds. Faster attacks have a chance to hit.`);
+    effects.push(
+      `${enemy.value.name} dodges attacks that take longer than ${enemy.value.dodge} seconds.
+      Faster attacks have a chance to hit.`);
   }
   for (const name of Object.keys(bandByName.value)) {
     const friend = friendsByName[name];

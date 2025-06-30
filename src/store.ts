@@ -3,9 +3,10 @@ import { allRooms, turnsToPath, roomKey } from './rooms.ts';
 import { allEnemies } from './enemies.ts';
 import { allFriends, friendsByName } from './friends.ts';
 import * as base from './base';
+import * as online from './online.ts';
 import { costOfPacks } from './base';
 
-export function roomData(): base.RoomData {
+export function startingRoomData(): base.RoomData {
   // Everything specific to the current room. Deleted when leaving the room.
   return {
     damage: 0,
@@ -14,7 +15,7 @@ export function roomData(): base.RoomData {
     kills: 0,
   };
 }
-export function runData(): base.RunData {
+export function startingRunData(): base.RunData {
   // Everything specific to the current run. Deleted when the run ends.
   return {
     weaponLevel: 1,
@@ -24,7 +25,7 @@ export function runData(): base.RunData {
     gold: 0,
     fruit: 0, // Fruit collected in this run. Only for statistics.
     capturedAbilities: [],
-    room: roomData(),
+    room: startingRoomData(),
     timers: {} as Record<string, base.Timer>,
   };
 }
@@ -49,19 +50,62 @@ function startingSettings(): base.Settings {
     sound: true,
   };
 }
+export function startingLocalData(): base.LocalData {
+  return {
+    band: startingBand(),
+    settings: startingSettings(),
+  };
+}
+function startingTeamData(): base.TeamData {
+  return {
+    fruit: 999999,
+    packs: 1,
+    unlocked: startingUnlocked(),
+    discovered: startingDiscovered(),
+    name: 'Unnamed Guild',
+  };
+}
 
-const loadedStore = localStorage.getItem('store');
-export const store = reactive<base.Store>(loadedStore ? JSON.parse(loadedStore) : {
-  run: runData(),
-  band: startingBand(),
-  fruit: 999999,
-  packs: 1,
-  unlocked: startingUnlocked(),
-  discovered: startingDiscovered(),
-  settings: startingSettings(),
-});
-watch(store, (newValue) => {
-  localStorage.setItem('store', JSON.stringify(newValue))
+const loadedRunData = localStorage.getItem('bnb-run');
+export const runData = reactive<base.RunData>(loadedRunData ? JSON.parse(loadedRunData) : startingRunData());
+const loadedLocal = localStorage.getItem('bnb-local');
+export const localData = reactive<base.LocalData>(loadedLocal ? JSON.parse(loadedLocal) : startingLocalData());
+const loadedTeam = localStorage.getItem('bnb-team');
+export const teamData = reactive<base.TeamData>(loadedTeam ? JSON.parse(loadedTeam) : startingTeamData());
+export const store: base.Store = {
+  run: runData,
+  local: localData,
+  team: teamData,
+  currentRoom() {
+    return current.value.room ?? allRooms[0];
+  },
+  currentEnemy() {
+    return current.value.enemy;
+  },
+  currentPath() {
+    return current.value.path ?? allRooms[0];
+  },
+  damage(x: number) {
+    return damage(x);
+  },
+};
+watch(store.run, (newValue) => {
+  localStorage.setItem('bnb-run', JSON.stringify(newValue))
+}, { deep: true });
+watch(store.local, (newValue) => {
+  localStorage.setItem('bnb-local', JSON.stringify(newValue))
+  if (store.local.settings.online && store.local.settings.teamId) {
+    online.subscribe(store.local.settings.teamId, store);
+  }
+}, { deep: true });
+if (store.local.settings.online && store.local.settings.teamId) {
+  online.subscribe(store.local.settings.teamId, store);
+}
+watch(store.team, (newValue) => {
+  localStorage.setItem('bnb-team', JSON.stringify(newValue))
+  if (store.local.settings.online && store.local.settings.teamId) {
+    online.updateTeam(store.local.settings.teamId, newValue);
+  }
 }, { deep: true });
 
 const current = computed(() => {
@@ -70,26 +114,9 @@ const current = computed(() => {
   const enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;
   return { path, room, enemy };
 });
-export const decoratedStore = new Proxy(store, {
-  get(target, p, receiver) {
-    if (p === 'currentRoom') {
-      return current.value.room ?? allRooms[0];
-    }
-    if (p === 'currentEnemy') {
-      return current.value.enemy;
-    }
-    if (p === 'currentPath') {
-      return current.value.path ?? allRooms[0];
-    }
-    if (p === 'damage') {
-      return damage;
-    }
-    return Reflect.get(target, p, receiver);
-  },
-}) as base.DecoratedStore;
 
 export function damage(x: number) {
-  const enemy = decoratedStore.currentEnemy;
+  const enemy = store.currentEnemy();
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.
   let dmg = x;
@@ -120,7 +147,7 @@ export function damage(x: number) {
         fruit *= Object.keys(bandByName.value).length - 1;
       }
       store.run.fruit += fruit;
-      store.fruit += fruit;
+      store.team.fruit += fruit;
       if (capturing) {
         store.run.capturedAbilities.push(...enemy.abilities ?? []);
       }
@@ -130,7 +157,7 @@ export function damage(x: number) {
 
 export function takeTurn(turn: string, skipConfirmation?: boolean) {
   if (!skipConfirmation && !window.confirm(`${turn}?`)) return;
-  store.run.room = roomData();
+  store.run.room = startingRoomData();
   store.run.steps += 1;
   if (turn !== 'Keep going') {
     store.run.turns.push(turn);
@@ -143,18 +170,18 @@ export function takeTurn(turn: string, skipConfirmation?: boolean) {
     path = turnsToPath(store.run.steps, store.run.turns);
     room = path[path.length - 1];
   }
-  if (!store.discovered.includes(roomKey(room))) {
-    store.discovered.push(roomKey(room));
+  if (!store.team.discovered.includes(roomKey(room))) {
+    store.team.discovered.push(roomKey(room));
   }
-  if (room.type === 'rescue' && room.name && !store.unlocked.includes(room.name)) {
-    store.unlocked.push(room.name);
+  if (room.type === 'rescue' && room.name && !store.team.unlocked.includes(room.name)) {
+    store.team.unlocked.push(room.name);
   }
 }
 
 export function describeAbility(ab: base.Ability): string {
   let d = ab.description;
   if (typeof d === "function") {
-    d = d(decoratedStore);
+    d = d(store);
   }
   if (ab.damage) {
     d += `\n\n${base.numberFormat(ab.damage * store.run.weaponLevel)} damage`;
@@ -164,10 +191,10 @@ export function describeAbility(ab: base.Ability): string {
 
 export const bandByName = computed(() => {
   const byName = {} as Record<string, { row: number, col: number }>;
-  for (let row = 0; row < store.band.height; row++) {
-    for (let col = 0; col < store.band.width; col++) {
-      const place = col + row * store.band.width;
-      const n = store.band[place];
+  for (let row = 0; row < store.local.band.height; row++) {
+    for (let col = 0; col < store.local.band.width; col++) {
+      const place = col + row * store.local.band.width;
+      const n = store.local.band[place];
       if (n) {
         byName[n] = { row, col };
       }
@@ -176,8 +203,8 @@ export const bandByName = computed(() => {
   const az = byName.Azrekta;
   if (az) {
     for (const [row, col] of [[az.row - 1, az.col], [az.row + 1, az.col], [az.row, az.col - 1], [az.row, az.col + 1]] as [number, number][]) {
-      const place = col + row * store.band.width;
-      const n = store.band[place];
+      const place = col + row * store.local.band.width;
+      const n = store.local.band[place];
       if (!n) continue;
       const friend = friendsByName[n];
       if (friend?.super?.name) {
@@ -190,7 +217,7 @@ export const bandByName = computed(() => {
 });
 
 export function friendAt(row: number, col: number): base.Friend | undefined {
-  return friendsByName[store.band[col + row * store.band.width]];
+  return friendsByName[store.local.band[col + row * store.local.band.width]];
 }
 export function nextTo(name: string, row: number, col: number): [number, number] | null {
   const b = bandByName.value[name];
@@ -200,5 +227,5 @@ export function onboard(name: string): { row: number, col: number } | undefined 
   return bandByName.value[name];
 }
 export const fruitAvailable = computed(() => {
-  return store.fruit - costOfPacks(store.packs);
+  return store.team.fruit - costOfPacks(store.team.packs);
 });

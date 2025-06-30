@@ -37,15 +37,28 @@ export type Settings = {
   teamId?: string;
 }
 
-export type Store = {
-  run: RunData;
+export type LocalData = {
   band: Band;
+  destination?: string, // Coordinate key for destination room.
+  settings: Settings;
+}
+
+export type TeamData = {
   fruit: number;
   packs: number;
   unlocked: string[];
   discovered: string[];
-  destination?: string, // Coordinate key for destination room.
-  settings: Settings;
+  name: string;
+}
+
+export type Store = {
+  run: RunData;
+  local: LocalData;
+  team: TeamData;
+  currentEnemy: () => Enemy | undefined;
+  currentRoom: () => Room;
+  currentPath: () => Room[];
+  damage: (amount: number) => void;
 };
 
 export type Turn = {
@@ -72,7 +85,7 @@ export type Ability = {
   duration: number;
   damage?: number;
   consumes?: { [x: string]: number };
-  onCompleted?: (store: DecoratedStore) => void;
+  onCompleted?: (store: Store) => void;
   automatic?: boolean;
   tags?: string[];
   source?: { name: string; row: number; col: number }; // The friend this comes from.
@@ -112,10 +125,3 @@ export function numberFormat(x: number) {
 export function costOfPacks(packs: number): number {
   return Math.floor(1.2 ** packs) + packs;
 }
-
-export type DecoratedStore = Store & {
-  currentEnemy?: Enemy;
-  currentRoom: Room;
-  currentPath: Room[];
-  damage: (amount: number) => void;
-};

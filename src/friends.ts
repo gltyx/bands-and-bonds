@@ -21,7 +21,7 @@ the square root of the highest level achieved.
       name: "Unforge",
       duration: 5,
       description: (store) => `Damages the armor of the enemy. (Currently ${store.run.room.armorDamage}.)`,
-      onCompleted: (store) => { store.run.room.armorDamage = Math.min(store.currentEnemy?.armor ?? 0, store.run.room.armorDamage + 1); },
+      onCompleted: (store) => { store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1); },
     }],
     super: {
       name: 'Anvilominator',
@@ -61,7 +61,7 @@ Her enemies get struck with a curse of that withers metals.
       duration: 5,
       description: "Damage over time.",
       onCompleted(store) {
-        store.run.room.poison += Math.max(0, store.run.weaponLevel - (store.currentEnemy?.armor ?? 0));
+        store.run.room.poison += Math.max(0, store.run.weaponLevel - (store.currentEnemy()?.armor ?? 0));
       },
     }],
     super: { name: 'Dark Sommelier' },
@@ -94,7 +94,7 @@ He regrets learning it, for it has cost the life of his master.
       duration: 100,
       description: "Kills the enemy.",
       onCompleted(store) {
-        store.damage(store.currentEnemy?.health ?? 0);
+        store.damage(store.currentEnemy()?.health ?? 0);
       },
     }],
   },
