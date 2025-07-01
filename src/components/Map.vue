@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onboard, store } from "../store.ts";
 import { enemiesByName } from "../enemies.ts";
-import { friendsByName } from "../friends.ts";
 import { allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
 import type { Room } from "../base.ts";
 import curvedLine from "./curved-line.ts";
@@ -89,7 +88,6 @@ const hoveredRoom = ref<Room | null>(null);
       <p v-if="enemiesByName[hoveredRoom.name]?.rewards">Rewards when defeated:
         <EnemyRewards :enemy="enemiesByName[hoveredRoom.name]" />
       </p>
-      <p v-if="friendsByName[hoveredRoom.name]">has joined your band</p>
     </div>
   </div>
 </template>
@@ -116,6 +114,7 @@ img.marker {
 
 img.marker.undiscovered {
   filter: blur(2px) brightness(0.2);
+  pointer-events: none;
 }
 
 img.marker.ring {
@@ -127,12 +126,12 @@ img.marker.ring {
   position: absolute;
   background-color: black;
   color: white;
-  padding: 0 10px;
+  padding: 10px;
   border-radius: 10px;
   z-index: 10;
 
   .enemy-portrait {
-    margin-top: -30px;
+    margin-top: -60px;
     width: 60px;
     height: 60px;
     border-radius: 40%;

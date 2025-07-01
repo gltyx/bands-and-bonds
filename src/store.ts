@@ -177,9 +177,6 @@ export function takeTurn(turn: string, skipConfirmation?: boolean) {
   if (!store.team.discovered.includes(roomKey(room))) {
     store.team.discovered.push(roomKey(room));
   }
-  if (room.type === 'rescue' && room.name && !store.team.unlocked.includes(room.name)) {
-    store.team.unlocked.push(room.name);
-  }
 }
 
 export function describeAbility(ab: base.Ability): string {

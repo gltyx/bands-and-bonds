@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
 import { friendsByName } from "../friends.ts";
-import type { Ability, Turn } from "../base.ts";
+import type { Ability, Friend, Turn } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
 
 const enemy = computed(() => store.currentEnemy());
-const rescue = computed(() => {
-  const room = store.currentRoom();
-  return room?.type === 'rescue' && room.name && friendsByName[room.name];
-});
 const abilities = computed(() => {
   const abilities = [] as Ability[];
   const allAutomatic = !!onboard('Gear of Lords');
@@ -157,6 +153,27 @@ function nth(n: number) {
   const v = n % 100;
   return `${n}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
 }
+
+const rescuedFriend = computed(() => {
+  const room = store.currentRoom();
+  return room?.type === 'rescue' && room.name && friendsByName[room.name];
+});
+const rescueAvailable = computed(() => {
+  const friend = rescuedFriend.value;
+  return friend && !store.team.unlocked.includes(friend.name);
+});
+const justRescued = ref<Friend | null>(null);
+function unlockRescue() {
+  const friend = rescuedFriend.value;
+  if (!friend) return;
+  store.team.unlocked.push(friend.name);
+  justRescued.value = friend;
+}
+watch(() => store.run.steps, () => {
+  if (justRescued.value && store.currentRoom().name !== justRescued.value.name) {
+    justRescued.value = null;
+  }
+});
 </script>
 
 <template>
@@ -183,11 +200,21 @@ function nth(n: number) {
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
       label="Armor" />
   </div>
-  <div class="rescue" v-if="rescue">
-    <img :src="`images/generated/${rescue.name}.webp`" :alt="rescue.name" />
-    <h1>{{ rescue.name }}</h1>
-    <div class="description">has joined your band!</div>
-    <div class="description" v-html="rescue.descriptionHtml"></div>
+  <div class="rescue" v-if="justRescued">
+    <img :src="`images/generated/${justRescued.name}.webp`" :alt="justRescued.name" />
+    <h1>{{ justRescued.name }}</h1>
+    <p class="description" style="margin-top: 0;">has joined your band!</p>
+    <div class="description" v-html="justRescued.descriptionHtml"></div>
+  </div>
+  <div class="scene" v-else-if="rescueAvailable">
+    <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
+    <h1>Prisoner found</h1>
+    <p class="description">You see a hooded figure in a cage. Will you let them out?</p>
+  </div>
+  <div class="scene" v-else-if="rescuedFriend">
+    <img src="/images/generated/camp.webp" alt="Adventurers around a campfire" />
+    <h1>Camping</h1>
+    <p class="description">You had rescued {{ rescuedFriend.name }} here. You stop to recover your strength.</p>
   </div>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
   <div class="actions">
@@ -212,6 +239,9 @@ function nth(n: number) {
         @done="takeTurn(plannedTurn.title!, true)" :autostart="true" />
     </template>
     <template v-else>
+      <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
+        description="We must help each other out." image="/images/generated/rescue-unlock.webp"
+        @done="unlockRescue()" />
       <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
         <img :src="`images/generated/${turn.title}.webp`" />
@@ -258,13 +288,17 @@ function nth(n: number) {
   }
 
   img {
-    width: 100px;
-    height: 100px;
-    border-radius: 40%;
-    border: 2px outset #edb;
-    box-shadow: 0 0 10px #000;
     transition: filter 2s;
   }
+}
+
+.enemy img,
+.scene img {
+  width: 100px;
+  height: 100px;
+  border-radius: 40%;
+  border: 2px outset #edb;
+  box-shadow: 0 0 10px #000;
 }
 
 .rescue {
@@ -286,6 +320,17 @@ function nth(n: number) {
   h1 {
     margin-top: -15px;
     margin-bottom: 0px;
+  }
+}
+
+.scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+
+  h1 {
+    margin: 0px;
   }
 }
 

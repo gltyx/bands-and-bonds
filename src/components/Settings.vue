@@ -85,7 +85,7 @@ function unlockEverything() {
       </div>
     </button>
     <button @click="unlockEverything()">
-      <img src="/images/generated/Anvilomancer.webp" />
+      <img src="/images/generated/rescue-locked.webp" />
       <div class="text">
         <div class="title">Unlock everything</div>
         <div class="description">
