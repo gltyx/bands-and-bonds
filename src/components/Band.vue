@@ -22,6 +22,7 @@ function available(row: number, col: number): boolean {
   return dist === 0;
 }
 function remove(name: string) {
+  if (!enabled.value) return;
   for (const key in store.local.band) {
     if (store.local.band[key] === name) {
       delete store.local.band[key];
@@ -29,12 +30,14 @@ function remove(name: string) {
   }
 }
 function set(row: number, col: number, name: string) {
+  if (!enabled.value) return;
   const cost = friendsByName[name]?.cost ?? 0;
   if (store.team.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
   }
 }
 function clear(row: number, col: number) {
+  if (!enabled.value) return;
   selected.value = friendAt(row, col)?.name;
   if (!selected.value) return;
   const band = store.local.band;
@@ -140,6 +143,15 @@ function buyPack() {
     store.team.packs += 1;
   }
 }
+
+const enabled = computed(() => {
+  if (store.run.steps === 0) return true;
+  if (onboard('Wayfinder') || onboard('Wayfindest')) {
+    const room = store.currentRoom();
+    return room.type === 'rescue';
+  }
+  return false;
+});
 </script>
 
 <template>
@@ -155,7 +167,7 @@ function buyPack() {
       <Fruit :amount="packPrice" />
     </button>
   </p>
-  <div class="band-grid">
+  <div class="band-grid" :class="{ enabled, disabled: !enabled }">
     <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
     <div class="band-row" v-for="(_, row) in store.local.band.height" :key="row">
       <template v-for="(_, col) in store.local.band.width" :key="col">
@@ -172,6 +184,9 @@ function buyPack() {
     </div>
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
+  <p v-if="!enabled" class="description" style="color: #edb; margin-bottom: 0;">
+    You cannot change your band now. Enemies are nearby.
+  </p>
   <div class="below-grid">
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
@@ -193,10 +208,10 @@ function buyPack() {
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
           :image="`images/generated/${ab.name}.webp`" />
       </template>
-      <button v-if="onboard(selected)" @click="remove(selected)">
+      <button v-if="onboard(selected) && enabled" @click="remove(selected)">
         Remove from band
       </button>
-      <button v-else>
+      <button v-else-if="enabled">
         Click on a tile to add to the band
       </button>
     </div>
@@ -208,6 +223,7 @@ function buyPack() {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  margin: 10px;
   position: relative;
 }
 
@@ -303,6 +319,8 @@ u {
 
   >img {
     width: 200px;
+    /* to make room for the cost */
+    margin: 0 30px;
     mix-blend-mode: lighten;
     margin-top: -45px;
   }
@@ -348,5 +366,14 @@ h2 {
 .buy-pack-button {
   width: auto;
   font-size: 15px;
+}
+
+.disabled button:hover {
+  border-color: black;
+}
+
+.disabled button {
+  outline: 0;
+  cursor: default;
 }
 </style>

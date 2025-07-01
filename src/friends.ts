@@ -36,7 +36,7 @@ Upgrades are never lost as long as you have the Anvilominator in your band.
     cost: 120,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
-Her enemies get struck with a curse of that withers metals.
+Her enemies get struck with a curse that withers metals.
     `,
     abilities: [],
   },
@@ -213,6 +213,14 @@ With Wayfinder in your band, you can replace members of your band at campfires.
         name: "Fall Back to Camp",
         duration: 20,
         description: 'Retreats to the last visited campfire.',
+        onCompleted(store) {
+          const path = store.currentPath();
+          let steps = store.run.steps;
+          while (steps > 0 && path[steps].type !== 'rescue') {
+            steps -= 1;
+          }
+          store.run.steps = steps;
+        },
       }],
     }
   },
