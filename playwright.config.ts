@@ -8,7 +8,7 @@ export default defineConfig({
     trace: 'on',
   },
   timeout: 120_000,
-  expect: { timeout: 10_000 },
+  expect: { timeout: 1_000 },
   projects: [
     {
       name: 'chromium',
