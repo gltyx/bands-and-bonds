@@ -48,6 +48,9 @@ const description = computed(() => {
 const affordable = computed(() => {
   return store.run.gold >= props.cost;
 });
+const running = computed(() => {
+  return !!store.run.timers[props.timerKey];
+});
 onMounted(() => {
   if (props.autostart) {
     start();
@@ -61,7 +64,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <button @click="start()" :style="style()" :disabled="!affordable">
+  <button @click="start()" :style="style()" :disabled="!affordable || running" class="slow">
     <img v-bind:src="props.image" />
     <div class="text">
       <div class="cost" v-if="props.cost > 0" :class="{ unaffordable: !affordable }">

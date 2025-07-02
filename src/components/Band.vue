@@ -172,10 +172,11 @@ const enabled = computed(() => {
     <div class="band-row" v-for="(_, row) in store.local.band.height" :key="row">
       <template v-for="(_, col) in store.local.band.width" :key="col">
         <button v-if="friendAt(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
-          @click="friendClicked(row, col)">
+          @click="friendClicked(row, col)" :aria-label="friendAt(row, col)?.name ?? ''">
           <img v-if="friendAt(row, col)" :src="imageFor(row, col)" />
         </button>
-        <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)">
+        <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)"
+          aria-label="+">
           ＋
         </button>
         <button v-else class="band-cell unavailable">
@@ -190,7 +191,7 @@ const enabled = computed(() => {
   <div class="below-grid">
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
-        <button class="band-cell" @click="selected = name"
+        <button class="band-cell" @click="selected = name" :aria-label="name"
           :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent }">
           <img :src="`images/generated/${name}.webp`" />
         </button>

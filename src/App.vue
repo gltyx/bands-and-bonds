@@ -20,8 +20,11 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
-  const deltaTime = currentTime - lastFrameTime.value;
+  let deltaTime = currentTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
+  if (window.location.hostname === 'localhost') {
+    deltaTime *= 100;
+  }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
     t.time += Math.floor(deltaTime) * store.run.speedLevel;
