@@ -83,7 +83,8 @@ const hoveredRoom = ref<Room | null>(null);
       class="marker ring" />
     <div v-if="hoveredRoom?.name" class="hovered-room"
       :style="{ top: `${hoveredRoom.y}px`, left: `${hoveredRoom.x}px` }">
-      <img class="enemy-portrait" :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
+      <img :class="hoveredRoom.type === 'rescue' ? 'friend-portrait' : 'enemy-portrait'"
+        :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
       <h1>{{ hoveredRoom.name }}</h1>
       <p v-if="enemiesByName[hoveredRoom.name]?.rewards">Rewards when defeated:
         <EnemyRewards :enemy="enemiesByName[hoveredRoom.name]" />
@@ -137,7 +138,11 @@ img.marker.ring {
     border-radius: 40%;
     border: 2px outset #edb;
     box-shadow: 0 0 10px #000;
-    transition: filter 2s;
+  }
+
+  .friend-portrait {
+    width: 60px;
+    height: 60px;
   }
 
   h1 {

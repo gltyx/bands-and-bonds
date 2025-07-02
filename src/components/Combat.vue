@@ -203,7 +203,7 @@ watch(() => store.run.steps, () => {
   <div class="rescue" v-if="justRescued">
     <img :src="`images/generated/${justRescued.name}.webp`" :alt="justRescued.name" />
     <h1>{{ justRescued.name }}</h1>
-    <p class="description" style="margin-top: 0;">has joined your band!</p>
+    <p class="description" style="margin-top: 0;">has joined you!</p>
     <div class="description" v-html="justRescued.descriptionHtml"></div>
   </div>
   <div class="scene" v-else-if="rescueAvailable">

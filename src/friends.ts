@@ -122,18 +122,26 @@ He regrets learning it, for it has cost the life of his master.
   {
     name: 'Royal Fruitbearer',
     cost: 6,
-    description: "Whenever you find fruit in the dungeon, every member of the party gets one piece.",
+    description: `
+With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
+    `,
     passiveEffects: ["When you find fruit, every member of the party gets one piece. (Thanks to the Royal Fruitbearer.)"],
     super: {
       name: 'Royal Fruitwearer',
-      description: "Whenever you find fruit in the dungeon, every member of the party gives one piece to every other member.",
+      description: `
+With the Royal Fruitwearer in your band, whenever you find fruit in the dungeon,
+every member of the party gives one piece to every other member.
+      `,
       passiveEffects: ["When you find fruit, every member of the party gives one piece to every other member. (Thanks to the Royal Fruitwearer.)"],
     },
   },
   {
     name: 'Stick Master',
     cost: 1,
-    description: "Stick Master is a master of **the wooden stick**, using it to _whack enemies_ with precision and skill.",
+    description: `
+Stick Master is a humble explorer. While wandering the forest, they came upon the ruins of a long-lost castle.
+At the lowest level, they discovered the entrance to the dungeon.
+    `,
     abilities: [{
       name: "Wooden Stick",
       duration: 0.5,
