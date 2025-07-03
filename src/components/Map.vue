@@ -51,14 +51,14 @@ function style(room: Room, factor?: number) {
 
 function roomClicked(room: Room) {
   const key = roomKey(room);
-  if ((onboard("Wayfinder") || onboard("Wayfindest")) && store.team.discovered.includes(key)) {
+  if (onboard("Wayfinder") && store.team.discovered.includes(key)) {
     store.local.destination = key;
   }
 }
 
 const line = computed(() => curvedLine(20, scale.value, rooms.value));
-const planRooms = computed(() => (
-  onboard("Wayfinder") || onboard("Wayfindest")) && store.local.destination ? destinationToPath(store.local.destination) : []);
+const planRooms = computed(() =>
+  onboard("Wayfinder") && store.local.destination ? destinationToPath(store.local.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 const hoveredRoom = ref<Room | null>(null);
 

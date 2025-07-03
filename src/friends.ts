@@ -33,7 +33,7 @@ Upgrades are never lost as long as you have the Anvilominator in your band.
   },
   {
     name: 'Azrekta',
-    cost: 120,
+    cost: 20,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies get struck with a curse that withers metals.
@@ -68,12 +68,30 @@ Her enemies get struck with a curse that withers metals.
   },
   {
     name: 'Desert Rabbit',
-    cost: 210,
+    cost: 30,
     description: `
 The Desert Rabbit is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
 
 With the Desert Rabbit in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
     `,
+    super: {
+      name: 'Desert Armadillo',
+      description: `
+The Desert Armadillo is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
+
+With the Desert Armadillo in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
+The damage bonus can be further increased with the Blessing of the Desert ability.
+    `,
+      abilities: [{
+        name: "Blessing of the Desert",
+        duration: 5,
+        consumes: { gold: 1 },
+        description: (store) => `Increases the damage multiplier for weaknesses. (Currently ${store.run.desertBlessingMultiplier}×.)`,
+        onCompleted(store) {
+          store.run.desertBlessingMultiplier += 1;
+        },
+      }],
+    },
   },
   {
     name: 'Friend of Metal',
@@ -100,6 +118,7 @@ He regrets learning it, for it has cost the life of his master.
     abilities: [{
       name: "Vulture's Claw",
       duration: 100,
+      consumes: { gold: 100 },
       description: "Kills the enemy.",
       onCompleted(store) {
         store.addDamage(store.currentEnemy()?.health ?? 0);

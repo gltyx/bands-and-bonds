@@ -19,6 +19,7 @@ export function startingRunData(): base.RunData {
   // Everything specific to the current run. Deleted when the run ends.
   return {
     weaponLevel: 1,
+    desertBlessingMultiplier: 2,
     speedLevel: 1,
     steps: 0,
     turns: [],
@@ -119,12 +120,12 @@ const current = computed(() => {
   return { path, room, enemy };
 });
 
-export function addDamage(x: number) {
+function addDamage(x: number) {
   const enemy = store.currentEnemy();
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.
   let dmg = x;
-  const capturing = onboard("Mongreler") || onboard("Monster Juggler");
+  const capturing = onboard("Mongreler");
   if (capturing) {
     dmg *= 0.01;
   }
@@ -147,7 +148,6 @@ export function addDamage(x: number) {
         fruit *= Object.keys(bandByName.value).length;
       }
       if (onboard("Royal Fruitwearer")) {
-        fruit *= Object.keys(bandByName.value).length;
         fruit *= Object.keys(bandByName.value).length - 1;
       }
       store.run.fruit += fruit;
@@ -225,7 +225,8 @@ export function nextTo(name: string, row: number, col: number): [number, number]
   return b && Math.abs(b.row - row) + Math.abs(b.col - col) === 1 ? [b.row, b.col] : null;
 }
 export function onboard(name: string): { row: number, col: number } | undefined {
-  return bandByName.value[name];
+  const sup = friendsByName[name].super?.name;
+  return bandByName.value[name] || sup && bandByName.value[sup];
 }
 export const fruitAvailable = computed(() => {
   return store.team.fruit - costOfPacks(store.team.packs);

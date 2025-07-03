@@ -13,7 +13,6 @@ const fruit = computed(() => {
     fruit *= Object.keys(bandByName.value).length;
   }
   if (onboard('Royal Fruitwearer')) {
-    fruit *= Object.keys(bandByName.value).length;
     fruit *= Object.keys(bandByName.value).length - 1;
   }
   return fruit;

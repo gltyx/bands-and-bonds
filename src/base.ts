@@ -21,6 +21,7 @@ export type RunData = {
   // Everything specific to the current run. Deleted when the run ends.
   weaponLevel: number;
   speedLevel: number;
+  desertBlessingMultiplier: number;
   steps: number;
   turns: string[];
   gold: number;

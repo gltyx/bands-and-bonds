@@ -63,18 +63,18 @@ function executeAbility(ab: Ability) {
     if (enemy.value?.weaknesses && onboard("Desert Rabbit")) {
       for (const weakness of enemy.value.weaknesses) {
         if (ab.tags?.includes(weakness)) {
-          dmg *= 2;
+          dmg *= store.run.desertBlessingMultiplier;
         }
-        const center = onboard("Lamplighter") || onboard("Lamperlighter");
+        const center = onboard("Lamplighter");
         if (!center || !ab.source) continue;
         if (weakness === 'left' && ab.source.col < center.col) {
-          dmg *= 2;
+          dmg *= store.run.desertBlessingMultiplier;
         } else if (weakness === 'right' && ab.source.col > center.col) {
-          dmg *= 2;
+          dmg *= store.run.desertBlessingMultiplier;
         } else if (weakness === 'front' && ab.source.row < center.row) {
-          dmg *= 2;
+          dmg *= store.run.desertBlessingMultiplier;
         } else if (weakness === 'back' && ab.source.row > center.row) {
-          dmg *= 2;
+          dmg *= store.run.desertBlessingMultiplier;
         }
       }
     }
@@ -104,7 +104,7 @@ const possibleTurns = computed(() => {
 });
 
 const plannedTurn = computed(() => {
-  if (!onboard("Wayfinder") && !onboard("Wayfindest") || !store.local.destination) return;
+  if (!onboard("Wayfinder") || !store.local.destination) return;
   const room = store.currentRoom();
   if (room.end) return;
   const path = destinationToPath(store.local.destination);
@@ -143,7 +143,8 @@ const passiveEffects = computed(() => {
         weaknesses.push(`<u>${weakness} attacks</u>`);
       }
     }
-    effects.push(`Desert Rabbit tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
+    const animal = onboard("Desert Armadillo") ? 'Desert Armadillo' : 'Desert Rabbit';
+    effects.push(`${animal} tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
   }
   return effects;
 });

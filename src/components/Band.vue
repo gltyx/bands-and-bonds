@@ -142,7 +142,7 @@ function buyPack() {
 
 const enabled = computed(() => {
   if (store.run.steps === 0) return true;
-  if (onboard('Wayfinder') || onboard('Wayfindest')) {
+  if (onboard('Wayfinder')) {
     const room = store.currentRoom();
     return room.type === 'rescue';
   }
