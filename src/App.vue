@@ -20,14 +20,12 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
-  let deltaTime = currentTime - lastFrameTime.value;
+  const deltaTime = currentTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
-  if (window.location.hostname === 'localhost') {
-    deltaTime *= 100;
-  }
+  const multiplier = window.location.hostname === 'localhost' ? 100 : 1;
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    t.time += Math.floor(deltaTime) * store.run.speedLevel;
+    t.time += Math.floor(deltaTime * multiplier) * store.run.speedLevel;
     if (t.time >= t.duration) {
       delete store.run.timers[key];
       t.cb?.(t);
@@ -35,7 +33,7 @@ function mainLoop() {
   }
   const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
-    const regenPerSecond = (enemy.regen ?? 0) - store.run.room.poison;
+    const regenPerSecond = multiplier * ((enemy.regen ?? 0) - store.run.room.poison);
     let regen = (currentTime - lastRegenTime.value) * regenPerSecond / 1000;
     while (regen > 1) {
       store.run.room.damage = Math.max(0, store.run.room.damage - 1);

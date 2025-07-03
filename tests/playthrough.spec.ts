@@ -5,10 +5,12 @@ class Game {
   constructor(private page: Page) {
     this.clicks = 0;
   }
-
+  button(name: string) {
+    return this.page.getByRole('button', { name });
+  }
   async clickButton(name: string) {
     await test.step(`Click ${name}`, async () => {
-      await this.page.getByRole('button', { name }).click();
+      await this.button(name).click();
     });
     this.clicks++;
   }
@@ -88,10 +90,18 @@ class Game {
     });
   }
   async retreat() {
-    console.log(`Retreated after ${this.clicks} clicks.`);
     await test.step(`Retreat after ${this.clicks} clicks`, async () => {
-      await this.clickButton('Retreat');
-      await expect(this.page.getByRole('button', { name: 'Enter the Dungeon' })).toBeVisible();
+      const retreat = this.button('Retreat');
+      await expect(retreat).toBeVisible();
+      const text = await retreat.textContent();
+      const m = text?.match(/keep the (\d+)/);
+      if (m) {
+        console.log(`Retreated after ${this.clicks} clicks with ${m[1]} fruit.`);
+      } else {
+        console.log(`Retreated after ${this.clicks} clicks with no fruit.`);
+      }
+      await retreat.click();
+      await expect(this.button('Enter the Dungeon')).toBeVisible();
     });
     this.clicks = 0;
   }
@@ -109,7 +119,12 @@ class Game {
       const band = await this.page.locator('.band-grid').getByRole('button').evaluateAll(elements =>
         elements.map(el => el.getAttribute('aria-label'))
       );
-      console.log(`Band: ${band}`);
+      const summary = await this.page.getByText(/a total cost of \d+\s*, leaving you with \d+/).textContent();
+      const m = summary?.match(/a total cost of (\d+)\s*, leaving you with (\d+)/);
+      if (!m) throw new Error("Couldn't find band summary.");
+      const used = Number.parseInt(m[1]);
+      const remaining = Number.parseInt(m[2]);
+      console.log(`${used}/${used + remaining} Band: ${band}`);
       await this.tab('Fight');
     });
   }
@@ -159,33 +174,56 @@ test('can be played through', async ({ page }) => {
   await game.retreat();
   await game.manageBand(async () => {
     await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Turn right');
-  await game.defeatEnemy('Poison Crow');
-  await game.clickButton('Keep going');
-  await game.defeatEnemy('Animated Skeleton');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Turn right');
-  await game.defeatEnemy('Poison Crow');
-  await game.clickButton('Keep going');
-  await game.defeatEnemy('Animated Skeleton');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
     await game.removeFromBand('Friend of Metal');
+    await game.addToBand('Dark Chef');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.clickButton('Turn left');
+  await game.rescue('Royal Fruitbearer');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.clickButton('Turn right');
+  await game.rescue('Anvilomancer');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+    await game.removeFromBand('Dark Chef');
     await game.addToBand('Lamplighter');
     await game.addToBand('Stick Master');
+    await game.addToBand('Fruitbearer');
   });
 
   await game.clickButton('Enter the Dungeon');
@@ -211,6 +249,38 @@ test('can be played through', async ({ page }) => {
   await game.retreat();
   await game.manageBand(async () => {
     await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
     await game.addToBand('Dark Chef');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
   });
 });
