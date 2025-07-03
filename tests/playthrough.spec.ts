@@ -19,7 +19,7 @@ class Game {
       const attacks = await this.page.locator('.actions > .slow').elementHandles();
       const clicksBefore = this.clicks;
       while (true) {
-        if (await this.page.getByText('Defeated!').isVisible()) {
+        if (await this.page.getByText('Defeated').isVisible()) {
           console.log(`Defeated ${name} after ${this.clicks - clicksBefore} clicks.`);
           return;
         }
@@ -44,24 +44,48 @@ class Game {
   async tab(name: string) {
     await this.clickButton(name);
   }
+  band(name: string) {
+    return {
+      grid: this.page.locator('.band-grid').getByRole('button', { name }),
+      details: this.page.locator('.band-details').getByRole('heading', { name }),
+      unlocked: this.page.locator('.band-unlocked').getByRole('button', { name }),
+    };
+  }
   async removeFromBand(name: string) {
     await test.step(`Remove ${name} from band`, async () => {
-      await this.clickButton(name);
-      await expect(this.page.locator('.band-details').getByRole('heading', { name })).toBeVisible();
-      await this.clickButton(name);
-      await expect(this.page.locator('.band-unlocked').getByRole('button', { name })).toBeVisible();
+      const b = this.band(name);
+      await expect(b.grid).toBeVisible();
+      if (!await b.details.isVisible()) {
+        await b.grid.click();
+        await expect(b.details).toBeVisible();
+      }
+      await b.grid.click();
+      await expect(b.unlocked).toBeVisible();
     });
   }
   async addToBand(name: string) {
     await test.step(`Add ${name} to band`, async () => {
-      await this.clickButton(name);
-      await expect(this.page.locator('.band-details').getByRole('heading', { name })).toBeVisible();
-      await this.clickButton('+');
-      await expect(this.page.locator('.band-grid').getByRole('button', { name })).toBeVisible();
+      const b = this.band(name);
+      await b.unlocked.click();
+      await expect(b.details).toBeVisible();
+      await this.page.locator('.band-grid').getByRole('button', { name: '+' }).first().click();
+      await expect(b.grid).toBeVisible();
     });
   }
-  async buyPack() {
-    await this.clickButton('Buy 1 for');
+  async buyPacks() {
+    await test.step('Buy packs', async () => {
+      const button = this.page.getByRole('button', { name: 'Buy 1 for' });
+      await expect(button).toBeEnabled();
+      let bought = 0;
+      while (true) {
+        await button.click();
+        bought++;
+        if (await button.isDisabled()) {
+          console.log(`Bought ${bought} packs.`);
+          return;
+        }
+      }
+    });
   }
   async retreat() {
     console.log(`Retreated after ${this.clicks} clicks.`);
@@ -82,6 +106,10 @@ class Game {
     await test.step("Change band", async () => {
       await this.tab('Band');
       await commands();
+      const band = await this.page.locator('.band-grid').getByRole('button').evaluateAll(elements =>
+        elements.map(el => el.getAttribute('aria-label'))
+      );
+      console.log(`Band: ${band}`);
       await this.tab('Fight');
     });
   }
@@ -100,14 +128,89 @@ test('can be played through', async ({ page }) => {
   await game.rescue('Friend of Metal');
   await game.retreat();
   await game.manageBand(async () => {
-    await game.buyPack();
+    await game.buyPacks();
     await game.removeFromBand('Stick Master');
     await game.addToBand('Friend of Metal');
   });
+
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
   await game.clickButton('Keep going');
   await game.clickButton('Turn right');
   await game.defeatEnemy('Poison Crow');
   await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Thick Door');
+  await game.clickButton('Keep going');
+  await game.rescue('Lamplighter');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn left');
+  await game.defeatEnemy('Bandlings');
+  await game.clickButton('Keep going');
+  await game.rescue('Dark Chef');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+    await game.removeFromBand('Friend of Metal');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Stick Master');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+    await game.addToBand('Friend of Metal');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.buyPacks();
+    await game.addToBand('Dark Chef');
+  });
 });

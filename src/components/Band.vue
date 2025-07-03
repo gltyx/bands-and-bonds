@@ -134,10 +134,6 @@ const unusedFriends = computed(() => {
   return store.team.unlocked.filter(name => !used.has(name));
 });
 
-const packPrice = computed(() => {
-  return costOfPacks(store.team.packs + 1) - costOfPacks(store.team.packs);
-});
-
 function buyPack() {
   if (store.team.fruit >= costOfPacks(store.team.packs + 1)) {
     store.team.packs += 1;
@@ -161,10 +157,11 @@ const enabled = computed(() => {
     leaving you with
     <Packs :amount="store.team.packs - packsSpent" />
     to hire more members.
-    <button class="buy-pack-button" @click="buyPack()" :disabled="store.team.fruit < packPrice">Buy
+    <button class="buy-pack-button" @click="buyPack()"
+      :disabled="store.team.fruit < costOfPacks(store.team.packs + 1)">Buy
       <Packs :amount="1" />
       for
-      <Fruit :amount="packPrice" />
+      <Fruit :amount="costOfPacks(store.team.packs + 1) - costOfPacks(store.team.packs)" />
     </button>
   </p>
   <div class="band-grid" :class="{ enabled, disabled: !enabled }">
