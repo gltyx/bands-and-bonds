@@ -123,14 +123,16 @@ const bonds = computed(() => {
     for (let col = 0; col < band.width; col++) {
       const place = col + row * band.width;
       if (!band[place]) continue;
-      const bond = nextTo('Azrekta', row, col) || nextTo('Lord of Gears', row, col);
-      if (bond) {
-        bonds.push({
-          image: 'chain',
-          style: bond[0] === row ?
-            `left: ${(col + bond[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
-            `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + bond[0] + 1) * 103 / 2 - 15}px;`,
-        });
+      for (const name of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
+        const bond = nextTo(name, row, col);
+        if (bond) {
+          bonds.push({
+            image: 'chain',
+            style: bond[0] === row ?
+              `left: ${(col + bond[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
+              `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + bond[0] + 1) * 103 / 2 - 15}px;`,
+          });
+        }
       }
     }
   }

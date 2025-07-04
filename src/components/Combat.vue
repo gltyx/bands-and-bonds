@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
+import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName, getAbilityDamage } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import type { Ability, Friend, Turn, Enemy } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
@@ -59,7 +59,7 @@ function executeAbility(ab: Ability) {
         return;
       }
     }
-    let dmg = ab.damage * store.run.weaponLevel;
+    let dmg = getAbilityDamage(ab);
     if (enemy.value && onboard("Desert Rabbit")) {
       for (const weakness of getWeaknesses(enemy.value)) {
         if (ab.tags?.includes(weakness)) {

@@ -225,6 +225,12 @@ At the lowest level, they discovered the entrance to the dungeon.
   {
     name: 'The Silent Song',
     cost: 27,
+    finished: true,
+    description: "Her sweet melody doubles the damage dealt by friends standing next to her.",
+    super: {
+      name: 'The Silent Quartet',
+      description: "Their sweet melody doubles the damage dealt by all friends.",
+    },
   },
   {
     name: 'Lord of Gears',

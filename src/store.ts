@@ -186,9 +186,19 @@ export function describeAbility(ab: base.Ability): string {
     d = d(store);
   }
   if (ab.damage) {
-    d += `\n\n${base.numberFormat(ab.damage * store.run.weaponLevel)} damage`;
+    const dmg = getAbilityDamage(ab);
+    d += `\n\n${base.numberFormat(dmg)} damage`;
   }
   return d;
+}
+
+export function getAbilityDamage(ab: base.Ability): number {
+  if (!ab.damage) return 0;
+  let dmg = ab.damage * store.run.weaponLevel;
+  if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
+    dmg *= 2;
+  }
+  return dmg;
 }
 
 export const bandByName = computed(() => {
