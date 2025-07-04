@@ -21,19 +21,27 @@ function available(row: number, col: number): boolean {
   if (lightRadius.value === 'radius2') return dist <= 1;
   return dist === 0;
 }
-function remove(name: string) {
-  if (!enabled.value) return;
-  for (const key in store.local.band) {
-    if (store.local.band[key] === name) {
-      delete store.local.band[key];
-    }
+function remove(key: number) {
+  const name = store.local.band[key];
+  const friend = friendsByName[name];
+  if (friend.super?.name && onboard(friend.super.name)) {
+    friend.super.onRemoved?.(store);
+  } else {
+    friend.onRemoved?.(store);
   }
+  delete store.local.band[key];
 }
 function set(row: number, col: number, name: string) {
   if (!enabled.value) return;
   const cost = friendsByName[name]?.cost ?? 0;
   if (store.team.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
+    const friend = friendsByName[name];
+    if (friend.super?.name && onboard(friend.super.name)) {
+      friend.super.onAdded?.(store);
+    } else {
+      friend.onAdded?.(store);
+    }
   }
 }
 function clear(row: number, col: number) {
@@ -41,7 +49,7 @@ function clear(row: number, col: number) {
   selected.value = friendAt(row, col)?.name;
   if (!selected.value) return;
   const band = store.local.band;
-  delete band[col + row * band.width];
+  remove(col + row * band.width);
   // Drop anyone who is now on unlit tiles.
   for (let r = 0; r < band.height; r++) {
     for (let c = 0; c < band.width; c++) {
@@ -49,7 +57,7 @@ function clear(row: number, col: number) {
         const place = c + r * band.width;
         const friend = band[place];
         if (friend) {
-          delete band[place];
+          remove(place);
         }
       }
     }
@@ -131,7 +139,9 @@ const bonds = computed(() => {
 
 const unusedFriends = computed(() => {
   const used = new Set(Object.values(store.local.band));
-  return store.team.unlocked.filter(name => !used.has(name));
+  const unused = store.team.unlocked.filter(name => !used.has(name));
+  unused.sort();
+  return unused;
 });
 
 function buyPack() {
@@ -189,7 +199,7 @@ const enabled = computed(() => {
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
         <button class="band-cell" @click="selected = name" :aria-label="name"
-          :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent }">
+          :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent, unfinished: !friendsByName[name].finished }">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
@@ -206,12 +216,6 @@ const enabled = computed(() => {
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
           :image="`images/generated/${ab.name}.webp`" />
       </template>
-      <button v-if="onboard(selected) && enabled" @click="remove(selected)">
-        Remove from band
-      </button>
-      <button v-else-if="enabled">
-        Click on a tile to add to the band
-      </button>
     </div>
   </div>
 </template>
@@ -304,6 +308,10 @@ u {
   gap: 3px;
   justify-content: center;
   min-width: 350px;
+}
+
+.unfinished {
+  opacity: 0.3;
 }
 
 .band-details {

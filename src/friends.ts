@@ -4,36 +4,58 @@ import { numberFormat, type Friend } from './base';
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
+    finished: true,
     cost: 6,
     description: `
 An expert Anvilomancer can upgrade your weapons in the midst of battle.
-Upgrades are mostly lost when leaving the dungeon. The weapon level is reset to
-the square root of the highest level achieved.
+Upgrades are mostly lost when leaving the dungeon.
+The starting weapon level is the square root of the highest level achieved.
     `,
     abilities: [{
       name: "Forge",
       duration: 5,
       consumes: { gold: 1 },
       description: (store) => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
-      onCompleted: (store) => { store.run.weaponLevel += 1; },
+      onCompleted(store) {
+        store.run.weaponLevel += 1;
+        if (store.run.weaponLevel > store.team.bestWeaponLevel) {
+          store.team.bestWeaponLevel = store.run.weaponLevel;
+        }
+      },
     },
     {
       name: "Unforge",
       duration: 5,
       description: 'Damages the armor of the enemy.',
-      onCompleted: (store) => { store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1); },
+      onCompleted(store) {
+        store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1);
+      },
     }],
+    onAdded(store) {
+      store.run.weaponLevel = Math.max(store.run.weaponLevel, Math.floor(Math.sqrt(store.team.bestWeaponLevel)));
+    },
+    onRemoved(store) {
+      store.run.weaponLevel = 1;
+    },
     super: {
       name: 'Anvilominator',
       description: `
 An expert Anvilominator can upgrade your weapons in the midst of battle.
-Upgrades are never lost as long as you have the Anvilominator in your band.
+The Anvilominator retains upgrades from earlier runs.
+The starting weapon level is the highest level achieved.
     `,
+      onAdded(store) {
+        store.run.weaponLevel = store.team.bestWeaponLevel;
+      },
+      onRemoved(store) {
+        store.run.weaponLevel = 1;
+      },
     },
   },
   {
     name: 'Azrekta',
     cost: 20,
+    finished: true,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies get struck with a curse that withers metals.
@@ -43,6 +65,7 @@ Her enemies get struck with a curse that withers metals.
   {
     name: 'Coldblade',
     cost: 31,
+    finished: true,
     description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
     abilities: [{
       name: "Glacial Strike",
@@ -54,6 +77,7 @@ Her enemies get struck with a curse that withers metals.
   },
   {
     name: 'Dark Chef',
+    finished: true,
     cost: 4,
     description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
     abilities: [{
@@ -68,6 +92,7 @@ Her enemies get struck with a curse that withers metals.
   },
   {
     name: 'Desert Rabbit',
+    finished: true,
     cost: 30,
     description: `
 The Desert Rabbit is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
@@ -96,6 +121,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   {
     name: 'Friend of Metal',
     description: 'A warrior equipped with high-quality metal armor and weapons.',
+    finished: true,
     cost: 2,
     abilities: [{
       name: "Steel Jab",
@@ -106,11 +132,25 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
     }],
     super: {
       name: 'Friend of Metal and Fire',
+      abilities: [{
+        name: "Steel Jab+",
+        duration: 3,
+        damage: 100,
+        description: "A finely crafted sword in the hands of a Friend of Metal and Fire.",
+        tags: ['sharp', 'steel'],
+      }, {
+        name: "Flame Jab+",
+        duration: 3,
+        damage: 100,
+        description: "A flaming sword in the hands of a Friend of Metal and Fire.",
+        tags: ['sharp', 'fire'],
+      }],
     },
   },
   {
     name: 'Knight of Claws',
-    cost: 170,
+    cost: 70,
+    finished: true,
     description: `
 Trained as an assassin, the Knight of Claws is the only person in the world who knows the deadly art of "Vulture's Claw".
 He regrets learning it, for it has cost the life of his master.
@@ -128,12 +168,13 @@ He regrets learning it, for it has cost the life of his master.
   {
     name: 'Lamplighter',
     cost: 12,
+    finished: true,
     description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
       duration: 1,
       damage: 2,
-      description: "Shines a light on the battlefield, damaging all enemies.",
+      description: "Shines a light on the battlefield, hurting the eyes accustomed to darkness.",
       tags: ['light'],
     }],
     super: { name: 'Lamperlighter' },
@@ -141,6 +182,7 @@ He regrets learning it, for it has cost the life of his master.
   {
     name: 'Royal Fruitbearer',
     cost: 6,
+    finished: true,
     description: `
 With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
     `,
@@ -157,6 +199,7 @@ every member of the party gives one piece to every other member.
   {
     name: 'Stick Master',
     cost: 1,
+    finished: true,
     description: `
 Stick Master is a humble explorer. While wandering the forest, they came upon the ruins of a long-lost castle.
 At the lowest level, they discovered the entrance to the dungeon.
@@ -168,15 +211,25 @@ At the lowest level, they discovered the entrance to the dungeon.
       description: "Whack it with a stick.",
       tags: ['blunt'],
     }],
-    super: { name: 'Stick Grandmaster' },
+    super: {
+      name: 'Stick Grandmaster',
+      abilities: [{
+        name: "Wooden Stick",
+        duration: 0.5,
+        damage: 2,
+        description: "Whack it with a stick quite hard.",
+        tags: ['blunt'],
+      }],
+    },
   },
   {
     name: 'The Silent Song',
-    cost: 87,
+    cost: 27,
   },
   {
     name: 'Lord of Gears',
     cost: 29,
+    finished: true,
     description: `
 The Lord of Gears is a master of automation. The band members next to him need not do anything.
 Their abilities will be activated automatically.
@@ -190,8 +243,9 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   },
   {
     name: 'Pur Lion',
-    cost: 135,
-    description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him. He has the ability to _snatch_ items from enemies in the fray of the battle.",
+    cost: 35,
+    finished: true,
+    description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him.",
     abilities: [{
       name: "Snatch",
       duration: 0.5,
@@ -200,10 +254,21 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
         store.run.gold += 1;
       },
     }],
+    super: {
+      abilities: [{
+        name: "Snatch",
+        duration: 0.5,
+        description: "Steals a piece of gold. Affected by the weapon level.",
+        onCompleted(store) {
+          store.run.gold += store.run.weaponLevel;
+        },
+      }],
+    },
   },
   {
     name: 'Kit Flash',
-    cost: 88,
+    cost: 8,
+    finished: true,
     description: "A wizard of speed, Kit Flash can _run_ faster than the eye can see. He is able to speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
@@ -219,7 +284,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       abilities: [{
         name: "Running Start",
         duration: 10,
-        consumes: { gold: 1 },
+        consumes: (store) => ({ gold: store.run.speedLevel }),
         description: (store) => `Speed up all abilities. (Currently ${numberFormat(store.run.speedLevel)}×.)`,
         onCompleted(store) {
           store.run.speedLevel *= 2;
@@ -230,6 +295,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   {
     name: 'Wayfinder',
     cost: 15,
+    finished: true,
     description: `
 A master of navigation, Wayfinder will guide your band through a path without fail.
 With Wayfinder in your band, you can replace members of your band at campfires.
@@ -261,7 +327,8 @@ With Wayfinder in your band, you can replace members of your band at campfires.
   },
   {
     name: 'Kevin',
-    cost: 220,
+    cost: 22,
+    finished: true,
     description: `
 Kevin is not so much a person as a phenomenon. When Kevin is present, all enemies are vulnerable to fire.
     `,
@@ -277,6 +344,7 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   {
     name: 'Mongreler',
     cost: 50,
+    finished: true,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
     passiveEffects: ['Mongreler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
     super: {
@@ -312,6 +380,17 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
     name: 'Zaktar Kadoque',
     cost: 20,
     description: "",
+    super: {
+      name: 'Zaktar Kadoque Karr',
+    },
+  },
+  {
+    name: 'Xaranthian Constructor',
+    cost: 20,
+    description: "",
+    super: {
+      name: 'Xaranthian Power Constructor',
+    },
   },
 ];
 export const friendsByName = {} as Record<string, Friend>;

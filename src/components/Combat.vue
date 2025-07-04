@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName } from "../store.ts";
 import { friendsByName } from "../friends.ts";
-import type { Ability, Friend, Turn } from "../base.ts";
+import type { Ability, Friend, Turn, Enemy } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref, watch } from "vue";
@@ -60,8 +60,8 @@ function executeAbility(ab: Ability) {
       }
     }
     let dmg = ab.damage * store.run.weaponLevel;
-    if (enemy.value?.weaknesses && onboard("Desert Rabbit")) {
-      for (const weakness of enemy.value.weaknesses) {
+    if (enemy.value && onboard("Desert Rabbit")) {
+      for (const weakness of getWeaknesses(enemy.value)) {
         if (ab.tags?.includes(weakness)) {
           dmg *= store.run.desertBlessingMultiplier;
         }
@@ -88,6 +88,10 @@ const fighting = computed(() => {
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
     Object.assign(store.run, startingRunData());
+    for (const friend in bandByName.value) {
+      const f = friendsByName[friend];
+      f.onAdded?.(store);
+    }
   }
 }
 const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
@@ -118,6 +122,15 @@ const plannedTurn = computed(() => {
   }
 });
 
+function getWeaknesses(enemy: Enemy | null) {
+  if (!enemy) return [];
+  const weaknesses = enemy.weaknesses ?? [];
+  if (onboard("Kevin") && !weaknesses.includes('fire')) {
+    return [...weaknesses, 'fire'];
+  }
+  return weaknesses;
+}
+
 const passiveEffects = computed(() => {
   const effects = [] as string[];
   if (enemy.value?.passiveEffects) {
@@ -134,17 +147,19 @@ const passiveEffects = computed(() => {
       effects.push(...friend.passiveEffects);
     }
   }
-  if (enemy.value?.weaknesses && onboard("Desert Rabbit")) {
+  if (enemy.value && onboard("Desert Rabbit")) {
     const weaknesses = [];
-    for (const weakness of enemy.value.weaknesses) {
+    for (const weakness of getWeaknesses(enemy.value)) {
       if (['left', 'right', 'front', 'back'].includes(weakness)) {
         weaknesses.push(`<u>attacks from the ${weakness}</u>`);
       } else {
         weaknesses.push(`<u>${weakness} attacks</u>`);
       }
     }
-    const animal = onboard("Desert Armadillo") ? 'Desert Armadillo' : 'Desert Rabbit';
-    effects.push(`${animal} tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
+    if (weaknesses.length > 0) {
+      const animal = onboard("Desert Armadillo") ? 'Desert Armadillo' : 'Desert Rabbit';
+      effects.push(`${animal} tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
+    }
   }
   return effects;
 });
@@ -175,6 +190,16 @@ watch(() => store.run.steps, () => {
     justRescued.value = null;
   }
 });
+
+function goldPrice(ab: Ability) {
+  if (ab.consumes) {
+    if (typeof ab.consumes === 'function') {
+      return ab.consumes(store).gold || 0;
+    }
+    return ab.consumes.gold || 0;
+  }
+  return 0;
+}
 </script>
 
 <template>
@@ -222,14 +247,14 @@ watch(() => store.run.steps, () => {
     <template v-if="fighting">
       <template v-for="ab in abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="ab.consumes?.gold" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+          :cost="goldPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
+          @done="executeAbility(ab)" />
       </template>
       <div v-if="store.run.capturedAbilities.length > 0" class="section">Captured Monsters</div>
       <template v-for="ab in store.run.capturedAbilities">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="ab.consumes?.gold" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+          :cost="goldPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
+          @done="executeAbility(ab)" />
       </template>
       <div class="section">Navigation</div>
     </template>

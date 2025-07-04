@@ -72,7 +72,7 @@ export const allRooms: Room[] = [
     x: 277, y: 459, type: "none", label: 'straight3',
     next: { 'Turn left': { label: 'left4' }, 'Go straight': { label: 'straight4' } },
   },
-  { x: 243, y: 459, type: "combat", label: 'left4', end: true },
+  { x: 243, y: 459, type: "combat", name: "Skeletron", label: 'left4', end: true },
   { x: 277, y: 498, type: "none", label: 'straight4' },
   {
     x: 196, y: 498, type: "none",

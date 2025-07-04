@@ -29,6 +29,9 @@ function receiveFromDatabase(payload: TeamData, store: Store) {
   if (payload.packs > store.team.packs) {
     store.team.packs = payload.packs;
   }
+  if (payload.bestWeaponLevel > store.team.bestWeaponLevel) {
+    store.team.bestWeaponLevel = payload.bestWeaponLevel;
+  }
   for (const x of payload.unlocked) {
     if (!store.team.unlocked.includes(x)) {
       store.team.unlocked.push(x);

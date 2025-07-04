@@ -47,6 +47,7 @@ export type LocalData = {
 export type TeamData = {
   fruit: number;
   packs: number;
+  bestWeaponLevel: number;
   unlocked: string[];
   discovered: string[];
   name: string;
@@ -86,7 +87,7 @@ export type Ability = {
   description: string | ((store: Store) => string);
   duration: number;
   damage?: number;
-  consumes?: { [x: string]: number };
+  consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
   onCompleted?: (store: Store) => void;
   automatic?: boolean;
   tags?: string[];
@@ -97,10 +98,13 @@ export type Friend = {
   name: string;
   cost: number;
   description?: string;
+  finished?: boolean; // Just tracking development.
   abilities?: Ability[];
   super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;
   passiveEffects?: string[];
+  onAdded?: (store: Store) => void;
+  onRemoved?: (store: Store) => void;
 }
 
 export type Enemy = {

@@ -61,6 +61,7 @@ function startingTeamData(): base.TeamData {
   return {
     fruit: 1,
     packs: 1,
+    bestWeaponLevel: 1,
     unlocked: startingUnlocked(),
     discovered: startingDiscovered(),
     name: 'Unnamed Guild',
