@@ -22,14 +22,6 @@ The starting weapon level is the square root of the highest level achieved.
           store.team.bestWeaponLevel = store.run.weaponLevel;
         }
       },
-    },
-    {
-      name: "Unforge",
-      duration: 5,
-      description: 'Damages the armor of the enemy.',
-      onCompleted(store) {
-        store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1);
-      },
     }],
     onAdded(store) {
       store.run.weaponLevel = Math.max(store.run.weaponLevel, Math.floor(Math.sqrt(store.team.bestWeaponLevel)));
@@ -44,6 +36,26 @@ An expert Anvilominator can upgrade your weapons in the midst of battle.
 The Anvilominator retains upgrades from earlier runs.
 The starting weapon level is the highest level achieved.
     `,
+      abilities: [{
+        name: "Forge",
+        duration: 5,
+        consumes: { gold: 1 },
+        description: (store) => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
+        onCompleted(store) {
+          store.run.weaponLevel += 1;
+          if (store.run.weaponLevel > store.team.bestWeaponLevel) {
+            store.team.bestWeaponLevel = store.run.weaponLevel;
+          }
+        },
+      },
+      {
+        name: "Unforge",
+        duration: 5,
+        description: 'Damages the armor of the enemy.',
+        onCompleted(store) {
+          store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1);
+        },
+      }],
       onAdded(store) {
         store.run.weaponLevel = store.team.bestWeaponLevel;
       },
@@ -79,7 +91,9 @@ Her enemies get struck with a curse that withers metals.
     name: 'Dark Chef',
     finished: true,
     cost: 4,
-    description: "A master of the culinary arts, Dark Chef fights by poisoning the enemies.",
+    description: `
+A master of the culinary arts, Dark Chef fights by poisoning the enemies.
+The only way to defend against his attacks is to wear layers of heavy armor.`,
     abilities: [{
       name: "Poison Strike",
       duration: 5,
@@ -88,7 +102,9 @@ Her enemies get struck with a curse that withers metals.
         store.addPoison(1);
       },
     }],
-    super: { name: 'Dark Sommelier' },
+    super: {
+      name: 'Dark Sommelier',
+    },
   },
   {
     name: 'Desert Rabbit',
@@ -122,7 +138,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
     name: 'Friend of Metal',
     description: 'A warrior equipped with high-quality metal armor and weapons.',
     finished: true,
-    cost: 2,
+    cost: 10,
     abilities: [{
       name: "Steel Jab",
       duration: 3,
@@ -167,7 +183,7 @@ He regrets learning it, for it has cost the life of his master.
   },
   {
     name: 'Lamplighter',
-    cost: 12,
+    cost: 6,
     finished: true,
     description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
@@ -224,7 +240,7 @@ At the lowest level, they discovered the entrance to the dungeon.
   },
   {
     name: 'The Silent Song',
-    cost: 27,
+    cost: 2,
     finished: true,
     description: "Her sweet melody doubles the damage dealt by friends standing next to her.",
     super: {

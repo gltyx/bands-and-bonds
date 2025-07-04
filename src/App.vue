@@ -82,7 +82,7 @@ onUnmounted(() => {
         </div>
         <div id="header-fruit" class="numbers">
           <template v-if="fruitAvailable">{{ numberFormat(fruitAvailable) }}
-            <img src="/images/generated/fruit.webp" class="header-icon" />
+            <img src="/images/generated/fruit.webp" class="header-icon" title="Gold spoils. Fruit is forever." />
           </template>
           {{ numberFormat(store.team.packs) }}
           <img src="/images/generated/pack.webp" class="header-icon" />

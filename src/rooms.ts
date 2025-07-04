@@ -8,7 +8,7 @@ export const allRooms: Room[] = [
   },
   { x: 407, y: 484, type: "combat", name: "Wild Slime", label: 'enter', },
   {
-    x: 407, y: 419, type: "rescue", name: "Friend of Metal",
+    x: 407, y: 419, type: "rescue", name: "Lamplighter",
     next: {
       'Turn left': {
         label: 'left1',
@@ -27,19 +27,19 @@ export const allRooms: Room[] = [
   { x: 455, y: 419, type: "combat", name: 'Poison Crow', label: 'right1' },
   { x: 501, y: 419, type: "combat", name: 'Animated Skeleton' },
   { x: 501, y: 477, type: "combat", name: 'Thick Door' },
-  { x: 454, y: 477, type: "rescue", name: 'Lamplighter', end: true },
+  { x: 454, y: 477, type: "rescue", name: 'Friend of Metal', end: true },
 
   { x: 345, y: 419, type: "combat", name: 'Bandlings', label: 'left1' },
   { x: 304, y: 419, type: "none" },
   { x: 304, y: 493, type: "none" },
   { x: 350, y: 493, type: "none" },
-  { x: 350, y: 461, type: "rescue", name: 'Dark Chef', end: true },
+  { x: 350, y: 461, type: "rescue", name: 'The Silent Song', end: true },
 
   {
-    x: 407, y: 359, type: "boss", label: 'straight1', name: 'Trollish Maiden',
+    x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dead Gladiator',
     next: { 'Turn left': { label: 'main-left' }, 'Turn right': { label: 'main-right' } }
   },
-  { x: 342, y: 359, type: "rescue", name: 'Royal Fruitbearer', label: 'main-left' },
+  { x: 342, y: 359, type: "rescue", name: 'Dark Chef', label: 'main-left' },
   { x: 288, y: 359, type: "none" },
   { x: 288, y: 343, type: "combat", name: "Lobster Daddy" },
   { x: 288, y: 293, type: "combat", name: 'Jaw Maw Maw' },
@@ -148,7 +148,7 @@ export const allRooms: Room[] = [
   { x: 474, y: 359, type: "rescue", name: 'Anvilomancer', label: 'main-right', },
   { x: 501, y: 359, type: "none" },
   {
-    x: 501, y: 322, type: "combat",
+    x: 501, y: 322, type: "combat", name: 'Frozen Centurion',
     next: { 'Turn left': { label: 'left10' }, 'Turn right': { label: 'right10' } },
   },
   { x: 459, y: 322, type: "combat", label: 'left10' },

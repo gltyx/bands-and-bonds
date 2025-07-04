@@ -50,8 +50,9 @@ button {
   margin: 5px;
 }
 
-button[disabled] {
-  border: none !important;
+button[disabled],
+button.disabled {
+  border-color: transparent !important;
   cursor: not-allowed;
 }
 

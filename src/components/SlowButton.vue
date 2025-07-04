@@ -20,6 +20,7 @@ function done() {
   }
 }
 function start() {
+  if (!affordable.value || running.value) return;
   if (!props.duration) return;
   if (store.run.timers[props.timerKey]) {
     store.run.timers[props.timerKey].cb = done;
@@ -32,13 +33,17 @@ function style() {
   if (!props.duration) {
     return {};
   }
-  const percent = (store.run.timers[props.timerKey]?.time ?? 0) / props.duration * 100;
+  if (!store.run.timers[props.timerKey]) {
+    return { 'background': '#333' };
+  }
+  const percent = (store.run.timers[props.timerKey].time ?? 0) / props.duration * 100;
   const color = '#486';
   const bgColor = '#333';
   return {
-    'background': `
+    border: `1px solid ${color} !important`,
+    background: `
     linear-gradient(
-      to right,
+      95deg,
       ${color}, ${percent}%, ${color}, ${percent}%, ${bgColor}, ${bgColor}
       ) no-repeat` };
 }
@@ -59,12 +64,14 @@ onMounted(() => {
 onUnmounted(() => {
   if (store.run.timers[props.timerKey]) {
     delete store.run.timers[props.timerKey];
+    // Refund gold.
+    store.run.gold += props.cost;
   }
 });
 </script>
 
 <template>
-  <button @click="start()" :style="style()" :disabled="!affordable || running" class="slow">
+  <button @click="start()" :style="style()" :class="{ disabled: !affordable || running }" class="slow">
     <img v-bind:src="props.image" />
     <div class="text">
       <div class="cost" v-if="props.cost > 0" :class="{ unaffordable: !affordable }">

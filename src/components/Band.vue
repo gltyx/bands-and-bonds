@@ -170,7 +170,7 @@ const enabled = computed(() => {
     <Packs :amount="store.team.packs - packsSpent" />
     to hire more members.
     <button class="buy-pack-button" @click="buyPack()"
-      :disabled="store.team.fruit < costOfPacks(store.team.packs + 1)">Buy
+      :class="{ unaffordable: store.team.fruit < costOfPacks(store.team.packs + 1) }">Buy
       <Packs :amount="1" />
       for
       <Fruit :amount="costOfPacks(store.team.packs + 1) - costOfPacks(store.team.packs)" />
@@ -195,7 +195,7 @@ const enabled = computed(() => {
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <p v-if="!enabled" class="description" style="color: #edb; margin-bottom: 0;">
-    You cannot change your band now. Enemies are nearby.
+    You cannot change your band now. Enemies are nearby. Retreat to a safe place to make changes.
   </p>
   <div class="below-grid">
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
@@ -374,6 +374,10 @@ h2 {
 .buy-pack-button {
   width: auto;
   font-size: 15px;
+}
+
+.buy-pack-button.unaffordable .numbers {
+  color: red;
 }
 
 .disabled button:hover {

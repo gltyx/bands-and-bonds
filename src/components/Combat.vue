@@ -224,7 +224,7 @@ function goldPrice(ab: Ability) {
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
-      label="Armor" />
+      label="Armor" title="Armor is subtracted from damage" />
   </div>
   <div class="rescue" v-if="justRescued">
     <img :src="`images/generated/${justRescued.name}.webp`" :alt="justRescued.name" />
@@ -240,7 +240,7 @@ function goldPrice(ab: Ability) {
   <div class="scene" v-else-if="rescuedFriend">
     <img src="/images/generated/camp.webp" alt="Adventurers around a campfire" />
     <h1>Camping</h1>
-    <p class="description">You had rescued {{ rescuedFriend.name }} here. You stop to recover your strength.</p>
+    <p class="description">You rescued {{ rescuedFriend.name }} here earlier. You stop to recover your strength.</p>
   </div>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
   <div class="actions">
@@ -266,7 +266,7 @@ function goldPrice(ab: Ability) {
     </template>
     <template v-else>
       <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
-        description="We must help each other out." image="/images/generated/rescue-unlock.webp"
+        description="Take the poor creature with you." image="/images/generated/rescue-unlock.webp"
         @done="unlockRescue()" />
       <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
