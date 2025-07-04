@@ -15,12 +15,6 @@ function imageFor(row: number, col: number): string | undefined {
   const imageName = nextTo('Azrekta', row, col) && friend.super?.name || friend.name;
   return `images/generated/${imageName}.webp`;
 }
-function available(row: number, col: number): boolean {
-  const dist = Math.max(Math.abs(row - 2), Math.abs(col - 2));
-  if (lightRadius.value === 'radius3') return true;
-  if (lightRadius.value === 'radius2') return dist <= 1;
-  return dist === 0;
-}
 function remove(key: number) {
   const name = store.local.band[key];
   const friend = friendsByName[name];
@@ -34,7 +28,7 @@ function remove(key: number) {
 function set(row: number, col: number, name: string) {
   if (!enabled.value) return;
   const cost = friendsByName[name]?.cost ?? 0;
-  if (store.team.packs >= packsSpent.value + cost && !onboard(name) && available(row, col)) {
+  if (store.team.packs >= packsSpent.value + cost && !onboard(name) && store.available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
     const friend = friendsByName[name];
     if (friend.super?.name && onboard(friend.super.name)) {
@@ -46,14 +40,12 @@ function set(row: number, col: number, name: string) {
 }
 function clear(row: number, col: number) {
   if (!enabled.value) return;
-  selected.value = friendAt(row, col)?.name;
-  if (!selected.value) return;
   const band = store.local.band;
   remove(col + row * band.width);
   // Drop anyone who is now on unlit tiles.
   for (let r = 0; r < band.height; r++) {
     for (let c = 0; c < band.width; c++) {
-      if (!available(r, c)) {
+      if (!store.available(r, c)) {
         const place = c + r * band.width;
         const friend = band[place];
         if (friend) {
@@ -63,15 +55,6 @@ function clear(row: number, col: number) {
     }
   }
 }
-
-const lightRadius = computed(() => {
-  const lamplighter = friendAt(2, 2)?.name === 'Lamplighter';
-  if (!lamplighter) return 'radius1';
-  if (nextTo('Azrekta', 2, 2)) {
-    return 'radius3';
-  }
-  return 'radius2';
-});
 
 const selectedFriend = computed(() => {
   const band = store.local.band;
@@ -122,7 +105,8 @@ const bonds = computed(() => {
   for (let row = 0; row < band.height; row++) {
     for (let col = 0; col < band.width; col++) {
       const place = col + row * band.width;
-      if (!band[place]) continue;
+      const friend = band[place];
+      if (!friend) continue;
       for (const name of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
         const bond = nextTo(name, row, col);
         if (bond) {
@@ -131,6 +115,16 @@ const bonds = computed(() => {
             style: bond[0] === row ?
               `left: ${(col + bond[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
               `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + bond[0] + 1) * 103 / 2 - 15}px;`,
+          });
+        }
+      }
+      if (friend === 'Knight of Claws') {
+        for (const p of store.emptySpacesAround(row, col)) {
+          bonds.push({
+            image: 'chain',
+            style: p.row === row ?
+              `left: ${(col + p.col + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
+              `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + p.row + 1) * 103 / 2 - 15}px;`,
           });
         }
       }
@@ -177,14 +171,14 @@ const enabled = computed(() => {
     </button>
   </p>
   <div class="band-grid" :class="{ enabled, disabled: !enabled }">
-    <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="lightRadius" />
+    <img class="light-ring" :src="`images/generated/light-ring.webp`" :class="store.lightRadius()" />
     <div class="band-row" v-for="(_, row) in store.local.band.height" :key="row">
       <template v-for="(_, col) in store.local.band.width" :key="col">
-        <button v-if="friendAt(row, col)" class="band-cell" :class="{ unavailable: !available(row, col) }"
+        <button v-if="friendAt(row, col)" class="band-cell" :class="{ unavailable: !store.available(row, col) }"
           @click="friendClicked(row, col)" :aria-label="friendAt(row, col)?.name ?? ''">
           <img v-if="friendAt(row, col)" :src="imageFor(row, col)" />
         </button>
-        <button v-else-if="available(row, col)" class="band-cell" @click="selected && set(row, col, selected)"
+        <button v-else-if="store.available(row, col)" class="band-cell" @click="selected && set(row, col, selected)"
           aria-label="+">
           ＋
         </button>

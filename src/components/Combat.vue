@@ -88,7 +88,7 @@ const fighting = computed(() => {
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
     Object.assign(store.run, startingRunData());
-    for (const friend in bandByName.value) {
+    for (const friend in store.bandByName()) {
       const f = friendsByName[friend];
       f.onAdded?.(store);
     }
@@ -141,7 +141,7 @@ const passiveEffects = computed(() => {
       `${enemy.value.name} dodges attacks that take longer than ${enemy.value.dodge} seconds.
       Faster attacks have a chance to hit.`);
   }
-  for (const name of Object.keys(bandByName.value)) {
+  for (const name in store.bandByName()) {
     const friend = friendsByName[name];
     if (friend?.passiveEffects) {
       effects.push(...friend.passiveEffects);

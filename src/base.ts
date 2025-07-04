@@ -62,6 +62,11 @@ export type Store = {
   currentPath: () => Room[];
   addDamage: (amount: number) => void;
   addPoison: (amount: number) => void;
+  bandByName: () => Record<string, { row: number; col: number }>;
+  onboard: (name: string) => { row: number; col: number } | undefined;
+  emptySpacesAround: (row: number, col: number) => { row: number; col: number }[];
+  available: (row: number, col: number) => boolean;
+  lightRadius: () => string;
 };
 
 export type Turn = {
@@ -86,7 +91,7 @@ export type Ability = {
   image?: string;
   description: string | ((store: Store) => string);
   duration: number;
-  damage?: number;
+  damage?: number | ((store: Store) => number);
   consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
   onCompleted?: (store: Store) => void;
   automatic?: boolean;

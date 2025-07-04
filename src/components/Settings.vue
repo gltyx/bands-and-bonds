@@ -43,7 +43,7 @@ function unlockEverything() {
           When enabled, you can play Bands & Bonds with friends.
         </div>
         <p class="description">
-          You share persistent progress, but everyone can go on dungeon runs independently.
+          You share persistent progress, and everyone can go on dungeon runs independently.
         </p>
       </div>
     </button>

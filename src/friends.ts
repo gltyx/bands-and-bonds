@@ -165,17 +165,20 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   },
   {
     name: 'Knight of Claws',
-    cost: 70,
+    cost: 13,
     finished: true,
     description: `
-Trained as an assassin, the Knight of Claws is the only person in the world who knows the deadly art of "Vulture's Claw".
-He regrets learning it, for it has cost the life of his master.
+Trained as an assassin, the Knight of Claws works best on his own. His power doubles for every empty space next to him.
     `,
     abilities: [{
-      name: "Vulture's Claw",
+      name: "Claws & Thorns",
       duration: 100,
-      consumes: { gold: 100 },
-      description: "Kills the enemy.",
+      damage(store) {
+        const pos = store.onboard('Knight of Claws');
+        const empty = pos ? store.emptySpacesAround(pos.row, pos.col).length : 0;
+        return 100 * 2 ** empty;
+      },
+      description: "A whirlwind of sharp blades ravages the battlefield.",
       onCompleted(store) {
         store.addDamage(store.currentEnemy()?.health ?? 0);
       },

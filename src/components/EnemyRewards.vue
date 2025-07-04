@@ -6,14 +6,15 @@ import Fruit from './Fruit.vue';
 const props = defineProps<{
   enemy: Enemy;
 }>();
-import { bandByName, onboard } from '../store.ts';
+import { store } from '../store.ts';
 const fruit = computed(() => {
   let fruit = props.enemy.rewards?.fruit ?? 0;
-  if (onboard('Royal Fruitbearer')) {
-    fruit *= Object.keys(bandByName.value).length;
+  const bandSize = Object.keys(store.bandByName()).length;
+  if (store.onboard('Royal Fruitbearer')) {
+    fruit *= bandSize;
   }
-  if (onboard('Royal Fruitwearer')) {
-    fruit *= Object.keys(bandByName.value).length - 1;
+  if (store.onboard('Royal Fruitwearer')) {
+    fruit *= bandSize - 1;
   }
   return fruit;
 });

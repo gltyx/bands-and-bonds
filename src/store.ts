@@ -94,7 +94,42 @@ export const store: base.Store = {
     const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
     store.run.room.poison += Math.max(0, x * store.run.weaponLevel - armor);
   },
-};
+  bandByName() {
+    return bandByName.value;
+  },
+  onboard(name: string) {
+    return onboard(name);
+  },
+  emptySpacesAround(row: number, col: number) {
+    const empty: { row: number, col: number }[] = [];
+    for (const [r, c] of [[row - 1, col], [row + 1, col], [row, col - 1], [row, col + 1]] as [number, number][]) {
+      const place = c + r * store.local.band.width;
+      if (store.available(r, c) && !store.local.band[place]) {
+        empty.push({ row: r, col: c });
+      }
+    }
+    return empty;
+  },
+  available(row: number, col: number): boolean {
+    const dist = Math.max(Math.abs(row - 2), Math.abs(col - 2));
+    if (lightRadius.value === 'radius3') return dist <= 2;
+    if (lightRadius.value === 'radius2') return dist <= 1;
+    return dist === 0;
+  },
+  lightRadius() {
+    return lightRadius.value;
+  },
+}
+
+const lightRadius = computed(() => {
+  const lamplighter = friendAt(2, 2)?.name === 'Lamplighter';
+  if (!lamplighter) return 'radius1';
+  if (nextTo('Azrekta', 2, 2)) {
+    return 'radius3';
+  }
+  return 'radius2';
+});
+
 watch(store.run, (newValue) => {
   localStorage.setItem('bnb-run', JSON.stringify(newValue))
 }, { deep: true });
@@ -194,7 +229,11 @@ export function describeAbility(ab: base.Ability): string {
 
 export function getAbilityDamage(ab: base.Ability): number {
   if (!ab.damage) return 0;
-  let dmg = ab.damage * store.run.weaponLevel;
+  let dmg = ab.damage;
+  if (typeof dmg === "function") {
+    dmg = dmg(store);
+  }
+  dmg *= store.run.weaponLevel;
   if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
     dmg *= 2;
   }
