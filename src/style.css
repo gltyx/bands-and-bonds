@@ -33,6 +33,13 @@ body {
   min-height: 100vh;
 }
 
+strong {
+  font-family: "Grenze Gotisch", serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
 button {
   font-family: "Bellefair", serif;
   border-radius: 8px;

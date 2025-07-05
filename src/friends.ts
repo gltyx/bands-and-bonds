@@ -294,7 +294,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     name: 'Kit Flash',
     cost: 8,
     finished: true,
-    description: "A wizard of speed, Kit Flash can _run_ faster than the eye can see. He is able to speed up the abilities of every member of the band.",
+    description: "A wizard of speed, Kit Flash can speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
       duration: 10,
@@ -306,6 +306,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     }],
     super: {
       name: 'Kit Storming',
+      description: "A wizard of speed, Kit Storming can speed up the abilities of every member of the band.",
       abilities: [{
         name: "Running Start",
         duration: 10,
@@ -422,77 +423,17 @@ The Xaranthian factories in turn are built by Xaranthian Constructors. This one 
 a Xaranthian person, and neither has anyone else in your band.
     `,
     abilities: [{
-      name: "Construct Factory",
-      consumes: { gold: 1 },
+      name: "Construct Grower",
+      consumes: { gold: 10 },
       duration: 5,
       description: (store) =>
-        `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${store.run.room.xaranthian.factories} factories.)` : ''}`,
+        `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
       onCompleted(store) {
-        store.run.room.xaranthian.factories += 1;
-      },
-    }, {
-      name: "Produce Turtle",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.factories !== 1,
-      duration: 5,
-      description: (store) =>
-        `Build a mechanical turtle in the factory.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
-      },
-    }, {
-      name: "Produce Turtles",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.factories < 2,
-      duration: 5,
-      description: (store) =>
-        `Build ${store.run.room.xaranthian.factories} mechanical turtles in the factories.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
-      },
-    }, {
-      name: "Build Deployer",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.turtles !== 1,
-      duration: 5,
-      description: (store) =>
-        `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
-      }
-    }, {
-      name: "Build Deployers",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.turtles < 2,
-      duration: 5,
-      description: (store) =>
-        `Build ${store.run.room.xaranthian.turtles} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
-      }
-    }, {
-      name: "Deploy Grower",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.deployers !== 1,
-      duration: 5,
-      description: (store) =>
-        `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
-      }
-    }, {
-      name: "Deploy Growers",
-      consumes: { gold: 1 },
-      hidden: (store) => store.run.room.xaranthian.deployers < 2,
-      duration: 5,
-      description: (store) =>
-        `Deploy ${store.run.room.xaranthian.deployers} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
-      onCompleted(store) {
-        store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
+        store.run.room.xaranthian.growers += 1;
       }
     }, {
       name: "Grow Gun",
-      consumes: { gold: 1 },
+      consumes: { gold: 10 },
       hidden: (store) => store.run.room.xaranthian.growers !== 1,
       duration: 5,
       description: (store) =>
@@ -502,7 +443,7 @@ a Xaranthian person, and neither has anyone else in your band.
       },
     }, {
       name: "Grow Guns",
-      consumes: { gold: 1 },
+      consumes: { gold: 10 },
       hidden: (store) => store.run.room.xaranthian.growers < 2,
       duration: 5,
       description: (store) =>
@@ -525,6 +466,108 @@ a Xaranthian person, and neither has anyone else in your band.
     }],
     super: {
       name: 'Xaranthian Power Constructor',
+      abilities: [{
+        name: "Construct Factory",
+        consumes: { gold: 10 },
+        duration: 5,
+        description: (store) =>
+          `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${store.run.room.xaranthian.factories} factories.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.factories += 1;
+        },
+      }, {
+        name: "Produce Turtle",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.factories !== 1,
+        duration: 5,
+        description: (store) =>
+          `Build a mechanical turtle in the factory.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
+        },
+      }, {
+        name: "Produce Turtles",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.factories < 2,
+        duration: 5,
+        description: (store) =>
+          `Build ${store.run.room.xaranthian.factories} mechanical turtles in the factories.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
+        },
+      }, {
+        name: "Build Deployer",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.turtles !== 1,
+        duration: 5,
+        description: (store) =>
+          `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
+        }
+      }, {
+        name: "Build Deployers",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.turtles < 2,
+        duration: 5,
+        description: (store) =>
+          `Build ${store.run.room.xaranthian.turtles} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
+        }
+      }, {
+        name: "Deploy Grower",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.deployers !== 1,
+        duration: 5,
+        description: (store) =>
+          `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
+        }
+      }, {
+        name: "Deploy Growers",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.deployers < 2,
+        duration: 5,
+        description: (store) =>
+          `Deploy ${store.run.room.xaranthian.deployers} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
+        }
+      }, {
+        name: "Grow Gun",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.growers !== 1,
+        duration: 5,
+        description: (store) =>
+          `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
+        },
+      }, {
+        name: "Grow Guns",
+        consumes: { gold: 10 },
+        hidden: (store) => store.run.room.xaranthian.growers < 2,
+        duration: 5,
+        description: (store) =>
+          `Grow ${store.run.room.xaranthian.growers} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+        onCompleted(store) {
+          store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
+        }
+      }, {
+        name: "Fire Xaranthian Gun",
+        hidden: (store) => store.run.room.xaranthian.guns !== 1,
+        duration: 5,
+        description: "Fire the mechanical gun.",
+        damage: 1,
+      }, {
+        name: "Fire Xaranthian Guns",
+        hidden: (store) => store.run.room.xaranthian.guns < 2,
+        duration: 5,
+        description: (store) => `Fire ${store.run.room.xaranthian.guns} mechanical guns.`,
+        damage: (store) => store.run.room.xaranthian.guns,
+      }],
     },
   },
 ];
