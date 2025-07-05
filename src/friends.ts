@@ -86,6 +86,17 @@ Her enemies become ethereal, making them challenging to hit.
       damage: 1000000000,
       tags: ['sharp', 'cold'],
     }],
+    super: {
+      name: 'Hotblade',
+      description: "A frozen warrior, now with a hot blade. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
+      abilities: [{
+        name: "Glacial Flame Strike",
+        description: "A very hot blade with a very sharp edge.",
+        duration: 3600 * 24 * 365 * 1000,
+        damage: 1000000000,
+        tags: ['sharp', 'fire'],
+      }],
+    },
   },
   {
     name: 'Dark Chef',
@@ -387,11 +398,11 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
     },
   },
   {
-    name: 'Pequer',
+    name: 'Pecquer',
     cost: 50,
     description: "",
     super: {
-      name: 'Le Pequer',
+      name: 'Le Pecquer',
     },
   },
   {

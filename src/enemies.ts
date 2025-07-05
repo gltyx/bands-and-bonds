@@ -26,7 +26,7 @@ export const allEnemies: Enemy[] = [
   { name: 'Lobster Daddy', health: 100, armor: 100, rewards: { gold: 10, fruit: 10 } },
   { name: 'Jaw Maw Maw', health: 100, rewards: { gold: 1, fruit: 1 } },
   { name: 'Will-o-Wasp', health: 100, rewards: { gold: 1, fruit: 1 }, dodge: 1 },
-  { name: 'Clockomancer', health: 100, immune: ['speed'], rewards: { gold: 1, fruit: 1 } },
+  { name: 'Clockomancer', health: 100000, immune: ['speed'], rewards: { fruit: 1000 } },
   { name: 'Fortified Door', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Master of Doors', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
   { name: 'The Shroud', health: 1000, rewards: { gold: 1, fruit: 1 } },

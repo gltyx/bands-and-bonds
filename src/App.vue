@@ -20,12 +20,16 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
-  const deltaTime = currentTime - lastFrameTime.value;
+  let deltaTime = currentTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   const multiplier = window.location.hostname === 'localhost' ? 100 : 1;
+  deltaTime *= multiplier;
+  if (!store.currentEnemy()?.immune?.includes('time')) {
+    deltaTime *= store.run.speedLevel;
+  }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    t.time += Math.floor(deltaTime * multiplier) * store.run.speedLevel;
+    t.time += Math.floor(deltaTime);
     if (t.time >= t.duration) {
       delete store.run.timers[key];
       t.cb?.(t);

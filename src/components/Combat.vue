@@ -112,7 +112,7 @@ const possibleTurns = computed(() => {
 });
 
 const plannedTurn = computed(() => {
-  if (!onboard("Wayfinder") || !store.local.destination) return;
+  if (store.run.steps === 0 || !onboard("Wayfinder") || !store.local.destination) return;
   const room = store.currentRoom();
   if (room.end) return;
   const path = destinationToPath(store.local.destination);
