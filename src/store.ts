@@ -13,6 +13,13 @@ export function startingRoomData(): base.RoomData {
     armorDamage: 0,
     poison: 0,
     kills: 0,
+    xaranthian: {
+      factories: 0,
+      turtles: 0,
+      deployers: 0,
+      growers: 0,
+      guns: 0,
+    },
   };
 }
 export function startingRunData(): base.RunData {

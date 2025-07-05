@@ -9,18 +9,19 @@ export const allEnemies: Enemy[] = [
     name: 'Poison Crow', health: 20, rewards: { gold: 2, fruit: 0 }, weaknesses: ['fire', 'ice', 'left'],
     abilities: [{
       name: 'Crow Blast', duration: 5, description: 'An explosion of feathers and poison.',
-      onCompleted(store) { store.addPoison(1); },
+      onCompleted(store) { store.addPoison(10); },
     }],
   },
   {
-    name: 'Animated Skeleton', health: 50, immune: ['poison'], rewards: { gold: 5, fruit: 5 }, weaknesses: ['front', 'blunt'],
-    abilities: [{ name: 'Femurs Clashing', duration: 5, damage: 3, description: 'Bones to bones. Ashes to ashes.', }],
+    name: 'Animated Skeleton', health: 50, rewards: { gold: 5, fruit: 5 }, weaknesses: ['front', 'blunt'],
+    abilities: [{ name: 'Femurs Clashing', duration: 5, damage: 30, description: 'Bones to bones. Ashes to ashes.', }],
   },
   {
     name: 'Thick Door', health: 10, rewards: { gold: 0, fruit: 0 }, armor: 3, weaknesses: ['fire', 'blunt', 'back'],
     abilities: [{ name: 'Creaking', duration: 10, damage: 0, description: 'The door creaks ominously.', }],
   },
   { name: 'Bandlings', health: 5, rewards: { gold: 5, fruit: 2 }, count: 5 },
+  { name: 'Dead Gladiator', health: 100, armor: 10, rewards: { gold: 10, fruit: 10 } },
   { name: 'Trollish Maiden', health: 1000, regen: 3, rewards: { gold: 8, fruit: 10 }, passiveEffects: ['The Trollish Maiden heals quickly.'] },
   { name: 'Lobster Daddy', health: 100, armor: 100, rewards: { gold: 10, fruit: 10 } },
   { name: 'Jaw Maw Maw', health: 100, rewards: { gold: 1, fruit: 1 } },
@@ -38,7 +39,6 @@ export const allEnemies: Enemy[] = [
   { name: 'Striped Horror', health: 1000000, rewards: { gold: 10, fruit: 10 } },
   { name: 'Zakatrixos', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'King of Tadpoles', health: 1000000, rewards: { gold: 1, fruit: 1 } },
-  { name: 'Dead Gladiator', health: 100, armor: 10, rewards: { gold: 10, fruit: 10 } },
   { name: 'Skelemasterion', health: 1000000, rewards: { gold: 1000, fruit: 1000 } },
 ];
 

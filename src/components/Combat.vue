@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, bandByName, getAbilityDamage } from "../store.ts";
+import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import type { Ability, Friend, Turn, Enemy } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
@@ -24,6 +24,7 @@ const abilities = computed(() => {
       const az = nextTo('Azrekta', row, col);
       const abs = (az && friend.super?.abilities) || friend.abilities || [];
       for (const ab of abs) {
+        if (ab.hidden?.(store)) continue;
         abilities.push({ ...ab, automatic, source: { name: friend.name, row, col } });
         if (automatic) {
           startTimer(ab);

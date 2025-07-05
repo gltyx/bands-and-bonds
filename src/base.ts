@@ -10,12 +10,21 @@ export type Band = {
   [x: number]: string;
 };
 
+export type Xaranthian = {
+  factories: number;
+  turtles: number;
+  deployers: number;
+  growers: number;
+  guns: number;
+};
+
 export type RoomData = {
   // Everything specific to the current room. Deleted when leaving the room.
   damage: number;
   armorDamage: number;
   poison: number;
   kills: number;
+  xaranthian: Xaranthian;
 };
 export type RunData = {
   // Everything specific to the current run. Deleted when the run ends.
@@ -89,6 +98,7 @@ export type Room = {
 export type Ability = {
   name: string;
   image?: string;
+  hidden?: ((store: Store) => boolean);
   description: string | ((store: Store) => string);
   duration: number;
   damage?: number | ((store: Store) => number);

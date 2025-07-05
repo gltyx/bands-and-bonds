@@ -210,7 +210,7 @@ const enabled = computed(() => {
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :image="`images/generated/${ab.name}.webp`" />
+          :image="`images/generated/${ab.name}.webp`" v-if="!ab.hidden?.(store)" />
       </template>
     </div>
   </div>
