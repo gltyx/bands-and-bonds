@@ -60,6 +60,9 @@ function executeAbility(ab: Ability) {
         return;
       }
     }
+    if (onboard("Azrekta") && Math.random() < 0.9) {
+      return; // Ethereal enemy.
+    }
     let dmg = getAbilityDamage(ab);
     if (enemy.value && onboard("Desert Rabbit")) {
       for (const weakness of getWeaknesses(enemy.value)) {
@@ -148,6 +151,9 @@ const passiveEffects = computed(() => {
       effects.push(...friend.passiveEffects);
     }
   }
+  if (enemy.value && onboard("Azrekta")) {
+    effects.push("Enemy is ethereal. Most attacks will miss.");
+  }
   if (enemy.value && onboard("Desert Rabbit")) {
     const weaknesses = [];
     for (const weakness of getWeaknesses(enemy.value)) {
@@ -221,7 +227,7 @@ function goldPrice(ab: Ability) {
       </div>
     </template>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name"
+    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :class="{ ethereal: onboard('Azrekta') }"
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
@@ -326,6 +332,13 @@ function goldPrice(ab: Ability) {
   border-radius: 40%;
   border: 2px outset #edb;
   box-shadow: 0 0 10px #000;
+}
+
+.enemy img.ethereal {
+  border-top-color: #ace;
+  border-left-color: #e8c;
+  border-bottom-color: #e8c;
+  border-right-color: #8af;
 }
 
 .rescue {

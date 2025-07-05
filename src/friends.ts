@@ -66,11 +66,11 @@ The starting weapon level is the highest level achieved.
   },
   {
     name: 'Azrekta',
-    cost: 20,
+    cost: 25,
     finished: true,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
-Her enemies get struck with a curse that withers metals.
+Her enemies become ethereal, making them challenging to hit.
     `,
     abilities: [],
   },
