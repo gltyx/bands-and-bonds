@@ -75,6 +75,12 @@ function startingTeamData(): base.TeamData {
   };
 }
 
+const dataVersion = localStorage.getItem('bnb-version');
+if (dataVersion !== '1') {
+  localStorage.clear();
+  localStorage.setItem('bnb-version', '1');
+  window.location.reload();
+}
 const loadedRunData = localStorage.getItem('bnb-run');
 export const runData = reactive<base.RunData>(loadedRunData ? JSON.parse(loadedRunData) : startingRunData());
 const loadedLocal = localStorage.getItem('bnb-local');
