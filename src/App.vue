@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
 import Settings from './components/Settings.vue'
 import { store } from './store.ts'
-import { numberFormat } from './base';
+import { numberFormat, costOfPacks } from './base';
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
@@ -76,6 +76,8 @@ function mainLoop() {
   animationFrameId.value = requestAnimationFrame(mainLoop);
 }
 
+const fruit = computed(() => store.team.fruit + store.run.fruit - costOfPacks(store.team.packs));
+
 onMounted(() => {
   animationFrameId.value = requestAnimationFrame(mainLoop);
 });
@@ -107,7 +109,7 @@ onUnmounted(() => {
           <img src="/images/generated/logo.webp" alt="B" />onds
         </div>
         <div id="header-fruit" class="numbers">
-          <template v-if="store.availableFruit()">{{ numberFormat(store.availableFruit()) }}
+          <template v-if="fruit">{{ numberFormat(fruit) }}
             <img src="/images/generated/fruit.webp" class="header-icon" title="Gold spoils. Fruit is forever." />
           </template>
           &nbsp;

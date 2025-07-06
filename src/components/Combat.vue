@@ -26,30 +26,13 @@ const abilities = computed(() => {
       for (const ab of abs) {
         if (ab.hidden?.(store)) continue;
         abilities.push({ ...ab, automatic, source: { name: friend.name, row, col } });
-        if (automatic) {
-          startTimer(ab);
-        }
       }
     }
   }
   return abilities;
 });
 
-function startTimer(ab: Ability) {
-  const key = `ability-${ab.name}`;
-  if (!store.run.timers[key]) {
-    store.run.timers[key] = {
-      duration: ab.duration * 1000,
-      time: 0,
-      cb: () => executeAbility(ab),
-    };
-  }
-}
-
 function executeAbility(ab: Ability) {
-  if (ab.automatic && fighting.value) {
-    startTimer(ab);
-  }
   if (ab.onCompleted) {
     return ab.onCompleted(store);
   }
@@ -260,13 +243,13 @@ function abilityPrice(ab: Ability) {
       <template v-for="ab in abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
           :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
       </template>
       <div v-if="store.run.capturedAbilities.length > 0" class="section">Captured Monsters</div>
       <template v-for="ab in store.run.capturedAbilities">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
           :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
       </template>
       <div class="section">Navigation</div>
     </template>
@@ -321,7 +304,7 @@ function abilityPrice(ab: Ability) {
   align-items: center;
 
   h1 {
-    margin-top: -5px;
+    margin-top: 0;
     margin-bottom: 10px;
   }
 

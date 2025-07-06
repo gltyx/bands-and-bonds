@@ -195,9 +195,6 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
         return 100 * 2 ** empty;
       },
       description: "A whirlwind of sharp blades ravages the battlefield.",
-      onCompleted(store) {
-        store.addDamage(store.currentEnemy()?.health ?? 0);
-      },
     }],
   },
   {
@@ -393,6 +390,7 @@ but never worry or care about their wellbeing. They are free to pursue their des
 The Kin you found in the dungeon came here to search for treasure. They do not help out with fighting
 or taking care of the band. They are great at finding gold, though. All gold finds are doubled.
     `,
+    passiveEffects: ["Kin of Pump doubles the gold found after battles."],
     super: {
       name: 'King of Pump',
       description: `
@@ -402,6 +400,7 @@ but never worry or care about their wellbeing. They are free to pursue their des
 The Kin you found in the dungeon came here to search for treasure. They have now found a crown, and
 started to act like a king. They still do not help, but all gold finds are now squared.
     `,
+      passiveEffects: ["King of Pump squares the gold found after battles."],
     },
   },
   {
@@ -426,10 +425,10 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
     cost: 24,
     finished: true,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
-    passiveEffects: ['Mongreler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
+    passiveEffects: ['Mongreler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     super: {
       name: 'Monster Juggler',
-      passiveEffects: ['Monster Juggler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
+      passiveEffects: ['Monster Juggler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     },
   },
   {

@@ -77,7 +77,6 @@ export type Store = {
   emptySpacesAround: (row: number, col: number) => { row: number; col: number }[];
   available: (row: number, col: number) => boolean;
   lightRadius: () => string;
-  availableFruit: () => number;
   getRewards: (enemy: Enemy) => { gold: number; fruit: number };
 };
 
@@ -142,9 +141,12 @@ export type Enemy = {
 
 const _numberFormat = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 2,
 });
 export function numberFormat(x: number) {
+  if (x > 1_000_000_000) {
+    return `${_numberFormat.format(x / 1_000_000_000)} B`;
+  }
   return _numberFormat.format(x);
 }
 export function costOfPacks(packs: number): number {

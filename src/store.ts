@@ -4,7 +4,6 @@ import { allEnemies } from './enemies.ts';
 import { friendsByName } from './friends.ts';
 import * as base from './base';
 import * as online from './online.ts';
-import { costOfPacks } from './base';
 
 export function startingRoomData(): base.RoomData {
   // Everything specific to the current room. Deleted when leaving the room.
@@ -132,9 +131,6 @@ export const store: base.Store = {
   },
   lightRadius() {
     return lightRadius.value;
-  },
-  availableFruit() {
-    return store.team.fruit + store.run.fruit - costOfPacks(store.team.packs);
   },
   getRewards(enemy) {
     let gold = enemy.rewards?.gold ?? 0;

@@ -53,7 +53,11 @@ const description = computed(() => {
   return props.description ? marked(props.description) : "";
 });
 const affordable = computed(() => {
-  return store.run.gold >= (props.cost.gold ?? 0) && store.run.fruit >= (props.cost.fruit ?? 0);
+  const aff = store.run.gold >= (props.cost.gold ?? 0) && store.run.fruit >= (props.cost.fruit ?? 0);
+  if (aff && props.autostart) {
+    start();
+  }
+  return aff;
 });
 const running = computed(() => {
   return !!store.run.timers[props.timerKey];
