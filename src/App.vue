@@ -91,10 +91,16 @@ onUnmounted(() => {
   <div style="display: contents;" :class="{ 'blur-images': store.local.settings.blurImages }" class="app">
     <div class="header">
       <div class="header-header">
-        <div id="header-gold" class="numbers"><template v-if="store.run.gold">
+        <div id="header-gold" class="numbers">
+          <template v-if="store.run.gold">
             <img src="/images/generated/gold.webp" class="header-icon" />
             {{ numberFormat(store.run.gold) }}
-          </template></div>
+          </template>
+          <template v-if="store.run.saplings">
+            &nbsp;<img src="/images/generated/sapling.webp" class="header-icon" />
+            {{ numberFormat(store.run.saplings) }}
+          </template>
+        </div>
         <div class="logo title">
           <img src="/images/generated/logo.webp" alt="B" />ands
           <span style="color: #edb;">&nbsp;&&nbsp;</span>
@@ -104,6 +110,7 @@ onUnmounted(() => {
           <template v-if="store.availableFruit()">{{ numberFormat(store.availableFruit()) }}
             <img src="/images/generated/fruit.webp" class="header-icon" title="Gold spoils. Fruit is forever." />
           </template>
+          &nbsp;
           {{ numberFormat(store.team.packs) }}
           <img src="/images/generated/pack.webp" class="header-icon" />
         </div>
@@ -167,6 +174,7 @@ onUnmounted(() => {
   #header-gold,
   #header-fruit {
     flex: 1 1 25%;
+    white-space: nowrap;
   }
 
   .logo {

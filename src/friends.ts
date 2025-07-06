@@ -416,6 +416,7 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   {
     name: 'Smiling Pilot',
     cost: 50,
+    description: 'This mysterious fellow does not yet have an ability.',
     super: {
       name: 'Smiling Admiral',
     },
@@ -463,7 +464,7 @@ They found refuge in this dungeon and now in your band.
   {
     name: 'Pecquer',
     cost: 50,
-    description: "",
+    description: "This mysterious gentleman does not yet have an ability.",
     super: {
       name: 'Le Pecquer',
     },
