@@ -29,7 +29,7 @@ export const allEnemies: Enemy[] = [
   { name: 'Clockomancer', health: 100000, immune: ['speed'], rewards: { fruit: 1000 } },
   { name: 'Fortified Door', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Master of Doors', health: 100, armor: 1000, rewards: { gold: 1, fruit: 1 } },
-  { name: 'The Shroud', health: 1000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'The Shroud', health: 1000, ethereal: true, rewards: { gold: 1, fruit: 1 } },
   { name: 'Dark Lord', health: 10000, armor: 100, rewards: { gold: 10, fruit: 10 }, passiveEffects: ['The Dark Lord does not let you pass.'] },
   { name: 'Glass Dragon', health: 100000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Xaranthian Construct', health: 1000000, rewards: { gold: 1, fruit: 1 } },
@@ -37,7 +37,7 @@ export const allEnemies: Enemy[] = [
   { name: 'Frog Assassin', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Frozen Centurion', health: 1000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Striped Horror', health: 1000000, rewards: { gold: 10, fruit: 10 } },
-  { name: 'Zakatrixos', health: 1000000, rewards: { gold: 1, fruit: 1 } },
+  { name: 'Zakatrixos', health: 1000000, ethereal: true, rewards: { gold: 1, fruit: 1 } },
   { name: 'King of Tadpoles', health: 1000000, rewards: { gold: 1, fruit: 1 } },
   { name: 'Skelemasterion', health: 1000000, rewards: { gold: 1000, fruit: 1000 } },
 ];

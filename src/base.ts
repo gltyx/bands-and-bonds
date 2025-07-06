@@ -132,6 +132,7 @@ export type Enemy = {
   regen?: number;
   count?: number;
   dodge?: number; // Attacks slower than this will miss. Chance to hit ramps to 100% as duration approaches 0.
+  ethereal?: boolean;
   rewards?: { gold?: number, fruit?: number };
   abilities?: Ability[];
   passiveEffects?: string[];

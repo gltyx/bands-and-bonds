@@ -415,10 +415,31 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   },
   {
     name: 'Eighth Swimmer',
-    cost: 50,
-    description: "",
+    cost: 29,
+    description: `
+In the Landas Deserts the mages punish loud people by turning their bodies into water.
+The Eighth Swimmer was one of these unlucky people. Imagine walking among thirsty people
+everyday with a body made of water.
+
+They found refuge in this dungeon and now in your band.
+    `,
+    finished: true,
+    abilities: [{
+      name: "Flood",
+      duration: 10,
+      damage: 10,
+      description: "A deceptively slow attack that cannot be dodged.",
+      tags: ['water', 'undodgeable'],
+    }],
     super: {
       name: 'Seventh Swimmer',
+      abilities: [{
+        name: "Flood",
+        duration: 10,
+        damage: 10,
+        description: "A deceptively slow attack that fills up the battlefield. No attacks can be dodged while the flood is in progress.",
+        tags: ['water', 'undodgeable'],
+      }],
     },
   },
   {

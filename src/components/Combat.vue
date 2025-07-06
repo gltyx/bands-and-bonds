@@ -54,13 +54,15 @@ function executeAbility(ab: Ability) {
     return ab.onCompleted(store);
   }
   if (ab.damage) {
-    if (enemy.value?.dodge) {
+    const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
+    if (!undodgeable && enemy.value?.dodge) {
       const dodgeChance = Math.min(1, ab.duration / enemy.value.dodge);
       if (Math.random() < dodgeChance) {
         return;
       }
     }
-    if (onboard("Azrekta") && Math.random() < 0.9) {
+    const ethereal = onboard("Azrekta") || enemy.value?.ethereal;
+    if (!undodgeable && ethereal && Math.random() < 0.9) {
       return; // Ethereal enemy.
     }
     let dmg = getAbilityDamage(ab);
