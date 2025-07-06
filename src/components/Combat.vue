@@ -201,14 +201,14 @@ watch(() => store.run.steps, () => {
   }
 });
 
-function goldPrice(ab: Ability) {
+function abilityPrice(ab: Ability) {
   if (ab.consumes) {
     if (typeof ab.consumes === 'function') {
-      return ab.consumes(store).gold || 0;
+      return ab.consumes(store);
     }
-    return ab.consumes.gold || 0;
+    return ab.consumes;
   }
-  return 0;
+  return {};
 }
 </script>
 
@@ -257,14 +257,14 @@ function goldPrice(ab: Ability) {
     <template v-if="fighting">
       <template v-for="ab in abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="goldPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
-          @done="executeAbility(ab)" />
+          :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
       </template>
       <div v-if="store.run.capturedAbilities.length > 0" class="section">Captured Monsters</div>
       <template v-for="ab in store.run.capturedAbilities">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="goldPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
-          @done="executeAbility(ab)" />
+          :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
+          :duration="ab.duration * 1000" @done="executeAbility(ab)" />
       </template>
       <div class="section">Navigation</div>
     </template>

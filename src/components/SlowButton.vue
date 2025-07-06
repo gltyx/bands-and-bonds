@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, type PropType } from 'vue';
 import { store } from '../store.ts';
 import { marked } from 'marked';
 import Gold from './Gold.vue';
+import Fruit from './Fruit.vue';
 const props = defineProps({
   timerKey: { type: String, required: true },
   title: { type: String, required: true },
@@ -10,7 +11,7 @@ const props = defineProps({
   duration: { type: Number, required: false },
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
-  cost: { type: Number, default: 0 },
+  cost: { type: Object as PropType<{ gold?: number; fruit?: number }>, default: () => ({}) },
 });
 const emit = defineEmits(['done']);
 function done() {
@@ -25,7 +26,8 @@ function start() {
   if (store.run.timers[props.timerKey]) {
     store.run.timers[props.timerKey].cb = done;
   } else {
-    store.run.gold -= props.cost;
+    store.run.gold -= props.cost.gold || 0;
+    store.run.fruit -= props.cost.fruit || 0;
     store.run.timers[props.timerKey] = { duration: props.duration, cb: done };
   }
 }
@@ -51,7 +53,7 @@ const description = computed(() => {
   return props.description ? marked(props.description) : "";
 });
 const affordable = computed(() => {
-  return store.run.gold >= props.cost;
+  return store.run.gold >= (props.cost.gold ?? 0) && store.run.fruit >= (props.cost.fruit ?? 0);
 });
 const running = computed(() => {
   return !!store.run.timers[props.timerKey];
@@ -64,8 +66,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (store.run.timers[props.timerKey]) {
     delete store.run.timers[props.timerKey];
-    // Refund gold.
-    store.run.gold += props.cost;
+    // Refund price.
+    store.run.gold += props.cost.gold ?? 0;
+    store.run.fruit += props.cost.fruit ?? 0;
   }
 });
 </script>
@@ -74,8 +77,11 @@ onUnmounted(() => {
   <button @click="start()" :style="style()" :class="{ disabled: !affordable || running }" class="slow">
     <img v-bind:src="props.image" />
     <div class="text">
-      <div class="cost" v-if="props.cost > 0" :class="{ unaffordable: !affordable }">
-        <Gold :amount="props.cost" />
+      <div class="cost" v-if="(props.cost.gold ?? 0) > 0" :class="{ unaffordable: !affordable && !running }">
+        <Gold :amount="props.cost.gold ?? 0" />
+      </div>
+      <div class="cost" v-if="(props.cost.fruit ?? 0) > 0" :class="{ unaffordable: !affordable && !running }">
+        <Fruit :amount="props.cost.fruit ?? 0" />
       </div>
       <div class="title">{{ props.title }}</div>
       <div class="description" v-html="description"></div>

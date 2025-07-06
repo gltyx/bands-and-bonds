@@ -470,9 +470,33 @@ ${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class
   {
     name: 'Zaktar Kadoque',
     cost: 20,
-    description: "",
+    finished: true,
+    description: `
+Zaktar Kadoque is an explorer from another world. He was not trapped in his cage at all,
+rather he was examining it. He loves this dungeon and is very happy to have met your band.
+He is particularly interested in the fruit you're holding.
+    `,
+    abilities: [{
+      name: "Eat Fruit",
+      duration: 10,
+      consumes: { fruit: 1 },
+      description: 'Do you have too much fruit? Zaktar Kadoque can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
+      onCompleted(store) {
+        store.run.weaponLevel += 1;
+      },
+    }],
     super: {
       name: 'Zaktar Kadoque Karr',
+      description: "Zaktar finds great joy in exposure to Azrekta's magic. His appetite for new experiences knows no bounds.",
+      abilities: [{
+        name: "Eat Fruit",
+        duration: 10,
+        consumes: (store) => ({ fruit: store.run.weaponLevel }),
+        description: 'Do you have too much fruit? Zaktar Kadoque Karr can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
+        onCompleted(store) {
+          store.run.weaponLevel *= 2;
+        },
+      }],
     },
   },
   {
