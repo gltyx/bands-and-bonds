@@ -10,7 +10,7 @@ export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
     finished: true,
-    cost: 6,
+    cost: 5,
     description: `
 An expert Anvilomancer can upgrade your weapons in the midst of battle.
 Upgrades are mostly lost when leaving the dungeon.
@@ -127,14 +127,14 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
     finished: true,
     cost: 30,
     description: `
-The Desert Rabbit is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
+The Desert Rabbit often fights gigantic enemies. He has developed a keen sense for their weaknesses.
 
 With the Desert Rabbit in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
     `,
     super: {
       name: 'Desert Armadillo',
       description: `
-The Desert Armadillo is used to fighting gigantic enemies. He has developed a keen sense for their weaknesses.
+The Desert Armadillo often fights gigantic enemies. He has developed a keen sense for their weaknesses.
 
 With the Desert Armadillo in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
 The damage bonus can be further increased with the Blessing of the Desert ability.
@@ -216,7 +216,7 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   },
   {
     name: 'Royal Fruitbearer',
-    cost: 6,
+    cost: 7,
     finished: true,
     description: `
 With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
@@ -269,7 +269,7 @@ At the lowest level, they discovered the entrance to the dungeon.
   },
   {
     name: 'Lord of Gears',
-    cost: 29,
+    cost: 12,
     finished: true,
     description: `
 The Lord of Gears is a master of automation. The band members next to him need not do anything.
@@ -361,7 +361,7 @@ With Wayfinder in your band, you can replace members of your band at campfires.
   },
   {
     name: 'Bayla',
-    cost: 15,
+    cost: 17,
     finished: true,
     description: `
 Bayla is an unpredictable fighter. She can change her position in the middle of a fight to best target the weak spots
@@ -384,7 +384,7 @@ of her enemies. She's great friends with the Desert Rabbit and likes to stick cl
   },
   {
     name: 'Kin of Pump',
-    cost: 15,
+    cost: 50,
   },
   {
     name: 'Kevin',
@@ -404,7 +404,7 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   },
   {
     name: 'Mongreler',
-    cost: 50,
+    cost: 24,
     finished: true,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
     passiveEffects: ['Mongreler wants to capture this enemy. Damage is reduced by 99% to avoid killing it.'],
@@ -490,7 +490,7 @@ ${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class
   },
   {
     name: 'Zaktar Kadoque',
-    cost: 20,
+    cost: 37,
     finished: true,
     description: `
 Zaktar Kadoque is an explorer from another world. He was not trapped in his cage at all,

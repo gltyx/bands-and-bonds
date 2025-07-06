@@ -148,7 +148,7 @@ const bonds = computed(() => {
 const unusedFriends = computed(() => {
   const used = new Set(Object.values(store.local.band));
   const unused = store.team.unlocked.filter(name => !used.has(name));
-  unused.sort();
+  unused.sort((a, b) => friendsByName[a].cost - friendsByName[b].cost);
   return unused;
 });
 

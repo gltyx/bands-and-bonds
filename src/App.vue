@@ -30,7 +30,11 @@ function mainLoop() {
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    t.time += Math.floor(deltaTime);
+    if (key === 'ability-Running Start') {
+      t.time += Math.floor(deltaTime / store.run.speedLevel);
+    } else {
+      t.time += Math.floor(deltaTime);
+    }
     if (t.time >= t.duration) {
       delete store.run.timers[key];
       t.cb?.(t);
