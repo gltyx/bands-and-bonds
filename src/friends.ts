@@ -362,6 +362,25 @@ With Wayfinder in your band, you can replace members of your band at campfires.
   {
     name: 'Bayla',
     cost: 15,
+    finished: true,
+    description: `
+Bayla is an unpredictable fighter. She can change her position in the middle of a fight to best target the weak spots
+of her enemies. She's great friends with the Desert Rabbit.
+    `,
+    abilities: [{
+      name: "Battle Rhythm",
+      duration: 1,
+      damage: 100,
+      tags: ['sharp', 'fire', 'ice'],
+      description: "A flight of small magical blades timed perfectly to find the weak spots of the enemy.",
+    }],
+    super: {
+      name: 'Baylanda',
+      description: `
+Baylanda is a master choreographer. She can rearrange the band in the middle of a fight to best target the weak spots
+of her enemies. She's great friends with the Desert Rabbit and likes to stick close to Azrekta.
+`,
+    },
   },
   {
     name: 'Kin of Pump',

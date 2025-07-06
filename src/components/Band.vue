@@ -25,10 +25,22 @@ function remove(key: number) {
   }
   delete store.local.band[key];
 }
+function canSet(name: string): boolean {
+  const onb = onboard(name);
+  if (name === 'Lamplighter') return enabled.value && !onb;
+  if (enabled.value) return true;
+  if (!onb) return false;
+  // Movement in battle is sometimes allowed.
+  return name === 'Bayla' || !!onboard('Baylanda');
+}
 function set(row: number, col: number, name: string) {
-  if (!enabled.value) return;
+  if (!canSet(name)) return;
+  const onb = onboard(name);
   const cost = friendsByName[name]?.cost ?? 0;
-  if (store.team.packs >= packsSpent.value + cost && !onboard(name) && store.available(row, col)) {
+  if (onb) {
+    delete store.local.band[onb.col + onb.row * store.local.band.width];
+    store.local.band[col + row * store.local.band.width] = name;
+  } else if (store.team.packs >= packsSpent.value + cost && store.available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
     const friend = friendsByName[name];
     if (friend.super?.name && onboard(friend.super.name)) {
