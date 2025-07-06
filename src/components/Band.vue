@@ -141,7 +141,13 @@ const unusedFriends = computed(() => {
 });
 
 function buyPack() {
-  if (store.team.fruit >= costOfPacks(store.team.packs + 1)) {
+  const nextCost = costOfPacks(store.team.packs + 1)
+  if (store.availableFruit() >= nextCost) {
+    if (store.team.fruit < nextCost) {
+      // Automatically convert run fruit to team fruit if needed.
+      store.run.fruit -= nextCost - store.team.fruit;
+      store.team.fruit = nextCost;
+    }
     store.team.packs += 1;
   }
 }
@@ -164,7 +170,7 @@ const enabled = computed(() => {
     <Packs :amount="store.team.packs - packsSpent" />
     to hire more members.
     <button class="buy-pack-button" @click="buyPack()"
-      :class="{ unaffordable: store.team.fruit < costOfPacks(store.team.packs + 1) }">Buy
+      :class="{ unaffordable: store.availableFruit() < costOfPacks(store.team.packs + 1) }">Buy
       <Packs :amount="1" />
       for
       <Fruit :amount="costOfPacks(store.team.packs + 1) - costOfPacks(store.team.packs)" />
@@ -289,8 +295,6 @@ u {
 
 .chain {
   position: absolute;
-  top: 293px;
-  left: 241px;
   width: 30px;
   height: 30px;
   z-index: 3;

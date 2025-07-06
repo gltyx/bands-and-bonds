@@ -80,7 +80,7 @@ function unlockEverything() {
       <div class="text">
         <div class="title">Help I'm stuck</div>
         <div class="description">
-          Games should be fun. If you want to skip ahead, you can cheat and double your fruit.
+          If you want to skip ahead, you can cheat and double your fruit.
         </div>
       </div>
     </button>

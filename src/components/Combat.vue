@@ -91,6 +91,9 @@ const fighting = computed(() => {
 
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
+    if (store.run.fruit) {
+      store.team.fruit += store.run.fruit;
+    }
     Object.assign(store.run, startingRunData());
     for (const friend in store.bandByName()) {
       const f = friendsByName[friend];

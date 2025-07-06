@@ -4,12 +4,13 @@ import Combat from './components/Combat.vue'
 import MapPage from './components/Map.vue'
 import Band from './components/Band.vue'
 import Settings from './components/Settings.vue'
-import { store, fruitAvailable } from './store.ts'
+import { store } from './store.ts'
 import { numberFormat } from './base';
 
 const animationFrameId = ref<number | null>(null);
 const lastFrameTime = ref(performance.now());
 const lastRegenTime = ref(performance.now());
+const lastSaplingTime = ref(performance.now());
 
 type SelectedPage = 'combat' | 'map' | 'band' | 'settings';
 const loadedPage = localStorage.getItem('current page') as SelectedPage;
@@ -56,6 +57,17 @@ function mainLoop() {
     }
     if (regen === 0) lastRegenTime.value = currentTime;
   }
+  if (store.run.saplings > 0) {
+    const fruitPerSecond = multiplier * store.run.saplings;
+    let fruits = (currentTime - lastSaplingTime.value) * fruitPerSecond / 1000;
+    while (fruits > 1) {
+      store.run.fruit += 1;
+      fruits -= 1;
+      lastSaplingTime.value += 1000 / fruitPerSecond;
+    }
+  } else {
+    lastSaplingTime.value = currentTime;
+  }
   lastFrameTime.value = currentTime;
   animationFrameId.value = requestAnimationFrame(mainLoop);
 }
@@ -85,7 +97,7 @@ onUnmounted(() => {
           <img src="/images/generated/logo.webp" alt="B" />onds
         </div>
         <div id="header-fruit" class="numbers">
-          <template v-if="fruitAvailable">{{ numberFormat(fruitAvailable) }}
+          <template v-if="store.availableFruit()">{{ numberFormat(store.availableFruit()) }}
             <img src="/images/generated/fruit.webp" class="header-icon" title="Gold spoils. Fruit is forever." />
           </template>
           {{ numberFormat(store.team.packs) }}

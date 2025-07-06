@@ -1,6 +1,11 @@
 import { marked } from 'marked';
 import { numberFormat, type Friend } from './base';
 
+function numberSpan(n: number, extra?: string): string {
+  const e = extra ?? '';
+  return `<span class="numbers">${numberFormat(n)}${e}</span>`;
+}
+
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
@@ -15,7 +20,7 @@ The starting weapon level is the square root of the highest level achieved.
       name: "Forge",
       duration: 5,
       consumes: { gold: 1 },
-      description: (store) => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
+      description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
       onCompleted(store) {
         store.run.weaponLevel += 1;
         if (store.run.weaponLevel > store.team.bestWeaponLevel) {
@@ -40,7 +45,7 @@ The starting weapon level is the highest level achieved.
         name: "Forge",
         duration: 5,
         consumes: { gold: 1 },
-        description: (store) => `Increases the level of all weapons. (Currently ${store.run.weaponLevel}.)`,
+        description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
         onCompleted(store) {
           store.run.weaponLevel += 1;
           if (store.run.weaponLevel > store.team.bestWeaponLevel) {
@@ -108,7 +113,7 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
     abilities: [{
       name: "Poison Strike",
       duration: 5,
-      description: (store) => store.run.room.poison ? `Damage over time. (Currently ${store.run.room.poison} damage per second.)` : 'Damage over time.',
+      description: (store) => store.run.room.poison ? `Damage over time. (Currently ${numberSpan(store.run.room.poison)} damage per second.)` : 'Damage over time.',
       onCompleted(store) {
         store.addPoison(1);
       },
@@ -138,7 +143,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
         name: "Blessing of the Desert",
         duration: 5,
         consumes: { gold: 1 },
-        description: (store) => `Increases the damage multiplier for weaknesses. (Currently ${store.run.desertBlessingMultiplier}×.)`,
+        description: (store) => `Increases the damage multiplier for weaknesses. (Currently ${numberSpan(store.run.desertBlessingMultiplier, '×')}.)`,
         onCompleted(store) {
           store.run.desertBlessingMultiplier += 1;
         },
@@ -284,7 +289,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him.",
     abilities: [{
       name: "Snatch",
-      duration: 0.5,
+      duration: 2.5,
       description: "Steals a piece of gold.",
       onCompleted(store) {
         store.run.gold += 1;
@@ -293,7 +298,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     super: {
       abilities: [{
         name: "Snatch",
-        duration: 0.5,
+        duration: 2.5,
         description: "Steals a piece of gold. Affected by the weapon level.",
         onCompleted(store) {
           store.run.gold += store.run.weaponLevel;
@@ -310,7 +315,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       name: "Running Start",
       duration: 10,
       consumes: { gold: 1 },
-      description: (store) => `Speed up all abilities. (Currently ${numberFormat(store.run.speedLevel)}×.)`,
+      description: (store) => `Speed up all abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
       onCompleted(store) {
         store.run.speedLevel += 1;
       },
@@ -322,7 +327,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
         name: "Running Start",
         duration: 10,
         consumes: (store) => ({ gold: store.run.speedLevel }),
-        description: (store) => `Speed up all abilities. (Currently ${numberFormat(store.run.speedLevel)}×.)`,
+        description: (store) => `Speed up all abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
         onCompleted(store) {
           store.run.speedLevel *= 2;
         },
@@ -408,9 +413,39 @@ Kevin is not so much a person as a phenomenon. When Kevin is present, all enemie
   {
     name: 'Hedge Lost',
     cost: 11,
+    finished: true,
     description: "",
+    abilities: [{
+      name: "Buy Fruit",
+      duration: 5,
+      consumes: { gold: 100 },
+      description: 'Buy a piece of fruit at the Hedge Market.',
+      onCompleted(store) {
+        store.run.fruit += 1;
+      },
+    }],
     super: {
       name: 'Hedge Found',
+      abilities: [{
+        name: "Buy Fruit",
+        duration: 5,
+        consumes: { gold: 100 },
+        description: 'Buy a piece of fruit at the Hedge Market.',
+        onCompleted(store) {
+          store.run.fruit += 1;
+        },
+      }, {
+        name: "Buy Sapling",
+        duration: 5,
+        consumes: { gold: 100 },
+        description: (store) => `
+Buy a fruit sapling at the Hedge Market.${store.run.saplings ? `
+(Currently ${numberSpan(store.run.saplings)} saplings producing
+${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class="resource-icon" />')} per second.)` : ''}`,
+        onCompleted(store) {
+          store.run.saplings += 1;
+        },
+      }],
     },
   },
   {
@@ -438,7 +473,7 @@ a Xaranthian person, and neither has anyone else in your band.
       consumes: { gold: 10 },
       duration: 5,
       description: (store) =>
-        `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
+        `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
       onCompleted(store) {
         store.run.room.xaranthian.growers += 1;
       }
@@ -448,7 +483,7 @@ a Xaranthian person, and neither has anyone else in your band.
       hidden: (store) => store.run.room.xaranthian.growers !== 1,
       duration: 5,
       description: (store) =>
-        `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+        `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
       onCompleted(store) {
         store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
       },
@@ -458,7 +493,7 @@ a Xaranthian person, and neither has anyone else in your band.
       hidden: (store) => store.run.room.xaranthian.growers < 2,
       duration: 5,
       description: (store) =>
-        `Grow ${store.run.room.xaranthian.growers} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+        `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
       onCompleted(store) {
         store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
       }
@@ -472,7 +507,7 @@ a Xaranthian person, and neither has anyone else in your band.
       name: "Fire Xaranthian Guns",
       hidden: (store) => store.run.room.xaranthian.guns < 2,
       duration: 5,
-      description: (store) => `Fire ${store.run.room.xaranthian.guns} mechanical guns.`,
+      description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
       damage: (store) => store.run.room.xaranthian.guns,
     }],
     super: {
@@ -482,7 +517,7 @@ a Xaranthian person, and neither has anyone else in your band.
         consumes: { gold: 10 },
         duration: 5,
         description: (store) =>
-          `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${store.run.room.xaranthian.factories} factories.)` : ''}`,
+          `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${numberSpan(store.run.room.xaranthian.factories)} factories.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.factories += 1;
         },
@@ -492,7 +527,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.factories !== 1,
         duration: 5,
         description: (store) =>
-          `Build a mechanical turtle in the factory.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
+          `Build a mechanical turtle in the factory.${store.run.room.xaranthian.turtles ? ` (Currently ${numberSpan(store.run.room.xaranthian.turtles)} turtles.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
         },
@@ -502,7 +537,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.factories < 2,
         duration: 5,
         description: (store) =>
-          `Build ${store.run.room.xaranthian.factories} mechanical turtles in the factories.${store.run.room.xaranthian.turtles ? ` (Currently ${store.run.room.xaranthian.turtles} turtles.)` : ''}`,
+          `Build ${numberSpan(store.run.room.xaranthian.factories)} mechanical turtles in the factories.${store.run.room.xaranthian.turtles ? ` (Currently ${numberSpan(store.run.room.xaranthian.turtles)} turtles.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories;
         },
@@ -512,7 +547,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.turtles !== 1,
         duration: 5,
         description: (store) =>
-          `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
+          `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
         }
@@ -522,7 +557,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.turtles < 2,
         duration: 5,
         description: (store) =>
-          `Build ${store.run.room.xaranthian.turtles} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${store.run.room.xaranthian.deployers} deployers.)` : ''}`,
+          `Build ${numberSpan(store.run.room.xaranthian.turtles)} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles;
         }
@@ -532,7 +567,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.deployers !== 1,
         duration: 5,
         description: (store) =>
-          `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
+          `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
         }
@@ -542,7 +577,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.deployers < 2,
         duration: 5,
         description: (store) =>
-          `Deploy ${store.run.room.xaranthian.deployers} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${store.run.room.xaranthian.growers} growers.)` : ''}`,
+          `Deploy ${numberSpan(store.run.room.xaranthian.deployers)} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers;
         }
@@ -552,7 +587,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.growers !== 1,
         duration: 5,
         description: (store) =>
-          `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+          `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
         },
@@ -562,7 +597,7 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.growers < 2,
         duration: 5,
         description: (store) =>
-          `Grow ${store.run.room.xaranthian.growers} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${store.run.room.xaranthian.guns} guns.)` : ''}`,
+          `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
         onCompleted(store) {
           store.run.room.xaranthian.guns += store.run.room.xaranthian.growers;
         }
@@ -576,7 +611,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Fire Xaranthian Guns",
         hidden: (store) => store.run.room.xaranthian.guns < 2,
         duration: 5,
-        description: (store) => `Fire ${store.run.room.xaranthian.guns} mechanical guns.`,
+        description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
         damage: (store) => store.run.room.xaranthian.guns,
       }],
     },

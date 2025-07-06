@@ -31,7 +31,8 @@ export function startingRunData(): base.RunData {
     steps: 0,
     turns: [],
     gold: 0,
-    fruit: 0, // Fruit collected in this run. Only for statistics.
+    fruit: 0,
+    saplings: 0,
     capturedAbilities: [],
     room: startingRoomData(),
     timers: {} as Record<string, base.Timer>,
@@ -76,9 +77,9 @@ function startingTeamData(): base.TeamData {
 }
 
 const dataVersion = localStorage.getItem('bnb-version');
-if (dataVersion !== '1') {
+if (dataVersion !== '2') {
   localStorage.clear();
-  localStorage.setItem('bnb-version', '1');
+  localStorage.setItem('bnb-version', '2');
   window.location.reload();
 }
 const loadedRunData = localStorage.getItem('bnb-run');
@@ -131,6 +132,9 @@ export const store: base.Store = {
   },
   lightRadius() {
     return lightRadius.value;
+  },
+  availableFruit() {
+    return store.team.fruit + store.run.fruit - costOfPacks(store.team.packs);
   },
 }
 
@@ -200,7 +204,6 @@ function addDamage(x: number) {
         fruit *= Object.keys(bandByName.value).length - 1;
       }
       store.run.fruit += fruit;
-      store.team.fruit += fruit;
       if (capturing) {
         store.run.capturedAbilities.push(...enemy.abilities ?? []);
       }
@@ -291,6 +294,3 @@ export function onboard(name: string): { row: number, col: number } | undefined 
   const sup = friendsByName[name].super?.name;
   return bandByName.value[name] || sup && bandByName.value[sup];
 }
-export const fruitAvailable = computed(() => {
-  return store.team.fruit - costOfPacks(store.team.packs);
-});
