@@ -136,6 +136,22 @@ export const store: base.Store = {
   availableFruit() {
     return store.team.fruit + store.run.fruit - costOfPacks(store.team.packs);
   },
+  getRewards(enemy) {
+    let gold = enemy.rewards?.gold ?? 0;
+    let fruit = enemy.rewards?.fruit ?? 0;
+    if (onboard("Royal Fruitbearer")) {
+      fruit *= Object.keys(bandByName.value).length;
+    }
+    if (onboard("Royal Fruitwearer")) {
+      fruit *= Object.keys(bandByName.value).length - 1;
+    }
+    if (onboard("King of Pump")) {
+      gold *= gold;
+    } else if (onboard("Kin of Pump")) {
+      gold *= 2;
+    }
+    return { gold, fruit };
+  },
 }
 
 const lightRadius = computed(() => {
@@ -195,15 +211,9 @@ function addDamage(x: number) {
     } else {
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
-      store.run.gold += enemy.rewards?.gold ?? 0;
-      let fruit = enemy.rewards?.fruit ?? 0;
-      if (onboard("Royal Fruitbearer")) {
-        fruit *= Object.keys(bandByName.value).length;
-      }
-      if (onboard("Royal Fruitwearer")) {
-        fruit *= Object.keys(bandByName.value).length - 1;
-      }
-      store.run.fruit += fruit;
+      const rewards = store.getRewards(enemy);
+      store.run.gold += rewards.gold;
+      store.run.fruit += rewards.fruit;
       if (capturing) {
         store.run.capturedAbilities.push(...enemy.abilities ?? []);
       }

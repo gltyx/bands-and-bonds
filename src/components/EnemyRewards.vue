@@ -7,21 +7,11 @@ const props = defineProps<{
   enemy: Enemy;
 }>();
 import { store } from '../store.ts';
-const fruit = computed(() => {
-  let fruit = props.enemy.rewards?.fruit ?? 0;
-  const bandSize = Object.keys(store.bandByName()).length;
-  if (store.onboard('Royal Fruitbearer')) {
-    fruit *= bandSize;
-  }
-  if (store.onboard('Royal Fruitwearer')) {
-    fruit *= bandSize - 1;
-  }
-  return fruit;
-});
+const rewards = computed(() => store.getRewards(props.enemy));
 </script>
 
 <template>
-  <Gold v-if="props.enemy.rewards?.gold" :amount="props.enemy.rewards?.gold" />
-  <Fruit v-if="props.enemy.rewards?.fruit" :amount="fruit" />
-  <span v-if="!props.enemy.rewards?.fruit && !props.enemy.rewards?.gold">nothing</span>
+  <Gold v-if="rewards.gold" :amount="rewards.gold" />
+  <Fruit v-if="rewards.fruit" :amount="rewards.fruit" />
+  <span v-if="!rewards.fruit && !rewards.gold">nothing</span>
 </template>

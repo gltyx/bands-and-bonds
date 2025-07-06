@@ -78,6 +78,7 @@ export type Store = {
   available: (row: number, col: number) => boolean;
   lightRadius: () => string;
   availableFruit: () => number;
+  getRewards: (enemy: Enemy) => { gold: number; fruit: number };
 };
 
 export type Turn = {

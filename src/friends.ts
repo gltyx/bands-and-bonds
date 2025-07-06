@@ -384,7 +384,25 @@ of her enemies. She's great friends with the Desert Rabbit and likes to stick cl
   },
   {
     name: 'Kin of Pump',
-    cost: 50,
+    cost: 9,
+    finished: true,
+    description: `
+To become Kins of Pump, people must shed all their fears and worries. They still love others,
+but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
+
+The Kin you found in the dungeon came here to search for treasure. They do not help out with fighting
+or taking care of the band. They are great at finding gold, though. All gold finds are doubled.
+    `,
+    super: {
+      name: 'King of Pump',
+      description: `
+To become Kins of Pump, people must shed all their fears and worries. They still love others,
+but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
+
+The Kin you found in the dungeon came here to search for treasure. They have now found a crown, and
+started to act like a king. They still do not help, but all gold finds are now squared.
+    `,
+    },
   },
   {
     name: 'Kevin',
