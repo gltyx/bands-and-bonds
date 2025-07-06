@@ -24,7 +24,6 @@ onUnmounted(() => {
 });
 
 const rooms = computed(() => turnsToPath(store.run.steps, store.run.turns));
-const pos = ref({ x: 0, y: 0 });
 
 function icon(room: Room) {
   return room.type.replace('rescue', 'pack');
@@ -50,6 +49,7 @@ function style(room: Room, factor?: number) {
 }
 
 function roomClicked(room: Room) {
+  hoveredRoom.value = room;
   const key = roomKey(room);
   if (onboard("Wayfinder") && store.team.discovered.includes(key)) {
     store.local.destination = key;
@@ -67,22 +67,20 @@ const hoveredRoom = ref<Room | null>(null);
 <template>
   <div class="map" ref="mapElement">
     <div class="map-backdrop" />
-    { x: {{ pos.x }}, y: {{ pos.y }} }
     <svg width="100%" height="100%">
       <path :d="line" stroke="white" :stroke-width="5 * scale" fill="none" />
       <path :d="planLine" stroke="white" :stroke-width="3 * scale" stroke-dasharray="3 5" fill="none" />
     </svg>
     <template v-for="room in allRooms">
-      <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)"
-        @mouseenter="pos = { x: room.x, y: room.y }; hoveredRoom = room" @mouseleave="hoveredRoom = null"
-        :src="`images/generated/${icon(room)}-outlined.webp`"
+      <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)" @mouseenter="hoveredRoom = room"
+        @mouseleave="hoveredRoom = null" :src="`images/generated/${icon(room)}-outlined.webp`"
         :class="{ marker: true, undiscovered: !store.team.discovered.includes(roomKey(room)) }"
         @click="roomClicked(room)" />
     </template>
     <img v-if="store.run.steps > 0" :style="style(rooms[rooms.length - 1], 2)" src="/images/generated/ring.webp"
       class="marker ring" />
-    <div v-if="hoveredRoom?.name" class="hovered-room"
-      :style="{ top: `${hoveredRoom.y}px`, left: `${hoveredRoom.x}px` }">
+    <div v-if="hoveredRoom?.name" class="hovered-room" :class="{ right: hoveredRoom.x > 407 }"
+      :style="{ top: `${hoveredRoom.y * scale}px`, left: `${hoveredRoom.x * scale}px` }">
       <img :class="hoveredRoom.type === 'rescue' ? 'friend-portrait' : 'enemy-portrait'"
         :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
       <h1>{{ hoveredRoom.name }}</h1>
@@ -125,6 +123,8 @@ img.marker.ring {
 .hovered-room {
   pointer-events: none;
   position: absolute;
+  max-width: 300px;
+  width: 40vw;
   background-color: black;
   color: white;
   padding: 10px;
@@ -153,6 +153,10 @@ img.marker.ring {
   p {
     margin-top: 0;
   }
+}
+
+.hovered-room.right {
+  transform: translate(-100%, 0%);
 }
 
 svg {
