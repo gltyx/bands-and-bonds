@@ -117,10 +117,13 @@ const bonds = computed(() => {
   for (let row = 0; row < band.height; row++) {
     for (let col = 0; col < band.width; col++) {
       const place = col + row * band.width;
-      const friend = band[place];
-      if (!friend) continue;
-      for (const name of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
-        const bond = nextTo(name, row, col);
+      const name = band[place];
+      if (!name) continue;
+      const friend = friendsByName[name];
+      for (const nn of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
+        if (nn === 'Azrekta' && !friend.super) continue;
+        if ((nn === 'Lord of Gears' || nn === 'The Silent Song') && !friend.abilities && !friend.super?.abilities) continue;
+        const bond = nextTo(nn, row, col);
         if (bond) {
           bonds.push({
             image: 'chain',
@@ -130,7 +133,7 @@ const bonds = computed(() => {
           });
         }
       }
-      if (friend === 'Knight of Claws') {
+      if (name === 'Knight of Claws') {
         for (const p of store.emptySpacesAround(row, col)) {
           bonds.push({
             image: 'chain',

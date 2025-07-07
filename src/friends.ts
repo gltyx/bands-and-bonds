@@ -293,6 +293,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       },
     }],
     super: {
+      name: 'Sir Pur Lion',
       abilities: [{
         name: "Snatch",
         duration: 2.5,
@@ -410,7 +411,13 @@ started to act like a king. They still do not help, but all gold finds are now s
     description: `
 Kevin is not so much a person as a phenomenon. When Kevin is present, all enemies are vulnerable to fire.
     `,
-    // Super: "Kevout"?
+    super: {
+      name: "Kevout",
+      description: `
+Kevout has cooled off a little. He has become focused and curious, drawing in everyone to exist in the moment.
+When Kevout is present, even ethereal creatures are drawn into the material world.
+    `,
+    },
   },
   {
     name: 'Smiling Pilot',

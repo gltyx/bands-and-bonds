@@ -44,7 +44,7 @@ function executeAbility(ab: Ability) {
         return;
       }
     }
-    const ethereal = onboard("Azrekta") || enemy.value?.ethereal;
+    const ethereal = (onboard("Azrekta") || enemy.value?.ethereal) && !onboard("Kevout");
     if (!undodgeable && ethereal && Math.random() < 0.9) {
       return; // Ethereal enemy.
     }
@@ -117,7 +117,7 @@ const plannedTurn = computed(() => {
 function getWeaknesses(enemy: Enemy | null) {
   if (!enemy) return [];
   const weaknesses = enemy.weaknesses ?? [];
-  if (onboard("Kevin") && !weaknesses.includes('fire')) {
+  if (onboard("Kevin") && !onboard("Kevout") && !weaknesses.includes('fire')) {
     return [...weaknesses, 'fire'];
   }
   return weaknesses;
@@ -139,7 +139,7 @@ const passiveEffects = computed(() => {
       effects.push(...friend.passiveEffects);
     }
   }
-  if (enemy.value && onboard("Azrekta")) {
+  if (enemy.value && (onboard("Azrekta") || enemy.value.ethereal) && !onboard("Kevout")) {
     effects.push("Enemy is ethereal. Most attacks will miss.");
   }
   if (enemy.value && onboard("Desert Rabbit")) {
