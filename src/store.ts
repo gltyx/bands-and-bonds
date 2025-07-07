@@ -32,6 +32,7 @@ export function startingRunData(): base.RunData {
     gold: 0,
     fruit: 0,
     saplings: 0,
+    skips: 0,
     capturedAbilities: [],
     room: startingRoomData(),
     timers: {} as Record<string, base.Timer>,
@@ -75,10 +76,11 @@ function startingTeamData(): base.TeamData {
   };
 }
 
+const V = '3';
 const dataVersion = localStorage.getItem('bnb-version');
-if (dataVersion !== '2') {
+if (dataVersion !== V) {
   localStorage.clear();
-  localStorage.setItem('bnb-version', '2');
+  localStorage.setItem('bnb-version', V);
   window.location.reload();
 }
 const loadedRunData = localStorage.getItem('bnb-run');
@@ -147,6 +149,9 @@ export const store: base.Store = {
       gold *= 2;
     }
     return { gold, fruit };
+  },
+  takeTurn(turn, skipConfirmation) {
+    return takeTurn(turn, skipConfirmation);
   },
 }
 
@@ -217,7 +222,7 @@ function addDamage(x: number) {
   }
 }
 
-export function takeTurn(turn: string, skipConfirmation?: boolean) {
+function takeTurn(turn: string, skipConfirmation?: boolean) {
   if (!skipConfirmation && !window.confirm(`${turn}?`)) return;
   store.run.room = startingRoomData();
   store.run.steps += 1;
@@ -244,7 +249,7 @@ export function describeAbility(ab: base.Ability): string {
   }
   if (ab.damage) {
     const dmg = getAbilityDamage(ab);
-    d += `\n\n${base.numberFormat(dmg)} damage`;
+    d += `\n\n<span class="numbers">${base.numberFormat(dmg)}</span> damage`;
   }
   return d;
 }

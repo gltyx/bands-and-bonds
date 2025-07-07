@@ -215,7 +215,7 @@ const enabled = computed(() => {
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
       <template v-for="name in unusedFriends" :key="name">
         <button class="band-cell" @click="selected = name" @focus="selected = name" :aria-label="name"
-          :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent, unfinished: !friendsByName[name].finished }">
+          :class="{ unaffordable: store.team.packs < friendsByName[name].cost + packsSpent }">
           <img :src="`images/generated/${name}.webp`" />
         </button>
       </template>
@@ -322,10 +322,6 @@ u {
   gap: 3px;
   justify-content: center;
   min-width: 350px;
-}
-
-.unfinished {
-  opacity: 0.3;
 }
 
 .band-details {

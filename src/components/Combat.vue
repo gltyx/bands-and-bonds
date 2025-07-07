@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, startingRunData, takeTurn, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
+import { store, startingRunData, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import type { Ability, Friend, Turn, Enemy } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
@@ -44,9 +44,8 @@ function executeAbility(ab: Ability) {
         return;
       }
     }
-    const ethereal = (onboard("Azrekta") || enemy.value?.ethereal) && !onboard("Kevout");
-    if (!undodgeable && ethereal && Math.random() < 0.9) {
-      return; // Ethereal enemy.
+    if (!undodgeable && ethereal.value && Math.random() < 0.9) {
+      return;
     }
     let dmg = getAbilityDamage(ab);
     if (enemy.value && onboard("Desert Rabbit")) {
@@ -73,6 +72,7 @@ function executeAbility(ab: Ability) {
 const fighting = computed(() => {
   return enemy.value && store.run.room.damage < enemy.value.health;
 });
+const ethereal = computed(() => (onboard("Azrekta") || enemy.value?.ethereal) && !onboard("Kevout"));
 
 function retreat() {
   if (window.confirm("Are you sure you want to retreat?")) {
@@ -139,7 +139,7 @@ const passiveEffects = computed(() => {
       effects.push(...friend.passiveEffects);
     }
   }
-  if (enemy.value && (onboard("Azrekta") || enemy.value.ethereal) && !onboard("Kevout")) {
+  if (enemy.value && ethereal.value) {
     effects.push("Enemy is ethereal. Most attacks will miss.");
   }
   if (enemy.value && onboard("Desert Rabbit")) {
@@ -215,7 +215,7 @@ function abilityPrice(ab: Ability) {
       </div>
     </template>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :class="{ ethereal: onboard('Azrekta') }"
+    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :class="{ ethereal }"
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
@@ -257,14 +257,15 @@ function abilityPrice(ab: Ability) {
       <div class="section">Navigation</div>
       <SlowButton timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
         :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
-        @done="takeTurn(plannedTurn.title!, true)" :autostart="true" />
+        @done="store.takeTurn(plannedTurn.title!, true)" :autostart="true" />
     </template>
     <template v-else>
       <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
         description="Take the poor creature with you." image="/images/generated/rescue-unlock.webp"
         @done="unlockRescue()" />
       <div class="section">Navigation</div>
-      <button v-for="turn in possibleTurns" :key="turn.title" @click="takeTurn(turn.title!, turn.skipConfirmation)">
+      <button v-for="turn in possibleTurns" :key="turn.title"
+        @click="store.takeTurn(turn.title!, turn.skipConfirmation)">
         <img :src="`images/generated/${turn.title}.webp`" />
         <div class="text">
           <div class="title">{{ turn.title }}</div>

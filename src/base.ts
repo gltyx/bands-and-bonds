@@ -36,6 +36,7 @@ export type RunData = {
   gold: number;
   fruit: number; // Fruit collected in this run. Added to team.fruit on retreat.
   saplings: number;
+  skips: number;
   capturedAbilities: Ability[];
   room: RoomData;
   timers: Record<string, Timer>;
@@ -78,6 +79,7 @@ export type Store = {
   available: (row: number, col: number) => boolean;
   lightRadius: () => string;
   getRewards: (enemy: Enemy) => { gold: number; fruit: number };
+  takeTurn: (turn: string, skipConfirmation?: boolean) => void;
 };
 
 export type Turn = {
@@ -115,7 +117,6 @@ export type Friend = {
   name: string;
   cost: number;
   description?: string;
-  finished?: boolean; // Just tracking development.
   abilities?: Ability[];
   super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;

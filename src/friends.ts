@@ -9,7 +9,6 @@ function numberSpan(n: number, extra?: string): string {
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
-    finished: true,
     cost: 5,
     description: `
 An expert Anvilomancer can upgrade your weapons in the midst of battle.
@@ -72,7 +71,6 @@ The starting weapon level is the highest level achieved.
   {
     name: 'Azrekta',
     cost: 25,
-    finished: true,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies become ethereal, making them challenging to hit.
@@ -82,7 +80,6 @@ Her enemies become ethereal, making them challenging to hit.
   {
     name: 'Coldblade',
     cost: 31,
-    finished: true,
     description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
     abilities: [{
       name: "Glacial Strike",
@@ -105,7 +102,6 @@ Her enemies become ethereal, making them challenging to hit.
   },
   {
     name: 'Dark Chef',
-    finished: true,
     cost: 4,
     description: `
 A master of the culinary arts, Dark Chef fights by poisoning the enemies.
@@ -124,7 +120,6 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
   },
   {
     name: 'Desert Rabbit',
-    finished: true,
     cost: 30,
     description: `
 The Desert Rabbit often fights gigantic enemies. He has developed a keen sense for their weaknesses.
@@ -153,7 +148,6 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   {
     name: 'Friend of Metal',
     description: 'A warrior equipped with high-quality metal armor and weapons.',
-    finished: true,
     cost: 10,
     abilities: [{
       name: "Steel Jab",
@@ -182,7 +176,6 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   {
     name: 'Knight of Claws',
     cost: 13,
-    finished: true,
     description: `
 Trained as an assassin, the Knight of Claws works best on his own. His power doubles for every empty space next to him.
     `,
@@ -200,7 +193,6 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   {
     name: 'Lamplighter',
     cost: 6,
-    finished: true,
     description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
@@ -214,7 +206,6 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   {
     name: 'Royal Fruitbearer',
     cost: 7,
-    finished: true,
     description: `
 With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
     `,
@@ -231,7 +222,6 @@ every member of the party gives one piece to every other member.
   {
     name: 'Stick Master',
     cost: 1,
-    finished: true,
     description: `
 Stick Master is a humble explorer. While wandering the forest, they came upon the ruins of a long-lost castle.
 At the lowest level, they discovered the entrance to the dungeon.
@@ -257,7 +247,6 @@ At the lowest level, they discovered the entrance to the dungeon.
   {
     name: 'The Silent Song',
     cost: 2,
-    finished: true,
     description: "Her sweet melody doubles the damage dealt by friends standing next to her.",
     super: {
       name: 'The Silent Quartet',
@@ -267,7 +256,6 @@ At the lowest level, they discovered the entrance to the dungeon.
   {
     name: 'Lord of Gears',
     cost: 12,
-    finished: true,
     description: `
 The Lord of Gears is a master of automation. The band members next to him need not do anything.
 Their abilities will be activated automatically.
@@ -282,7 +270,6 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   {
     name: 'Pur Lion',
     cost: 35,
-    finished: true,
     description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him.",
     abilities: [{
       name: "Snatch",
@@ -307,7 +294,6 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   {
     name: 'Kit Flash',
     cost: 8,
-    finished: true,
     description: "A wizard of speed, Kit Flash can speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
@@ -335,7 +321,6 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   {
     name: 'Wayfinder',
     cost: 15,
-    finished: true,
     description: `
 A master of navigation, Wayfinder will guide your band through a path without fail.
 With Wayfinder in your band, you can replace members of your band at campfires.
@@ -360,7 +345,6 @@ With Wayfinder in your band, you can replace members of your band at campfires.
   {
     name: 'Bayla',
     cost: 17,
-    finished: true,
     description: `
 Bayla is an unpredictable fighter. She can change her position in the middle of a fight to best target the weak spots
 of her enemies. She's great friends with the Desert Rabbit.
@@ -383,7 +367,6 @@ of her enemies. She's great friends with the Desert Rabbit and likes to stick cl
   {
     name: 'Kin of Pump',
     cost: 9,
-    finished: true,
     description: `
 To become Kins of Pump, people must shed all their fears and worries. They still love others,
 but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
@@ -407,7 +390,6 @@ started to act like a king. They still do not help, but all gold finds are now s
   {
     name: 'Kevin',
     cost: 22,
-    finished: true,
     description: `
 Kevin is not so much a person as a phenomenon. When Kevin is present, all enemies are vulnerable to fire.
     `,
@@ -430,7 +412,6 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
   {
     name: 'Mongreler',
     cost: 24,
-    finished: true,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
     passiveEffects: ['Mongreler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     super: {
@@ -448,7 +429,6 @@ everyday with a body made of water.
 
 They found refuge in this dungeon and now in your band.
     `,
-    finished: true,
     abilities: [{
       name: "Flood",
       duration: 10,
@@ -469,16 +449,49 @@ They found refuge in this dungeon and now in your band.
   },
   {
     name: 'Pecquer',
-    cost: 50,
-    description: "This mysterious gentleman does not yet have an ability.",
+    cost: 14,
+    description: `
+Pecquer is veteran mercenary from the thirty kingdoms. The warriors he fought besides sing songs of his bravery.
+    `,
+    abilities: [{
+      name: "Sneak Past",
+      duration: 6,
+      hidden: (store) => store.run.skips >= 1,
+      description: (store) => `
+Pecquer leads the band fearlessly past the enemy.
+
+Uses left: ${numberSpan(1 - store.run.skips)}`,
+      onCompleted(store) {
+        store.run.skips += 1;
+        const next = store.currentRoom().next;
+        const options = next ? Object.keys(next) : ['Keep going'];
+        const choice = options[Math.floor(Math.random() * options.length)];
+        store.takeTurn(choice, true);
+      },
+    }],
     super: {
       name: 'Le Pecquer',
+      abilities: [{
+        name: "Sneak Past",
+        duration: 6,
+        hidden: (store) => store.run.skips >= 2,
+        description: (store) => `
+Pecquer leads the band fearlessly past the enemy.
+
+Uses left: ${numberSpan(2 - store.run.skips)}`,
+        onCompleted(store) {
+          store.run.skips += 1;
+          const next = store.currentRoom().next;
+          const options = next ? Object.keys(next) : ['Keep going'];
+          const choice = options[Math.floor(Math.random() * options.length)];
+          store.takeTurn(choice, true);
+        },
+      }],
     },
   },
   {
     name: 'Hedge Lost',
     cost: 11,
-    finished: true,
     description: "",
     abilities: [{
       name: "Buy Fruit",
@@ -516,7 +529,6 @@ ${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class
   {
     name: 'Zaktar Kadoque',
     cost: 37,
-    finished: true,
     description: `
 Zaktar Kadoque is an explorer from another world. He was not trapped in his cage at all,
 rather he was examining it. He loves this dungeon and is very happy to have met your band.
@@ -547,7 +559,6 @@ He is particularly interested in the fruit you're holding.
   },
   {
     name: 'Xaranthian Constructor',
-    finished: true,
     cost: 20,
     description: `
 The Xaranthian Empire is said to be ruled by wise engineers who built powerful machines to ease their work.
