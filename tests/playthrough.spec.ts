@@ -235,13 +235,6 @@ test('playthrough', async ({ page }) => {
   await game.clickButton('Turn left');
   await game.rescue('Dark Chef');
   await game.retreat();
-  await game.saveState('last state.json');
-
-});
-test('next steps', async ({ page }) => {
-  const game = new Game(page);
-  await game.setup();
-  await game.loadState('last state.json');
 
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
@@ -257,6 +250,60 @@ test('next steps', async ({ page }) => {
   await game.defeatEnemy('Wild Slime');
   await game.retreat();
   await game.manageBand(async () => {
+    await game.removeFromBand('Friend of Metal');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('Dark Chef');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Frozen Centurion');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn left');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Dryfin Carp');
+  await game.clickButton('Keep going');
+  await game.rescue('Kin of Pump');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.removeFromBand('Dark Chef');
+    await game.addToBand('Friend of Metal');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn left');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Lobster Daddy');
+  await game.clickButton('Keep going');
+  await game.rescue('Royal Fruitbearer');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.addToBand('Royal Fruitbearer');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn left');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Lobster Daddy');
+  await game.clickButton('Keep going');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.removeFromBand('Anvilomancer');
+    // Place next to The Silent Song.
+    await game.addToBand('Dark Chef');
     await game.addToBand('Anvilomancer');
   });
 
@@ -270,5 +317,68 @@ test('next steps', async ({ page }) => {
   await game.clickButton('Keep going');
   await game.clickButton('Turn left');
   await game.defeatEnemy('Trollish Maiden');
-  await page.pause();
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Dryfin Carp');
+  await game.clickButton('Keep going');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Scaffold Sorcery');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Lost Swimmer');
+  await game.clickButton('Keep going');
+  await game.rescue('Coldblade');
+  await game.retreat();
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn left');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Lobster Daddy');
+  await game.clickButton('Keep going');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Will-o-Wasp');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('The Shroud');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Dark Lord');
+  await game.clickButton('Keep going');
+  await game.rescue('Lord of Gears');
+  await game.clickButton('Keep going');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.addToBand('Kin of Pump');
+  });
+  await game.saveState('last state.json');
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Frozen Centurion');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn left');
+  await game.defeatEnemy('Trollish Maiden');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Dryfin Carp');
+  await game.clickButton('Keep going');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Scaffold Sorcery');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Lost Swimmer');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.addToBand('Coldblade');
+  });
+
+  // await game.defeatEnemy('Clockomancer');
+  // await page.pause();
 });

@@ -2,15 +2,15 @@ import type { Enemy, Ability } from "./base";
 
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },
-  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 2 }, weaknesses: ["fire", "ice", "left"] },
-  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 5 }, weaknesses: ["front", "blunt"] },
+  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 3 }, weaknesses: ["fire", "ice", "left"] },
+  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 8 }, weaknesses: ["front", "blunt"] },
   { name: "Thick Door", health: 10, rewards: { gold: 0, fruit: 0 }, armor: 3, weaknesses: ["fire", "blunt", "back"] },
-  { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 2 }, count: 5 },
+  { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 5 }, count: 5 },
 
-  { name: "Dead Gladiator", health: 100, armor: 10, rewards: { gold: 5, fruit: 10 } },
+  { name: "Dead Gladiator", health: 100, armor: 10, rewards: { gold: 5, fruit: 20 } },
   { name: "Lobster Daddy", health: 100, armor: 100, rewards: { gold: 10, fruit: 10 } },
-  { name: "Will-o-Wasp", health: 100, dodge: 5, rewards: { gold: 15, fruit: 1 } },
-  { name: "The Shroud", health: 1000, ethereal: true, rewards: { gold: 100, fruit: 14 } },
+  { name: "Will-o-Wasp", health: 100, dodge: 3, rewards: { gold: 15, fruit: 1 } },
+  { name: "The Shroud", health: 1000, ethereal: true, rewards: { gold: 10, fruit: 14 } },
   { name: "Dark Lord", health: 10_000, armor: 100, rewards: { gold: 10, fruit: 20 } },
   { name: "Clockomancer", health: 100_000, rewards: { fruit: 1000 }, passiveEffects: ["The Clockomancer slows down time."] },
 
@@ -34,11 +34,11 @@ export const allEnemies: Enemy[] = [
   { name: "Crystal Man", health: 600, dodge: 0.01, rewards: { gold: 2000, fruit: 1200 }, weaknesses: ["blunt", "ice"] },
   { name: "Power Crystal", health: 1, armor: 100_000, rewards: { fruit: 1_000_000 }, weaknesses: ["blunt"] },
 
-  { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 3, fruit: 5 }, immune: ["ice"], weaknesses: ["fire", "front"] },
+  { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 3, fruit: 10 }, immune: ["ice"], weaknesses: ["fire", "front"] },
   { name: "Trollish Maiden", health: 1000, regen: 70, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
-  { name: "Dryfin Carp", health: 10_000, rewards: { gold: 100, fruit: 10 }, weaknesses: ["water", "back"] },
+  { name: "Dryfin Carp", health: 10_000, rewards: { gold: 100, fruit: 20 }, weaknesses: ["water", "back"] },
   { name: "Scaffold Sorcery", health: 20_000, armor: 1000, rewards: { gold: 100, fruit: 12 }, weaknesses: ["fire", "axe"] },
-  { name: "Lost Swimmer", health: 30_000, armor: 2000, rewards: { fruit: 20 }, immune: ["water"], weaknesses: ["ice"] },
+  { name: "Lost Swimmer", health: 30_000, armor: 2000, rewards: { fruit: 50 }, immune: ["water"], weaknesses: ["ice"] },
 
   { name: "Geckalog", health: 80_000, rewards: { gold: 80, fruit: 15 }, weaknesses: ["ice", "left"] },
   { name: "Jaw Maw Maw", health: 60_000, regen: 60, rewards: { gold: 60, fruit: 16 }, passiveEffects: ["Jaw Maw Maw heals quickly."] },

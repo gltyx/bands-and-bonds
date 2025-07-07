@@ -133,7 +133,7 @@ const passiveEffects = computed(() => {
   }
   if (!enemy.value) return effects;
   const count = enemy.value.count ?? 1;
-  const s = count > 1 ? 's' : '';
+  const s = count > 1 ? '' : 's';
   const is = count > 1 ? 'are' : 'is';
   effects.push(...enemy.value.passiveEffects ?? []);
   if (enemy.value.immune) {
