@@ -1,9 +1,17 @@
 import { test, expect, type Page } from '@playwright/test';
+import fs from 'node:fs';
 
 class Game {
   clicks: number;
   constructor(private page: Page) {
     this.clicks = 0;
+  }
+  async setup() {
+    this.page.setDefaultTimeout(1_000);
+    await this.page.goto('/');
+    await this.page.addStyleTag({ path: 'tests/test-overrides.css' });
+    this.page.on('dialog', async (dialog) => { await dialog.accept() });
+    await expect(this.page).toHaveTitle(/Bands & Bonds/);
   }
   button(name: string) {
     return this.page.getByRole('button', { name });
@@ -27,7 +35,7 @@ class Game {
         }
         for (const e of attacks) {
           const r = await e.evaluate(e => {
-            if (e instanceof HTMLButtonElement && !e.disabled) {
+            if (e instanceof HTMLButtonElement && !e.classList.contains('disabled')) {
               e.click();
               return 1;
             }
@@ -77,12 +85,12 @@ class Game {
   async buyPacks() {
     await test.step('Buy packs', async () => {
       const button = this.page.getByRole('button', { name: 'Buy 1 for' });
-      await expect(button).toBeEnabled();
+      await expect(button).not.toContainClass('unaffordable');
       let bought = 0;
       while (true) {
         await button.click();
         bought++;
-        if (await button.isDisabled()) {
+        if (await button.evaluate((el) => el.classList.contains('unaffordable'))) {
           console.log(`Bought ${bought} packs.`);
           return;
         }
@@ -115,6 +123,7 @@ class Game {
   async manageBand(commands) {
     await test.step("Change band", async () => {
       await this.tab('Band');
+      await this.buyPacks();
       await commands();
       const band = await this.page.locator('.band-grid').getByRole('button').evaluateAll(elements =>
         elements.map(el => el.getAttribute('aria-label'))
@@ -128,24 +137,54 @@ class Game {
       await this.tab('Fight');
     });
   }
+  async saveState(filename: string) {
+    const localStorageData = await this.page.evaluate(() => {
+      return Object.fromEntries(Object.entries(localStorage));
+    });
+    fs.writeFileSync(filename, JSON.stringify(localStorageData, null, 2));
+  }
+  async loadState(filename: string) {
+    const localStorageData = JSON.parse(fs.readFileSync(filename, 'utf-8'));
+    await this.page.evaluate((data) => {
+      for (const [key, value] of Object.entries(data)) {
+        localStorage.setItem(key, value as string);
+      }
+    }, localStorageData);
+    await this.page.reload();
+  }
 }
-test('can be played through', async ({ page }) => {
-  page.setDefaultTimeout(1_000);
-  await page.goto('/');
-  await page.addStyleTag({ path: 'tests/test-overrides.css' });
-  page.on('dialog', async (dialog) => { await dialog.accept() });
-  await expect(page).toHaveTitle(/Bands & Bonds/);
+test('playthrough', async ({ page }) => {
   const game = new Game(page);
+  await game.setup();
 
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
   await game.clickButton('Keep going');
-  await game.rescue('Friend of Metal');
+  await game.rescue('Lamplighter');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Poison Crow');
+  await game.clickButton('Keep going');
+  await game.defeatEnemy('Animated Skeleton');
   await game.retreat();
   await game.manageBand(async () => {
-    await game.buyPacks();
     await game.removeFromBand('Stick Master');
-    await game.addToBand('Friend of Metal');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Stick Master');
+  });
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn left');
+  await game.defeatEnemy('Bandlings');
+  await game.clickButton('Keep going');
+  await game.rescue('The Silent Song');
+  await game.retreat();
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.retreat();
+  await game.manageBand(async () => {
+    await game.addToBand('The Silent Song');
   });
 
   await game.clickButton('Enter the Dungeon');
@@ -158,84 +197,10 @@ test('can be played through', async ({ page }) => {
   await game.clickButton('Keep going');
   await game.defeatEnemy('Thick Door');
   await game.clickButton('Keep going');
-  await game.rescue('Lamplighter');
+  await game.rescue('Friend of Metal');
   await game.retreat();
   await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Turn left');
-  await game.defeatEnemy('Bandlings');
-  await game.clickButton('Keep going');
-  await game.rescue('Dark Chef');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-    await game.removeFromBand('Friend of Metal');
-    await game.addToBand('Dark Chef');
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Go straight');
-  await game.defeatEnemy('Trollish Maiden');
-  await game.clickButton('Turn left');
-  await game.rescue('Royal Fruitbearer');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Go straight');
-  await game.defeatEnemy('Trollish Maiden');
-  await game.clickButton('Turn right');
-  await game.rescue('Anvilomancer');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Go straight');
-  await game.defeatEnemy('Trollish Maiden');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Go straight');
-  await game.defeatEnemy('Trollish Maiden');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-    await game.removeFromBand('Dark Chef');
-    await game.addToBand('Lamplighter');
-    await game.addToBand('Stick Master');
-    await game.addToBand('Fruitbearer');
-  });
-
-  await game.clickButton('Enter the Dungeon');
-  await game.defeatEnemy('Wild Slime');
-  await game.clickButton('Keep going');
-  await game.clickButton('Turn right');
-  await game.defeatEnemy('Poison Crow');
-  await game.clickButton('Keep going');
-  await game.defeatEnemy('Animated Skeleton');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
+    await game.removeFromBand('Lamplighter');
     await game.addToBand('Friend of Metal');
   });
 
@@ -247,10 +212,6 @@ test('can be played through', async ({ page }) => {
   await game.clickButton('Keep going');
   await game.defeatEnemy('Animated Skeleton');
   await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
-
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
   await game.clickButton('Keep going');
@@ -260,27 +221,54 @@ test('can be played through', async ({ page }) => {
   await game.defeatEnemy('Animated Skeleton');
   await game.retreat();
   await game.manageBand(async () => {
-    await game.buyPacks();
-    await game.addToBand('Dark Chef');
+    await game.removeFromBand('Friend of Metal');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Friend of Metal');
+    await game.addToBand('The Silent Song');
   });
 
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
   await game.clickButton('Keep going');
   await game.clickButton('Go straight');
-  await game.defeatEnemy('Trollish Maiden');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn left');
+  await game.rescue('Dark Chef');
+  await game.retreat();
+  await game.saveState('last state.json');
+
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
+
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
+  await game.clickButton('Keep going');
+  await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Frozen Centurion');
+  await game.clickButton('Keep going');
+  await game.rescue('Anvilomancer');
+  await game.retreat();
+  await game.clickButton('Enter the Dungeon');
+  await game.defeatEnemy('Wild Slime');
   await game.retreat();
   await game.manageBand(async () => {
-    await game.buyPacks();
+    await game.addToBand('Anvilomancer');
   });
 
   await game.clickButton('Enter the Dungeon');
   await game.defeatEnemy('Wild Slime');
   await game.clickButton('Keep going');
   await game.clickButton('Go straight');
+  await game.defeatEnemy('Dead Gladiator');
+  await game.clickButton('Turn right');
+  await game.defeatEnemy('Frozen Centurion');
+  await game.clickButton('Keep going');
+  await game.clickButton('Turn left');
   await game.defeatEnemy('Trollish Maiden');
-  await game.retreat();
-  await game.manageBand(async () => {
-    await game.buyPacks();
-  });
+  await page.pause();
 });

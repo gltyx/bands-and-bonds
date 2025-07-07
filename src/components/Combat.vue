@@ -132,6 +132,9 @@ const passiveEffects = computed(() => {
     }
   }
   if (!enemy.value) return effects;
+  const count = enemy.value.count ?? 1;
+  const s = count > 1 ? 's' : '';
+  const is = count > 1 ? 'are' : 'is';
   effects.push(...enemy.value.passiveEffects ?? []);
   if (enemy.value.immune) {
     const attacks = [];
@@ -139,11 +142,11 @@ const passiveEffects = computed(() => {
       attacks.push(`<u>${i} attacks</u>`);
     }
     effects.push(
-      `${enemy.value.name} is immune to ${attacks.join(' and ')}.`);
+      `${enemy.value.name} ${is} immune to ${attacks.join(' and ')}.`);
   }
   if (enemy.value.dodge) {
     effects.push(
-      `${enemy.value.name} dodges attacks that take longer than ${numberFormat(enemy.value.dodge)} seconds.
+      `${enemy.value.name} dodge${s} attacks that take longer than ${numberFormat(enemy.value.dodge)} seconds.
       Faster attacks have a chance to hit.`);
   }
   if (ethereal.value) {
@@ -160,7 +163,7 @@ const passiveEffects = computed(() => {
     }
     if (weaknesses.length > 0) {
       const animal = onboard("Desert Armadillo") ? 'Desert Armadillo' : 'Desert Rabbit';
-      effects.push(`${animal} tells you that ${enemy.value.name} is weak to ${weaknesses.join(' and ')}.`);
+      effects.push(`${animal} tells you that ${enemy.value.name} ${is} weak to ${weaknesses.join(' and ')}.`);
     }
   }
   return effects;

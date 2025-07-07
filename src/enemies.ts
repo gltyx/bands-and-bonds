@@ -2,12 +2,12 @@ import type { Enemy, Ability } from "./base";
 
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },
-  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 0 }, weaknesses: ["fire", "ice", "left"] },
+  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 2 }, weaknesses: ["fire", "ice", "left"] },
   { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 5 }, weaknesses: ["front", "blunt"] },
   { name: "Thick Door", health: 10, rewards: { gold: 0, fruit: 0 }, armor: 3, weaknesses: ["fire", "blunt", "back"] },
   { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 2 }, count: 5 },
 
-  { name: "Dead Gladiator", health: 100, armor: 10, rewards: { gold: 10, fruit: 10 } },
+  { name: "Dead Gladiator", health: 100, armor: 10, rewards: { gold: 5, fruit: 10 } },
   { name: "Lobster Daddy", health: 100, armor: 100, rewards: { gold: 10, fruit: 10 } },
   { name: "Will-o-Wasp", health: 100, dodge: 5, rewards: { gold: 15, fruit: 1 } },
   { name: "The Shroud", health: 1000, ethereal: true, rewards: { gold: 100, fruit: 14 } },
@@ -34,14 +34,14 @@ export const allEnemies: Enemy[] = [
   { name: "Crystal Man", health: 600, dodge: 0.01, rewards: { gold: 2000, fruit: 1200 }, weaknesses: ["blunt", "ice"] },
   { name: "Power Crystal", health: 1, armor: 100_000, rewards: { fruit: 1_000_000 }, weaknesses: ["blunt"] },
 
-  { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 20, fruit: 5 }, immune: ["ice"], weaknesses: ["fire", "front"] },
-  { name: "Trollish Maiden", health: 1000, regen: 10, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
+  { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 3, fruit: 5 }, immune: ["ice"], weaknesses: ["fire", "front"] },
+  { name: "Trollish Maiden", health: 1000, regen: 70, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
   { name: "Dryfin Carp", health: 10_000, rewards: { gold: 100, fruit: 10 }, weaknesses: ["water", "back"] },
-  { name: "Scaffold Sorcery", health: 20_000, armor: 100, rewards: { gold: 100, fruit: 12 }, weaknesses: ["fire", "axe"] },
-  { name: "Lost Swimmer", health: 30_000, armor: 200, rewards: { fruit: 20 }, immune: ["water"], weaknesses: ["ice"] },
+  { name: "Scaffold Sorcery", health: 20_000, armor: 1000, rewards: { gold: 100, fruit: 12 }, weaknesses: ["fire", "axe"] },
+  { name: "Lost Swimmer", health: 30_000, armor: 2000, rewards: { fruit: 20 }, immune: ["water"], weaknesses: ["ice"] },
 
   { name: "Geckalog", health: 80_000, rewards: { gold: 80, fruit: 15 }, weaknesses: ["ice", "left"] },
-  { name: "Jaw Maw Maw", health: 60_000, regen: 60, rewards: { gold: 60, fruit: 16 } },
+  { name: "Jaw Maw Maw", health: 60_000, regen: 60, rewards: { gold: 60, fruit: 16 }, passiveEffects: ["Jaw Maw Maw heals quickly."] },
   { name: "Decay Manifest", health: 120_000, rewards: { gold: 20, fruit: 19 }, weaknesses: ["fire", "right"] },
   { name: "Striped Horror", health: 200_000, dodge: 10, rewards: { gold: 10, fruit: 10 } },
   { name: "Dragonfly Agaric", health: 600_000, rewards: { gold: 20, fruit: 40 }, immune: ["poison"], weaknesses: ["fire", "left"] },
@@ -65,7 +65,7 @@ export const allEnemies: Enemy[] = [
   { name: "Core Diver", health: 510_000_000, rewards: { gold: 200 }, immune: ["fire"], weaknesses: ["water"] },
   { name: "Smother Mother", health: 250_000_000, armor: 800_000, rewards: { gold: 200, fruit: 150 }, immune: ["fire"], weaknesses: ["left", "water"] },
   { name: "The Final Warden", dodge: 0.1, health: 999_000_000, rewards: { gold: 5000, fruit: 5000 }, immune: ["fire"], weaknesses: ["holy", "ice"] },
-  { name: "Skelemasterion", health: 1_000_000_000, armor: 1_000_000_000, regen: 1_000_000, ethereal: true, rewards: { gold: 1_000_000_000, fruit: 1_000_000_000 } },
+  { name: "Skelemasterion", health: 1_000_000_000, armor: 1_000_000_000, regen: 1_000_000, ethereal: true, rewards: { gold: 1_000_000_000, fruit: 1_000_000_000 }, passiveEffects: ["This dungeon is barely strong enough to contain Skelemasterion, the Invincible."] },
 ];
 
 const enemyAbilities: Record<string, Ability> = {

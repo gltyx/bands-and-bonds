@@ -9,7 +9,7 @@ function numberSpan(n: number, extra?: string): string {
 export const allFriends: Friend[] = [
   {
     name: 'Anvilomancer',
-    cost: 5,
+    cost: 0,
     description: `
 An expert Anvilomancer can upgrade your weapons in the midst of battle.
 Upgrades are mostly lost when leaving the dungeon.
@@ -25,6 +25,15 @@ The starting weapon level is the square root of the highest level achieved.
         if (store.run.weaponLevel > store.team.bestWeaponLevel) {
           store.team.bestWeaponLevel = store.run.weaponLevel;
         }
+      },
+    }, {
+      name: "Unforge",
+      duration: 5,
+      description: (store) => `Damages the armor of the enemy.\n\n${numberSpan(store.run.weaponLevel)} damage`,
+      onCompleted(store) {
+        store.run.room.armorDamage = Math.min(
+          store.currentEnemy()?.armor ?? 0,
+          store.run.room.armorDamage + store.run.weaponLevel);
       },
     }],
     onAdded(store) {
@@ -55,9 +64,12 @@ The starting weapon level is the highest level achieved.
       {
         name: "Unforge",
         duration: 5,
-        description: 'Damages the armor of the enemy.',
+        description: (store) => `Damages the armor of the enemy.\n\n${numberSpan(store.run.weaponLevel * 100)} damage`,
         onCompleted(store) {
-          store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + store.run.weaponLevel * 100);
+          store.run.room.armorDamage = Math.min(
+            store.currentEnemy()?.armor ?? 0,
+            store.run.room.armorDamage + store.run.weaponLevel * 100
+          );
         },
       }],
       onAdded(store) {
@@ -70,7 +82,7 @@ The starting weapon level is the highest level achieved.
   },
   {
     name: 'Azrekta',
-    cost: 25,
+    cost: 0,
     description: `
 Azrekta bedevils her friends and foes. Her friends become more powerful versions of themselves.
 Her enemies become ethereal, making them challenging to hit.
@@ -79,7 +91,7 @@ Her enemies become ethereal, making them challenging to hit.
   },
   {
     name: 'Coldblade',
-    cost: 31,
+    cost: 0,
     description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
     abilities: [{
       name: "Glacial Strike",
@@ -102,7 +114,7 @@ Her enemies become ethereal, making them challenging to hit.
   },
   {
     name: 'Dark Chef',
-    cost: 4,
+    cost: 0,
     description: `
 A master of the culinary arts, Dark Chef fights by poisoning the enemies.
 The only way to defend against his attacks is to wear layers of heavy armor.`,
@@ -120,7 +132,7 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
   },
   {
     name: 'Desert Rabbit',
-    cost: 30,
+    cost: 0,
     description: `
 The Desert Rabbit often fights gigantic enemies. He has developed a keen sense for their weaknesses.
 
@@ -148,7 +160,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   {
     name: 'Friend of Metal',
     description: 'A warrior equipped with high-quality metal armor and weapons.',
-    cost: 10,
+    cost: 0,
     abilities: [{
       name: "Steel Jab",
       duration: 3,
@@ -175,7 +187,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   },
   {
     name: 'Knight of Claws',
-    cost: 13,
+    cost: 0,
     description: `
 Trained as an assassin, the Knight of Claws works best on his own. His power doubles for every empty space next to him.
     `,
@@ -192,7 +204,7 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   },
   {
     name: 'Lamplighter',
-    cost: 6,
+    cost: 0,
     description: "Lights up tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
@@ -205,7 +217,7 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   },
   {
     name: 'Royal Fruitbearer',
-    cost: 7,
+    cost: 0,
     description: `
 With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
     `,
@@ -221,7 +233,7 @@ every member of the party gives one piece to every other member.
   },
   {
     name: 'Stick Master',
-    cost: 1,
+    cost: 0,
     description: `
 Stick Master is a humble explorer. While wandering the forest, they came upon the ruins of a long-lost castle.
 At the lowest level, they discovered the entrance to the dungeon.
@@ -246,7 +258,7 @@ At the lowest level, they discovered the entrance to the dungeon.
   },
   {
     name: 'The Silent Song',
-    cost: 2,
+    cost: 0,
     description: "Her sweet melody doubles the damage dealt by friends standing next to her.",
     super: {
       name: 'The Silent Quartet',
@@ -255,7 +267,7 @@ At the lowest level, they discovered the entrance to the dungeon.
   },
   {
     name: 'Lord of Gears',
-    cost: 12,
+    cost: 0,
     description: `
 The Lord of Gears is a master of automation. The band members next to him need not do anything.
 Their abilities will be activated automatically.
@@ -269,7 +281,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   },
   {
     name: 'Pur Lion',
-    cost: 35,
+    cost: 0,
     description: "A thief, wanted in all the thirty kingdoms. Yet nobody is able to give an accurate description of him.",
     abilities: [{
       name: "Snatch",
@@ -293,7 +305,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   },
   {
     name: 'Kit Flash',
-    cost: 8,
+    cost: 0,
     description: "A wizard of speed, Kit Flash can speed up the abilities of every member of the band.",
     abilities: [{
       name: "Running Start",
@@ -320,7 +332,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
   },
   {
     name: 'Wayfinder',
-    cost: 15,
+    cost: 0,
     description: `
 A master of navigation, Wayfinder will guide your band through a path without fail.
 Just point to your destination on the map to get started.
@@ -347,7 +359,7 @@ and see more details on the map.
   },
   {
     name: 'Bayla',
-    cost: 17,
+    cost: 0,
     description: `
 Bayla is an unpredictable fighter. She can change her position in the middle of a fight to best target the weak spots
 of her enemies. She's great friends with the Desert Rabbit.
@@ -369,7 +381,7 @@ of her enemies. She's great friends with the Desert Rabbit and likes to stick cl
   },
   {
     name: 'Kin of Pump',
-    cost: 9,
+    cost: 0,
     description: `
 To become Kins of Pump, people must shed all their fears and worries. They still love others,
 but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
@@ -392,7 +404,7 @@ started to act like a king. They still do not help, but all gold finds are now s
   },
   {
     name: 'Kevin',
-    cost: 22,
+    cost: 0,
     description: `
 Kevin is not so much a person as a phenomenon. When Kevin is present, all enemies are vulnerable to fire.
     `,
@@ -406,7 +418,7 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
   },
   {
     name: 'Smiling Pilot',
-    cost: 50,
+    cost: 0,
     description: 'This mysterious fellow does not yet have an ability.',
     super: {
       name: 'Smiling Admiral',
@@ -414,7 +426,7 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
   },
   {
     name: 'Mongreler',
-    cost: 24,
+    cost: 0,
     description: "A collector of unusual pets. Mongreler can capture weakened enemies and deploy them on the battlefield.",
     passiveEffects: ['Mongreler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     super: {
@@ -424,7 +436,7 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
   },
   {
     name: 'Eighth Swimmer',
-    cost: 29,
+    cost: 0,
     description: `
 In the Landas Deserts the mages punish loud people by turning their bodies into water.
 The Eighth Swimmer was one of these unlucky people. Imagine walking among thirsty people
@@ -452,7 +464,7 @@ They found refuge in this dungeon and now in your band.
   },
   {
     name: 'Pecquer',
-    cost: 14,
+    cost: 0,
     description: `
 Pecquer is veteran mercenary from the thirty kingdoms. The warriors he fought besides sing songs of his bravery.
     `,
@@ -494,7 +506,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
   },
   {
     name: 'Hedge Lost',
-    cost: 11,
+    cost: 0,
     description: "",
     abilities: [{
       name: "Buy Fruit",
@@ -531,7 +543,7 @@ ${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class
   },
   {
     name: 'Zaktar Kadoque',
-    cost: 37,
+    cost: 0,
     description: `
 Zaktar Kadoque is an explorer from another world. He was not trapped in his cage at all,
 rather he was examining it. He loves this dungeon and is very happy to have met your band.
@@ -562,7 +574,7 @@ He is particularly interested in the fruit you're holding.
   },
   {
     name: 'Xaranthian Constructor',
-    cost: 20,
+    cost: 0,
     description: `
 The Xaranthian Empire is said to be ruled by wise engineers who built powerful machines to ease their work.
 But building such machines is hard work too, so the Xarantians built factories to produce mechanical turtles
@@ -720,9 +732,37 @@ a Xaranthian person, and neither has anyone else in your band.
     },
   },
 ];
+const costs: Record<string, number> = {
+  "Stick Master": 1,
+  "The Silent Song": 2,
+  "Dark Chef": 3,
+  "Anvilomancer": 4,
+  "Lamplighter": 5,
+  "Royal Fruitbearer": 6,
+  "Friend of Metal": 7,
+  "Kin of Pump": 8,
+  "Kit Flash": 9,
+  "Hedge Lost": 10,
+  "Lord of Gears": 11,
+  "Knight of Claws": 12,
+  "Pecquer": 13,
+  "Wayfinder": 14,
+  "Bayla": 15,
+  "Xaranthian Constructor": 16,
+  "Kevin": 17,
+  "Mongreler": 18,
+  "Azrekta": 19,
+  "Eighth Swimmer": 20,
+  "Desert Rabbit": 21,
+  "Coldblade": 22,
+  "Pur Lion": 23,
+  "Zaktar Kadoque": 24,
+  "Smiling Pilot": 25,
+}
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
   friendsByName[f.name] = f;
+  f.cost = costs[f.name];
   f.descriptionHtml = marked(f.description ?? '');
   if (f.super?.name) {
     friendsByName[f.super.name] = { ...f, ...f.super };
