@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
-import { numberFormat } from '../base.ts';
+import Num from './Num.vue';
 const props = defineProps<{
   amount: number;
 }>();
 </script>
 
 <template>
-  <span class="numbers">{{ numberFormat(props.amount) }}
-    <img src="/images/generated/gold.webp" class="resource-icon" /></span>
+  <Num :amount="props.amount">
+    <img src="/images/generated/gold.webp" class="resource-icon" />
+  </Num>
 </template>

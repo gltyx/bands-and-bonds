@@ -323,7 +323,10 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     cost: 15,
     description: `
 A master of navigation, Wayfinder will guide your band through a path without fail.
-With Wayfinder in your band, you can replace members of your band at campfires.
+Just point to your destination on the map to get started.
+
+With Wayfinder in your band, you can replace members of your band at campfires
+and see more details on the map.
     `,
     super: {
       name: 'Wayfindest',

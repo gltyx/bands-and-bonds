@@ -67,7 +67,7 @@ export function startingLocalData(): base.LocalData {
 }
 function startingTeamData(): base.TeamData {
   return {
-    fruit: 1,
+    fruit: 2,
     packs: 1,
     bestWeaponLevel: 1,
     unlocked: startingUnlocked(),

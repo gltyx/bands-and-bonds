@@ -25,15 +25,15 @@ function mainLoop() {
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   const multiplier = window.location.hostname === 'localhost' ? 100 : 1;
   deltaTime *= multiplier;
-  if (!store.currentEnemy()?.immune?.includes('time')) {
-    deltaTime *= store.run.speedLevel;
+  if (store.currentEnemy()?.name === 'Clockomancer') {
+    deltaTime /= 100;
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
     if (key === 'ability-Running Start') {
-      t.time += Math.floor(deltaTime / store.run.speedLevel);
-    } else {
       t.time += Math.floor(deltaTime);
+    } else {
+      t.time += Math.floor(deltaTime * store.run.speedLevel);
     }
     if (t.time >= t.duration) {
       delete store.run.timers[key];

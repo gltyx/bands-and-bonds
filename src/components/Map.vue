@@ -6,6 +6,7 @@ import type { Room } from "../base.ts";
 import curvedLine from "./curved-line.ts";
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
+import Num from "./Num.vue";
 
 const mapElement = useTemplateRef('mapElement');
 const scale = ref(1.0);
@@ -61,7 +62,7 @@ const planRooms = computed(() =>
   onboard("Wayfinder") && store.local.destination ? destinationToPath(store.local.destination) : []);
 const planLine = computed(() => curvedLine(20, scale.value, planRooms.value));
 const hoveredRoom = ref<Room | null>(null);
-
+const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hoveredRoom.value.name] : null);
 </script>
 
 <template>
@@ -84,11 +85,26 @@ const hoveredRoom = ref<Room | null>(null);
       <img :class="{
         'friend-portrait': hoveredRoom.type === 'rescue',
         'enemy-portrait': hoveredRoom.type !== 'rescue',
-        ethereal: hoveredRoom.type !== 'rescue' && enemiesByName[hoveredRoom.name]?.ethereal
+        ethereal: hoveredRoom.type !== 'rescue' && hoveredEnemy?.ethereal
       }" :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
       <h1>{{ hoveredRoom.name }}</h1>
-      <p v-if="enemiesByName[hoveredRoom.name]?.rewards">Rewards when defeated:
-        <EnemyRewards :enemy="enemiesByName[hoveredRoom.name]" />
+      <p v-if="hoveredEnemy && onboard('Wayfinder')">
+        <template v-if="hoveredEnemy.count">
+          <Num :amount="hoveredEnemy.count">×</Num>&nbsp;
+        </template>
+        <Num :amount="hoveredEnemy.health" /> HP
+        <template v-if="hoveredEnemy.armor">
+          <Num :amount="hoveredEnemy.armor" /> armor
+        </template>
+        <template v-if="hoveredEnemy.dodge">
+          <Num :amount="hoveredEnemy.dodge" /> dodge
+        </template>
+        <template v-if="hoveredEnemy.regen">
+          <Num :amount="hoveredEnemy.regen" /> regeneration
+        </template>
+      </p>
+      <p v-if="hoveredEnemy?.rewards">Rewards when defeated:
+        <EnemyRewards :enemy="hoveredEnemy" />
       </p>
     </div>
   </div>
