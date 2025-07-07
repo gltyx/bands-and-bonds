@@ -68,7 +68,7 @@ export const allEnemies: Enemy[] = [
   { name: "Tombstone of the Forgotten", health: 1000, armor: 10000, rewards: { gold: 2000, fruit: 100 }, weaknesses: ['front', 'magic'] },
   { name: "Lior the Weaver", health: 1000, armor: 1, rewards: { gold: 2000, fruit: 100 }, weaknesses: ['sharp', 'fire'] },
   { name: "Golden Chest", health: 1, armor: 100000, rewards: { gold: 2000000 }, weaknesses: ['blunt'] },
-  { name: "Power Crystal", health: 1, armor: 100000, rewards: { gold: 1000000 }, weaknesses: ['blunt'] },
+  { name: "Power Crystal", health: 1, armor: 100000, rewards: { fruit: 1000000 }, weaknesses: ['blunt'] },
   { name: "Hiber Conduit", health: 1000, rewards: { gold: 800, fruit: 180 }, weaknesses: ['fire'] },
   { name: "Gnollish Ambassador", health: 100, armor: 10, rewards: { gold: 200, fruit: 15 }, weaknesses: ['fire', 'right'] },
   { name: "Wands from the Depths", health: 600000, armor: 60, rewards: { gold: 200, fruit: 40 }, weaknesses: ['ice'] },
