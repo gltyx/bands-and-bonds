@@ -57,7 +57,7 @@ The starting weapon level is the highest level achieved.
         duration: 5,
         description: 'Damages the armor of the enemy.',
         onCompleted(store) {
-          store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + 1);
+          store.run.room.armorDamage = Math.min(store.currentEnemy()?.armor ?? 0, store.run.room.armorDamage + store.run.weaponLevel * 100);
         },
       }],
       onAdded(store) {
@@ -502,7 +502,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
       consumes: { gold: 100 },
       description: 'Buy a piece of fruit at the Hedge Market.',
       onCompleted(store) {
-        store.run.fruit += 1;
+        store.run.fruit += store.fruitMultiplier();
       },
     }],
     super: {

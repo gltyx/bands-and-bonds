@@ -190,7 +190,7 @@ export const allRooms: Room[] = [
   { x: 666, y: 343, type: "none" },
   { x: 666, y: 309, type: "combat", name: "Food Mimic" },
   { x: 666, y: 252, type: "combat", name: 'Frog Assassin' },
-  { x: 698, y: 252, type: "combat", name: 'Enantiomer' },
+  { x: 698, y: 252, type: "combat", name: 'Enantiomers' },
   { x: 698, y: 309, type: "none" },
   { x: 733, y: 309, type: "rescue", name: "Smiling Pilot" },
   { x: 733, y: 252, type: "combat", name: 'Gnollish Ambassador' },

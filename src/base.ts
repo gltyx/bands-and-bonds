@@ -80,6 +80,7 @@ export type Store = {
   lightRadius: () => string;
   getRewards: (enemy: Enemy) => { gold: number; fruit: number };
   takeTurn: (turn: string, skipConfirmation?: boolean) => void;
+  fruitMultiplier: () => number;
 };
 
 export type Turn = {

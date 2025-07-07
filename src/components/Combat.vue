@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { store, startingRunData, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
 import { friendsByName } from "../friends.ts";
-import type { Ability, Friend, Turn, Enemy } from "../base.ts";
+import { type Ability, type Friend, type Turn, type Enemy, numberFormat } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref, watch } from "vue";
@@ -125,24 +125,31 @@ function getWeaknesses(enemy: Enemy | null) {
 
 const passiveEffects = computed(() => {
   const effects = [] as string[];
-  if (enemy.value?.passiveEffects) {
-    effects.push(...enemy.value.passiveEffects);
-  }
-  if (enemy.value?.dodge) {
-    effects.push(
-      `${enemy.value.name} dodges attacks that take longer than ${enemy.value.dodge} seconds.
-      Faster attacks have a chance to hit.`);
-  }
   for (const name in store.bandByName()) {
     const friend = friendsByName[name];
     if (friend?.passiveEffects) {
       effects.push(...friend.passiveEffects);
     }
   }
-  if (enemy.value && ethereal.value) {
+  if (!enemy.value) return effects;
+  effects.push(...enemy.value.passiveEffects ?? []);
+  if (enemy.value.immune) {
+    const attacks = [];
+    for (const i of enemy.value.immune) {
+      attacks.push(`<u>${i} attacks</u>`);
+    }
+    effects.push(
+      `${enemy.value.name} is immune to ${attacks.join(' and ')}.`);
+  }
+  if (enemy.value.dodge) {
+    effects.push(
+      `${enemy.value.name} dodges attacks that take longer than ${numberFormat(enemy.value.dodge)} seconds.
+      Faster attacks have a chance to hit.`);
+  }
+  if (ethereal.value) {
     effects.push("Enemy is ethereal. Most attacks will miss.");
   }
-  if (enemy.value && onboard("Desert Rabbit")) {
+  if (onboard("Desert Rabbit")) {
     const weaknesses = [];
     for (const weakness of getWeaknesses(enemy.value)) {
       if (['left', 'right', 'front', 'back'].includes(weakness)) {

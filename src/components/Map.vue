@@ -97,7 +97,7 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
           <Num :amount="hoveredEnemy.armor" /> armor
         </template>
         <template v-if="hoveredEnemy.dodge">
-          <Num :amount="hoveredEnemy.dodge" /> dodge
+          <Num :amount="hoveredEnemy.dodge">s</Num> dodge
         </template>
         <template v-if="hoveredEnemy.regen">
           <Num :amount="hoveredEnemy.regen" /> regeneration
