@@ -3,7 +3,7 @@ import type { Enemy, Ability } from "./base";
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },
   { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 3 }, weaknesses: ["fire", "ice", "left"] },
-  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 8 }, weaknesses: ["front", "blunt"] },
+  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 5 }, weaknesses: ["front", "blunt"] },
   { name: "Thick Door", health: 10, rewards: { gold: 0, fruit: 0 }, armor: 3, weaknesses: ["fire", "blunt", "back"] },
   { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 5 }, count: 5 },
 
@@ -35,7 +35,7 @@ export const allEnemies: Enemy[] = [
   { name: "Power Crystal", health: 1, armor: 100_000, rewards: { fruit: 1_000_000 }, weaknesses: ["blunt"] },
 
   { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 3, fruit: 10 }, immune: ["ice"], weaknesses: ["fire", "front"] },
-  { name: "Trollish Maiden", health: 1000, regen: 70, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
+  { name: "Trollish Maiden", health: 1000, regen: 100, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
   { name: "Dryfin Carp", health: 10_000, rewards: { gold: 100, fruit: 20 }, weaknesses: ["water", "back"] },
   { name: "Scaffold Sorcery", health: 20_000, armor: 1000, rewards: { gold: 100, fruit: 12 }, weaknesses: ["fire", "axe"] },
   { name: "Lost Swimmer", health: 30_000, armor: 2000, rewards: { fruit: 50 }, immune: ["water"], weaknesses: ["ice"] },

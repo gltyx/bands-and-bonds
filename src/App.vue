@@ -23,7 +23,7 @@ function mainLoop() {
   const currentTime = performance.now();
   let deltaTime = currentTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
-  const multiplier = window.location.hostname === 'localhost' ? 100 : 1;
+  const multiplier = window.location.search.includes("test") ? 100 : 1;
   deltaTime *= multiplier;
   if (store.currentEnemy()?.name === 'Clockomancer') {
     deltaTime /= 100;

@@ -288,7 +288,7 @@ function abilityPrice(ab: Ability) {
       <div class="text">
         <div class="title">Retreat</div>
         <div class="description">
-          Leave the dungeon and return to safety. Live to fight another day.
+          Leave the dungeon and return to safety.
           <template v-if="store.run.gold > 0 && store.run.fruit > 0">
             You will lose
             <Gold :amount="store.run.gold" /> but keep the
