@@ -13,7 +13,10 @@ defineProps<{
 <template>
   <div class="progress-container" :title="title">
     <div class="progress-bar" :style="{ width: `${(value / max) * 100}%`, backgroundColor: color }"></div>
-    <div class="progress-text numbers">
+    <div class="progress-text numbers" v-if="value === max">
+      {{ numberFormat(max) }} {{ label }}
+    </div>
+    <div class="progress-text numbers" v-else>
       {{ numberFormat(value) }} / {{ numberFormat(max) }} {{ label }}
     </div>
   </div>
