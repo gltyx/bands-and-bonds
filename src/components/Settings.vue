@@ -3,9 +3,12 @@ import { newTeam } from "../online.ts";
 import { store } from "../store.ts";
 import { allFriends } from "../friends.ts";
 import { allRooms, roomKey } from "../rooms.ts";
+import { ref } from "vue";
 
 function reset() {
-  if (window.confirm("Are you sure you want to reset your progress? This cannot be undone.") && window.confirm("Double checking: Are you sure you want to reset your progress? This cannot be undone.")) {
+  if (resetConfirmation.value < 2) {
+    resetConfirmation.value++;
+  } else {
     localStorage.clear();
     window.location.reload();
   }
@@ -30,6 +33,8 @@ function unlockEverything() {
   store.team.unlocked = allFriends.map(friend => friend.name);
   store.team.discovered = allRooms.map(roomKey);
 }
+
+const resetConfirmation = ref(0);
 </script>
 
 <template>
@@ -72,6 +77,12 @@ function unlockEverything() {
         <div class="title">Reset data</div>
         <div class="description">
           Throw away all your progress and start over.
+          <template v-if="resetConfirmation >= 1">
+            Click again if you are sure.
+          </template>
+          <template v-if="resetConfirmation >= 2">
+            Click again if you are super sure.
+          </template>
         </div>
       </div>
     </button>
