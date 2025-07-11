@@ -9,9 +9,16 @@
   "theme_color": "#eeddbb",
   "icons": [
     {
-      "src": "/images/generated/logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/bands-and-bonds/images/generated/maskable_icon.png",
+      "sizes": "1204x1204",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/bands-and-bonds/images/generated/logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
