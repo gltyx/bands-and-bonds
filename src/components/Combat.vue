@@ -211,6 +211,17 @@ function abilityPrice(ab: Ability) {
 }
 
 const hideActions = ref(false);
+
+// Preload victory images.
+for (const url of [
+  '/images/generated/victory1.webp',
+  '/images/generated/victory2.webp',
+  '/images/generated/victory3.webp',
+  '/images/generated/victory4.webp',
+]) {
+  const img = new Image();
+  img.src = url;
+}
 </script>
 
 <template>
