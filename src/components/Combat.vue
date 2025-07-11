@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { store, startingRunData, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
+import { store, startingRunData, describeAbility, nextTo, onboard, abilityEffects, getAbilityBaseDamage, ethereal, getWeaknesses } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import { enemiesByName } from "../enemies.ts";
-import { type Ability, type Friend, type Turn, type Enemy, numberFormat } from "../base.ts";
+import { type Ability, type Friend, type Turn, numberFormat } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref, watch } from "vue";
@@ -39,43 +39,16 @@ function executeAbility(ab: Ability) {
     return ab.onCompleted(store);
   }
   if (ab.damage) {
-    const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
-    if (!undodgeable && enemy.value?.dodge) {
-      const duration = ab.duration / store.run.speedLevel;
-      const dodgeChance = Math.min(1, duration / enemy.value.dodge);
-      if (Math.random() < dodgeChance) {
-        return;
-      }
+    const e = abilityEffects(ab);
+    if (Math.random() < e.hitChance) {
+      const dmg = getAbilityBaseDamage(ab);
+      store.addDamage(Math.floor(dmg * e.damageMultiplier));
     }
-    if (!undodgeable && ethereal.value && Math.random() < 0.9) {
-      return;
-    }
-    let dmg = getAbilityDamage(ab);
-    if (enemy.value && onboard("Desert Rabbit")) {
-      for (const weakness of getWeaknesses(enemy.value)) {
-        if (ab.tags?.includes(weakness)) {
-          dmg *= store.run.desertBlessingMultiplier;
-        }
-        const center = onboard("Lamplighter");
-        if (!center || !ab.source) continue;
-        if (weakness === 'left' && ab.source.col < center.col) {
-          dmg *= store.run.desertBlessingMultiplier;
-        } else if (weakness === 'right' && ab.source.col > center.col) {
-          dmg *= store.run.desertBlessingMultiplier;
-        } else if (weakness === 'front' && ab.source.row < center.row) {
-          dmg *= store.run.desertBlessingMultiplier;
-        } else if (weakness === 'back' && ab.source.row > center.row) {
-          dmg *= store.run.desertBlessingMultiplier;
-        }
-      }
-    }
-    store.addDamage(dmg);
   }
 }
 const fighting = computed(() => {
   return enemy.value && store.run.room.damage < enemy.value.health;
 });
-const ethereal = computed(() => (onboard("Azrekta") || enemy.value?.ethereal) && !onboard("Kevout"));
 
 function retreat() {
   if (store.run.fruit) {
@@ -118,15 +91,6 @@ const plannedTurn = computed(() => {
     }
   }
 });
-
-function getWeaknesses(enemy: Enemy | null) {
-  if (!enemy) return [];
-  const weaknesses = enemy.weaknesses ?? [];
-  if (onboard("Kevin") && !onboard("Kevout") && !weaknesses.includes('fire')) {
-    return [...weaknesses, 'fire'];
-  }
-  return weaknesses;
-}
 
 const passiveEffects = computed(() => {
   const effects = [] as string[];

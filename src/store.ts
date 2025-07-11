@@ -261,23 +261,78 @@ export function describeAbility(ab: base.Ability): string {
     d = d(store);
   }
   if (ab.damage) {
-    const dmg = getAbilityDamage(ab);
-    d += `\n\n<span class="numbers">${base.numberFormat(dmg)}</span> damage`;
+    const e = abilityEffects(ab);
+    const dmg = Math.floor(getAbilityBaseDamage(ab) * e.damageMultiplier / e.weaknessMultiplier);
+    const text = e.weaknessMultiplier > 1 ?
+      `${base.numberFormat(e.weaknessMultiplier)} × ${base.numberFormat(dmg)}` : base.numberFormat(dmg);
+    d += `\n\n<span class="numbers">${text}</span> damage`;
   }
   return d;
 }
 
-export function getAbilityDamage(ab: base.Ability): number {
+export const ethereal = computed(() => (onboard("Azrekta") || store.currentEnemy()?.ethereal) && !onboard("Kevout"));
+
+export type AbilityEffects = {
+  damageMultiplier: number; // Total multiplier.
+  weaknessMultiplier: number; // For information.
+  hitChance: number;
+};
+
+export function abilityEffects(ab: base.Ability): AbilityEffects {
+  const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
+  let hitChance = 1;
+  const enemy = store.currentEnemy();
+  if (!undodgeable && enemy?.dodge) {
+    const duration = ab.duration / store.run.speedLevel;
+    const dodgeChance = Math.min(1, duration / enemy.dodge);
+    hitChance *= 1 - dodgeChance;
+  }
+  if (!undodgeable && ethereal.value) {
+    hitChance *= 0.1;
+  }
+  let mult = 1;
+  mult *= store.run.weaponLevel;
+  if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
+    mult *= 2;
+  }
+  let weaknessMultiplier = 1;
+  if (enemy && onboard("Desert Rabbit")) {
+    for (const weakness of getWeaknesses(enemy)) {
+      if (ab.tags?.includes(weakness)) {
+        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+      }
+      const center = onboard("Lamplighter");
+      if (!center || !ab.source) continue;
+      if (weakness === 'left' && ab.source.col < center.col) {
+        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+      } else if (weakness === 'right' && ab.source.col > center.col) {
+        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+      } else if (weakness === 'front' && ab.source.row < center.row) {
+        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+      } else if (weakness === 'back' && ab.source.row > center.row) {
+        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+      }
+    }
+  }
+  return { damageMultiplier: mult * weaknessMultiplier, weaknessMultiplier, hitChance };
+}
+
+export function getWeaknesses(enemy: base.Enemy | null) {
+  if (!enemy) return [];
+  const weaknesses = enemy.weaknesses ?? [];
+  if (onboard("Kevin") && !onboard("Kevout") && !weaknesses.includes('fire')) {
+    return [...weaknesses, 'fire'];
+  }
+  return weaknesses;
+}
+
+export function getAbilityBaseDamage(ab: base.Ability): number {
   if (!ab.damage) return 0;
   let dmg = ab.damage;
   if (typeof dmg === "function") {
     dmg = dmg(store);
   }
-  dmg *= store.run.weaponLevel;
-  if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
-    dmg *= 2;
-  }
-  return Math.floor(dmg);
+  return dmg;
 }
 
 export const bandByName = computed(() => {

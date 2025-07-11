@@ -29,7 +29,6 @@ const emit = defineEmits(['on-start', 'on-end']);
   align-items: center;
   perspective: 1000px;
   transform-style: preserve-3d;
-  transform: translateZ(70px);
 
   img {
     position: absolute;
@@ -80,15 +79,15 @@ const emit = defineEmits(['on-start', 'on-end']);
 }
 
 .v-enter-from.celebrating {
-  transform: rotateX(90deg) translateZ(25px);
+  transform: rotateX(90deg) translateZ(90px);
 }
 
 .v-enter-to.celebrating,
 .v-leave-from.celebrating {
-  transform: rotateX(0deg) translateZ(25px);
+  transform: rotateX(0deg) translateZ(90px);
 }
 
 .v-leave-to.celebrating {
-  transform: rotateX(-90deg) translateZ(25px);
+  transform: rotateX(-90deg) translateZ(90px);
 }
 </style>
