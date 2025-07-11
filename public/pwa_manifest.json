@@ -7,6 +7,13 @@
   "display": "fullscreen",
   "background_color": "#222222",
   "theme_color": "#eeddbb",
+  "lang": "en",
+  "categories": [
+    "games",
+    "incremental",
+    "adventure",
+    "co-op"
+  ],
   "icons": [
     {
       "src": "/bands-and-bonds/images/generated/maskable_icon.png",

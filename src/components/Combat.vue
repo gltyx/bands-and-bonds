@@ -41,7 +41,8 @@ function executeAbility(ab: Ability) {
   if (ab.damage) {
     const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
     if (!undodgeable && enemy.value?.dodge) {
-      const dodgeChance = Math.min(1, ab.duration / enemy.value.dodge);
+      const duration = ab.duration / store.run.speedLevel;
+      const dodgeChance = Math.min(1, duration / enemy.value.dodge);
       if (Math.random() < dodgeChance) {
         return;
       }
@@ -154,7 +155,8 @@ const passiveEffects = computed(() => {
       Faster attacks have a chance to hit.`);
   }
   if (ethereal.value) {
-    effects.push("Enemy is ethereal. Most attacks will miss.");
+    effects.push(
+      `Enemy is ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}. Most attacks will miss.`);
   }
   if (onboard("Desert Rabbit")) {
     const weaknesses = [];
