@@ -267,7 +267,7 @@ const hideActions = ref(false);
     </template>
     <template v-else-if="plannedTurn">
       <div class="section">Navigation</div>
-      <SlowButton timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
+      <SlowButton v-if="!hideActions" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
         :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
         @done="store.takeTurn(plannedTurn.title!)" :autostart="true" />
     </template>
