@@ -152,5 +152,5 @@ export function numberFormat(x: number) {
   return _numberFormat.format(x);
 }
 export function costOfPacks(packs: number): number {
-  return Math.floor(1.2 ** (packs + 5));
+  return Math.floor(0.00000001 * packs ** 7 + packs);
 }
