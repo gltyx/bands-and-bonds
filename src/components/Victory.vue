@@ -11,6 +11,9 @@ const emit = defineEmits(['on-start', 'on-end']);
       <img class="layer2" src="/images/generated/victory2.webp" alt="A golden shield" />
       <img class="layer3" src="/images/generated/victory3.webp" alt="A sword with red gems" />
       <img class="layer4" src="/images/generated/victory4.webp" alt="A sword with blue gems" />
+      <div class="victory-text-backdrop">
+        Victory!
+      </div>
       <div class="victory-text">
         Victory!
       </div>
@@ -22,7 +25,6 @@ const emit = defineEmits(['on-start', 'on-end']);
 .celebrating {
   height: 200px;
   position: relative;
-  display: flex;
   justify-content: center;
   align-items: center;
   perspective: 1000px;
@@ -52,12 +54,20 @@ const emit = defineEmits(['on-start', 'on-end']);
     transform: translateX(-50%) rotateZ(-45deg) translateZ(-10px);
   }
 
+  .victory-text-backdrop,
   .victory-text {
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    position: absolute;
     font-family: 'Grenze Gotisch', serif;
     font-size: 30px;
     color: #edb;
-    -webkit-text-stroke: 5px #0008;
-    paint-order: stroke fill;
+  }
+
+  .victory-text-backdrop {
+    color: black;
+    -webkit-text-stroke: 5px #000;
+    transform: translateX(-50%) translateY(-50%) translateZ(-3px);
   }
 }
 
