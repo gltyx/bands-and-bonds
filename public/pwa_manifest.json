@@ -1,0 +1,15 @@
+{
+  "name": "Bands & Bonds",
+  "short_name": "Bands & Bonds",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#222222",
+  "theme_color": "#eeddbb",
+  "icons": [
+    {
+      "src": "/images/generated/logo.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
