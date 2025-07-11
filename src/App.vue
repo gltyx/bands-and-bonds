@@ -21,7 +21,12 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
-  let deltaTime = currentTime - lastFrameTime.value;
+  let baseTime = currentTime;
+  if (store.run.skipTime) {
+    baseTime += store.run.skipTime;
+    store.run.skipTime = 0;
+  }
+  let deltaTime = baseTime - lastFrameTime.value;
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   const multiplier = window.location.search.includes("test") ? 100 : 1;
   deltaTime *= multiplier;
@@ -43,7 +48,7 @@ function mainLoop() {
   const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
     const regenPerSecond = multiplier * ((enemy.regen ?? 0) - store.run.room.poison);
-    let regen = (currentTime - lastRegenTime.value) * regenPerSecond / 1000;
+    let regen = (baseTime - lastRegenTime.value) * regenPerSecond / 1000;
     while (regen > 1) {
       store.run.room.damage = Math.max(0, store.run.room.damage - 1);
       regen -= 1;
@@ -63,7 +68,7 @@ function mainLoop() {
   }
   if (store.run.saplings > 0) {
     const fruitPerSecond = multiplier * store.run.saplings;
-    let fruits = (currentTime - lastSaplingTime.value) * fruitPerSecond / 1000;
+    let fruits = (baseTime - lastSaplingTime.value) * fruitPerSecond / 1000;
     while (fruits > 1) {
       store.run.fruit += 1;
       fruits -= 1;

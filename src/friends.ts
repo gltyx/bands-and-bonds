@@ -431,6 +431,10 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
     passiveEffects: ['Mongreler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     super: {
       name: 'Monster Juggler',
+      description: `
+A collector of unusual pets. Monster Juggler can capture weakened enemies and deploy them on the battlefield.
+The captured enemies are kept even when the band retreats.
+      `,
       passiveEffects: ['Monster Juggler wants to capture enemies. Damage is reduced by 99% to avoid killing them.'],
     },
   },

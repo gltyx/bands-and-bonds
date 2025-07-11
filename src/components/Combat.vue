@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { store, startingRunData, describeAbility, nextTo, onboard, getAbilityDamage } from "../store.ts";
 import { friendsByName } from "../friends.ts";
+import { enemiesByName } from "../enemies.ts";
 import { type Ability, type Friend, type Turn, type Enemy, numberFormat } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
@@ -79,7 +80,11 @@ function retreat() {
   if (store.run.fruit) {
     store.team.fruit += store.run.fruit;
   }
+  const capturedMonsters = store.run.capturedMonsters;
   Object.assign(store.run, startingRunData());
+  if (onboard("Monster Juggler")) {
+    store.run.capturedMonsters = capturedMonsters;
+  }
   for (const friend in store.bandByName()) {
     const f = friendsByName[friend];
     f.onAdded?.(store);
@@ -257,11 +262,13 @@ const hideActions = ref(false);
           :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
           :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
       </template>
-      <div v-if="store.run.capturedAbilities.length > 0" class="section">Captured Monsters</div>
-      <template v-for="ab in store.run.capturedAbilities">
-        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
+      <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
+      <template v-for="monster in store.run.capturedMonsters" :key="monster">
+        <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
+          <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
+            :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
+            :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
+        </template>
       </template>
       <div class="section">Navigation</div>
     </template>

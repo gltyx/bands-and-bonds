@@ -37,9 +37,10 @@ export type RunData = {
   fruit: number; // Fruit collected in this run. Added to team.fruit on retreat.
   saplings: number;
   skips: number;
-  capturedAbilities: Ability[];
+  capturedMonsters: string[];
   room: RoomData;
   timers: Record<string, Timer>;
+  skipTime: number; // Time to skip in the next frame, for time-skip abilities.
 };
 
 export type Settings = {

@@ -33,9 +33,10 @@ export function startingRunData(): base.RunData {
     fruit: 0,
     saplings: 0,
     skips: 0,
-    capturedAbilities: [],
+    capturedMonsters: [],
     room: startingRoomData(),
     timers: {} as Record<string, base.Timer>,
+    skipTime: 0,
   };
 }
 
@@ -202,7 +203,7 @@ function addDamage(x: number) {
   let dmg = x;
   const capturing = onboard("Mongreler");
   if (capturing) {
-    dmg *= 0.01;
+    dmg = Math.floor(dmg / 100);
   }
   dmg -= (enemy.armor ?? 0) - store.run.room.armorDamage;
   if (dmg < 0) return;
@@ -223,7 +224,9 @@ function addDamage(x: number) {
       store.run.gold += rewards.gold;
       store.run.fruit += rewards.fruit;
       if (capturing) {
-        store.run.capturedAbilities.push(...enemy.abilities ?? []);
+        if (!store.run.capturedMonsters.includes(enemy.name)) {
+          store.run.capturedMonsters.push(enemy.name);
+        }
       }
     }
   }
@@ -270,7 +273,7 @@ export function getAbilityDamage(ab: base.Ability): number {
   if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
     dmg *= 2;
   }
-  return dmg;
+  return Math.floor(dmg);
 }
 
 export const bandByName = computed(() => {
