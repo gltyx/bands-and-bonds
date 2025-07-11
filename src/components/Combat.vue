@@ -280,7 +280,7 @@ const hideActions = ref(false);
     </template>
     <template v-else>
       <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
-        description="Take the poor creature with you." image="/images/generated/rescue-unlock.webp"
+        description="Take the poor creature with you." image="images/generated/rescue-unlock.webp"
         @done="unlockRescue()" />
       <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="store.takeTurn(turn.title!)">
