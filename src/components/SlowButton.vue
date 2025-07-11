@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, type PropType } from 'vue';
+import { computed, onMounted, onUnmounted, ref, type PropType } from 'vue';
 import { store } from '../store.ts';
 import { marked } from 'marked';
 import Gold from './Gold.vue';
@@ -16,7 +16,7 @@ const props = defineProps({
 const emit = defineEmits(['done']);
 function done() {
   emit('done');
-  if (props.autostart) {
+  if (props.autostart || pointerDown.value) {
     start();
   }
 }
@@ -75,10 +75,13 @@ onUnmounted(() => {
     store.run.fruit += props.cost.fruit ?? 0;
   }
 });
+const pointerDown = ref(false);
 </script>
 
 <template>
-  <button @click="start()" :style="style()" :class="{ disabled: !affordable || running }" class="slow">
+  <button @click="start()" @pointerdown="pointerDown = true; start();" @pointerup="pointerDown = false"
+    @pointercancel="pointerDown = false" @pointerleave="pointerDown = false" :style="style()"
+    :class="{ disabled: !affordable || running }" class="slow">
     <img v-bind:src="props.image" />
     <div class="text">
       <div class="cost" v-if="(props.cost.gold ?? 0) > 0" :class="{ unaffordable: !affordable && !running }">
