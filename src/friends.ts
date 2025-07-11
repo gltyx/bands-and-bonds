@@ -440,9 +440,26 @@ When Kevout is present, even ethereal creatures are drawn into the material worl
   {
     name: 'Smiling Pilot',
     cost: 0,
-    description: 'This mysterious fellow does not yet have an ability.',
+    description: `
+Shapeshifters live in the shadows and avoid any chance of being exposed. Except for the Smiling Pilot,
+who took on the shape of Carl the Twelfth, king of the Froglands. Nobody is sure how long this
+ruse lasted, and which of the decrees were written by the Smiling Pilot.
+
+Chased by assassins from the Froglands, the Smiling Pilot eventually took refuge in this treacherous dungeon.
+
+As a member of your band, he copies the attacks of the two friends to his left and right.
+    `,
     super: {
-      name: 'Smiling Admiral',
+      name: 'Smiling Wizard',
+      description: `
+Shapeshifters live in the shadows and avoid any chance of being exposed. Except for the Smiling Wizard,
+who took on the shape of Carl the Twelfth, king of the Froglands. Nobody is sure how long this
+ruse lasted, and which of the decrees were written by the Smiling Wizard.
+
+Chased by assassins from the Froglands, the Smiling Wizard eventually took refuge in this treacherous dungeon.
+
+Standing next to Azrekta, the Smiling Wizard takes her shape and copies her ability.
+    `,
     },
   },
   {
@@ -781,8 +798,8 @@ const costs: Record<string, number> = {
   "Eighth Swimmer": 21,
   "Coldblade": 22,
   "Pur Lion": 23,
-  "Zaktar Kadoque": 24,
-  "Smiling Pilot": 25,
+  "Smiling Pilot": 24,
+  "Zaktar Kadoque": 25,
 }
 export const friendsByName = {} as Record<string, Friend>;
 for (const f of allFriends) {
