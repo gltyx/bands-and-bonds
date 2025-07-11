@@ -29,11 +29,13 @@ The starting weapon level is the square root of the highest level achieved.
     }, {
       name: "Unforge",
       duration: 5,
-      description: (store) => `Damages the armor of the enemy.\n\n${numberSpan(store.run.weaponLevel)} damage`,
-      onCompleted(store) {
+      description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier)} damage`,
+      onCompleted(store, self) {
+        const e = store.abilityEffects(self);
+        if (Math.random() >= e.hitChance) return;
         store.run.room.armorDamage = Math.min(
           store.currentEnemy()?.armor ?? 0,
-          store.run.room.armorDamage + store.run.weaponLevel);
+          store.run.room.armorDamage + e.damageMultiplier);
       },
     }],
     onAdded(store) {
@@ -64,11 +66,13 @@ The starting weapon level is the highest level achieved.
       {
         name: "Unforge",
         duration: 5,
-        description: (store) => `Damages the armor of the enemy.\n\n${numberSpan(store.run.weaponLevel * 100)} damage`,
-        onCompleted(store) {
+        description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier * 100)} damage`,
+        onCompleted(store, self) {
+          const e = store.abilityEffects(self);
+          if (Math.random() >= e.hitChance) return;
           store.run.room.armorDamage = Math.min(
             store.currentEnemy()?.armor ?? 0,
-            store.run.room.armorDamage + store.run.weaponLevel * 100
+            store.run.room.armorDamage + e.damageMultiplier * 100
           );
         },
       }],
@@ -117,17 +121,34 @@ Her enemies become ethereal, making them challenging to hit.
     cost: 0,
     description: `
 A master of the culinary arts, Dark Chef fights by poisoning the enemies.
-The only way to defend against his attacks is to wear layers of heavy armor.`,
+The only way to defend against his attacks is to dodge them or wear layers of heavy armor.`,
     abilities: [{
       name: "Poison Strike",
       duration: 5,
+      tags: ['poison'],
       description: (store) => store.run.room.poison ? `Damage over time. (Currently ${numberSpan(store.run.room.poison)} damage per second.)` : 'Damage over time.',
-      onCompleted(store) {
-        store.addPoison(1);
+      onCompleted(store, self) {
+        const e = store.abilityEffects(self);
+        if (Math.random() >= e.hitChance) return;
+        store.addPoison(e.damageMultiplier);
       },
     }],
     super: {
       name: 'Dark Sommelier',
+      description: `
+A master of the culinary arts, Dark Sommelier fights by poisoning the enemies.
+The only way to defend against his attacks is to wear layers of heavy armor.`,
+      abilities: [{
+        name: "Poison Strike",
+        duration: 5,
+        tags: ['poison', 'undodgeable'],
+        description: (store) => store.run.room.poison ? `Poison the air. (Currently ${numberSpan(store.run.room.poison)} damage per second.)` : 'Damage over time.',
+        onCompleted(store, self) {
+          const e = store.abilityEffects(self);
+          if (Math.random() >= e.hitChance) return;
+          store.addPoison(e.damageMultiplier * 10);
+        },
+      }],
     },
   },
   {

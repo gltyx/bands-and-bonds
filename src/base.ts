@@ -65,6 +65,12 @@ export type TeamData = {
   name: string;
 }
 
+export type AbilityEffects = {
+  damageMultiplier: number; // Total multiplier.
+  weaknessMultiplier: number; // For information.
+  hitChance: number;
+};
+
 export type Store = {
   run: RunData;
   local: LocalData;
@@ -82,6 +88,7 @@ export type Store = {
   getRewards: (enemy: Enemy) => { gold: number; fruit: number };
   takeTurn: (turn: string) => void;
   fruitMultiplier: () => number;
+  abilityEffects: (ab: Ability) => AbilityEffects;
 };
 
 export type Turn = {
@@ -104,11 +111,11 @@ export type Ability = {
   name: string;
   image?: string;
   hidden?: ((store: Store) => boolean);
-  description: string | ((store: Store) => string);
+  description: string | ((store: Store, self: Ability) => string);
   duration: number;
   damage?: number | ((store: Store) => number);
   consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
-  onCompleted?: (store: Store) => void;
+  onCompleted?: (store: Store, self: Ability) => void;
   automatic?: boolean;
   tags?: string[];
   source?: { name: string; row: number; col: number }; // The friend this comes from.

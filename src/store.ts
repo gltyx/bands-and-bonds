@@ -112,7 +112,7 @@ export const store: base.Store = {
   },
   addPoison(x: number) {
     const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
-    store.run.room.poison += Math.max(0, x * store.run.weaponLevel - armor);
+    store.run.room.poison += Math.max(0, x - armor);
   },
   bandByName() {
     return bandByName.value;
@@ -162,6 +162,9 @@ export const store: base.Store = {
   },
   takeTurn(turn) {
     return takeTurn(turn);
+  },
+  abilityEffects(ab) {
+    return abilityEffects(ab);
   },
 }
 
@@ -258,7 +261,7 @@ function takeTurn(turn: string) {
 export function describeAbility(ab: base.Ability): string {
   let d = ab.description;
   if (typeof d === "function") {
-    d = d(store);
+    d = d(store, ab);
   }
   if (ab.damage) {
     const e = abilityEffects(ab);
@@ -272,13 +275,7 @@ export function describeAbility(ab: base.Ability): string {
 
 export const ethereal = computed(() => (onboard("Azrekta") || store.currentEnemy()?.ethereal) && !onboard("Kevout"));
 
-export type AbilityEffects = {
-  damageMultiplier: number; // Total multiplier.
-  weaknessMultiplier: number; // For information.
-  hitChance: number;
-};
-
-export function abilityEffects(ab: base.Ability): AbilityEffects {
+export function abilityEffects(ab: base.Ability): base.AbilityEffects {
   const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
   let hitChance = 1;
   const enemy = store.currentEnemy();
@@ -296,6 +293,11 @@ export function abilityEffects(ab: base.Ability): AbilityEffects {
     mult *= 2;
   }
   let weaknessMultiplier = 1;
+  for (const immunity of enemy?.immune ?? []) {
+    if (ab.tags?.includes(immunity)) {
+      mult *= 0;
+    }
+  }
   if (enemy && onboard("Desert Rabbit")) {
     for (const weakness of getWeaknesses(enemy)) {
       if (ab.tags?.includes(weakness)) {

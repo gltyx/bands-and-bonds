@@ -36,7 +36,7 @@ const abilities = computed(() => {
 
 function executeAbility(ab: Ability) {
   if (ab.onCompleted) {
-    return ab.onCompleted(store);
+    return ab.onCompleted(store, ab);
   }
   if (ab.damage) {
     const e = abilityEffects(ab);

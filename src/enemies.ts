@@ -72,7 +72,11 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Wild Slime": [{ name: "Slobber", duration: 5, damage: 1, description: "Cover the enemy in slime." }],
   "Poison Crow": [{
     name: "Crow Blast", duration: 5, description: "An explosion of feathers and poison.",
-    onCompleted(store) { store.addPoison(10); },
+    onCompleted(store, self) {
+      const e = store.abilityEffects(self);
+      if (e.hitChance < Math.random()) return;
+      store.addPoison(10 * e.damageMultiplier);
+    },
   }],
   "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes." }],
   "Thick Door": [{ name: "Creaking", duration: 10, damage: 0, description: "The door creaks ominously." }],
