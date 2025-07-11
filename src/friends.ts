@@ -52,10 +52,10 @@ The starting weapon level is the highest level achieved.
       abilities: [{
         name: "Forge",
         duration: 5,
-        consumes: { gold: 1 },
+        consumes: (store) => ({ gold: store.run.weaponLevel }),
         description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
         onCompleted(store) {
-          store.run.weaponLevel += 1;
+          store.run.weaponLevel *= 2;
           if (store.run.weaponLevel > store.team.bestWeaponLevel) {
             store.team.bestWeaponLevel = store.run.weaponLevel;
           }
