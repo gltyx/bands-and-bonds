@@ -86,6 +86,10 @@ if (dataVersion !== V) {
 }
 const loadedRunData = localStorage.getItem('bnb-run');
 export const runData = reactive<base.RunData>(loadedRunData ? JSON.parse(loadedRunData) : startingRunData());
+// Compatibility.
+if (!runData.capturedMonsters) {
+  runData.capturedMonsters = [];
+}
 const loadedLocal = localStorage.getItem('bnb-local');
 export const localData = reactive<base.LocalData>(loadedLocal ? JSON.parse(loadedLocal) : startingLocalData());
 const loadedTeam = localStorage.getItem('bnb-team');
