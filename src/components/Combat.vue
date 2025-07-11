@@ -248,7 +248,7 @@ function abilityPrice(ab: Ability) {
     <p class="description">You rescued {{ rescuedFriend.name }} here earlier. You stop to recover your strength.</p>
   </div>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
-  <div class="actions">
+  <div class="actions" v-show="!store.run.timers.celebrating">
     <template v-if="fighting">
       <template v-for="ab in abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
@@ -305,6 +305,17 @@ function abilityPrice(ab: Ability) {
         </div>
       </div>
     </button>
+  </div>
+  <div class="celebrating" :class="{ started: store.run.timers.celebrating }">
+    <div class="rotated">
+      <img class="layer1" src="/images/generated/victory1.webp" alt="A circle of golden swords" />
+      <img class="layer2" src="/images/generated/victory2.webp" alt="A golden shield" />
+      <img class="layer3" src="/images/generated/victory3.webp" alt="A sword with red gems" />
+      <img class="layer4" src="/images/generated/victory4.webp" alt="A sword with blue gems" />
+      <div class="victory-text">
+        Victory!
+      </div>
+    </div>
   </div>
 </template>
 
@@ -399,5 +410,63 @@ function abilityPrice(ab: Ability) {
 .passive-effect {
   color: #edb;
   margin-top: 10px;
+}
+
+.celebrating {
+  height: 200px;
+
+  .rotated {
+    position: relative;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    transition: transform 2s cubic-bezier(.2, .8, .8, .2);
+    transform-style: preserve-3d;
+    transform: rotateX(90deg) translateZ(70px);
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 200px;
+    }
+
+    .layer1 {
+      transform: translateX(-50%) translateZ(-60px);
+    }
+
+    .layer2 {
+      transform: translateX(-50%) scale(0.8) translateZ(-40px);
+    }
+
+    .layer3 {
+      transform: translateX(-50%) rotateZ(45deg) translateZ(-20px);
+    }
+
+    .layer4 {
+      transform: translateX(-50%) rotateZ(-45deg) translateZ(-10px);
+    }
+
+    .victory-text {
+      font-family: 'Grenze Gotisch', serif;
+      font-size: 30px;
+      color: #edb;
+      -webkit-text-stroke: 5px #0008;
+      paint-order: stroke fill;
+    }
+
+  }
+
+  opacity: 0;
+}
+
+.celebrating.started {
+  opacity: 1;
+
+  .rotated {
+    transform: rotateX(-90deg) translateZ(25px);
+  }
 }
 </style>

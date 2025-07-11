@@ -215,6 +215,8 @@ function addDamage(x: number) {
       store.run.room.armorDamage = 0;
       store.run.room.poison = 0;
     } else {
+      // Victory!
+      store.run.timers.celebrating = { duration: 2000 };
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
       const rewards = store.getRewards(enemy);
