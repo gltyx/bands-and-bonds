@@ -79,7 +79,7 @@ export type Store = {
   available: (row: number, col: number) => boolean;
   lightRadius: () => string;
   getRewards: (enemy: Enemy) => { gold: number; fruit: number };
-  takeTurn: (turn: string, skipConfirmation?: boolean) => void;
+  takeTurn: (turn: string) => void;
   fruitMultiplier: () => number;
 };
 
@@ -87,7 +87,6 @@ export type Turn = {
   title?: string; // Not included in Room.next, but added otherwise.
   label?: string; // The label of the next room.
   description?: string; // Description of the turn.
-  skipConfirmation?: boolean;
 };
 
 export type Room = {

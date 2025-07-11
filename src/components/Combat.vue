@@ -9,6 +9,7 @@ import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
+import Victory from "./Victory.vue";
 
 const enemy = computed(() => store.currentEnemy());
 const abilities = computed(() => {
@@ -75,15 +76,13 @@ const fighting = computed(() => {
 const ethereal = computed(() => (onboard("Azrekta") || enemy.value?.ethereal) && !onboard("Kevout"));
 
 function retreat() {
-  if (window.confirm("Are you sure you want to retreat?")) {
-    if (store.run.fruit) {
-      store.team.fruit += store.run.fruit;
-    }
-    Object.assign(store.run, startingRunData());
-    for (const friend in store.bandByName()) {
-      const f = friendsByName[friend];
-      f.onAdded?.(store);
-    }
+  if (store.run.fruit) {
+    store.team.fruit += store.run.fruit;
+  }
+  Object.assign(store.run, startingRunData());
+  for (const friend in store.bandByName()) {
+    const f = friendsByName[friend];
+    f.onAdded?.(store);
   }
 }
 const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
@@ -205,6 +204,8 @@ function abilityPrice(ab: Ability) {
   }
   return {};
 }
+
+const hideActions = ref(false);
 </script>
 
 <template>
@@ -248,7 +249,8 @@ function abilityPrice(ab: Ability) {
     <p class="description">You rescued {{ rescuedFriend.name }} here earlier. You stop to recover your strength.</p>
   </div>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
-  <div class="actions" v-show="!store.run.timers.celebrating">
+  <Victory :show="!!store.run.timers.celebrating" @on-start="hideActions = true;" @on-end="hideActions = false;" />
+  <div class="actions" v-show="!hideActions">
     <template v-if="fighting">
       <template v-for="ab in abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
@@ -267,15 +269,14 @@ function abilityPrice(ab: Ability) {
       <div class="section">Navigation</div>
       <SlowButton timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
         :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
-        @done="store.takeTurn(plannedTurn.title!, true)" :autostart="true" />
+        @done="store.takeTurn(plannedTurn.title!)" :autostart="true" />
     </template>
     <template v-else>
       <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
         description="Take the poor creature with you." image="/images/generated/rescue-unlock.webp"
         @done="unlockRescue()" />
       <div class="section">Navigation</div>
-      <button v-for="turn in possibleTurns" :key="turn.title"
-        @click="store.takeTurn(turn.title!, turn.skipConfirmation)">
+      <button v-for="turn in possibleTurns" :key="turn.title" @click="store.takeTurn(turn.title!)">
         <img :src="`images/generated/${turn.title}.webp`" />
         <div class="text">
           <div class="title">{{ turn.title }}</div>
@@ -305,17 +306,6 @@ function abilityPrice(ab: Ability) {
         </div>
       </div>
     </button>
-  </div>
-  <div class="celebrating" :class="{ started: store.run.timers.celebrating }">
-    <div class="rotated">
-      <img class="layer1" src="/images/generated/victory1.webp" alt="A circle of golden swords" />
-      <img class="layer2" src="/images/generated/victory2.webp" alt="A golden shield" />
-      <img class="layer3" src="/images/generated/victory3.webp" alt="A sword with red gems" />
-      <img class="layer4" src="/images/generated/victory4.webp" alt="A sword with blue gems" />
-      <div class="victory-text">
-        Victory!
-      </div>
-    </div>
   </div>
 </template>
 
@@ -410,63 +400,5 @@ function abilityPrice(ab: Ability) {
 .passive-effect {
   color: #edb;
   margin-top: 10px;
-}
-
-.celebrating {
-  height: 200px;
-
-  .rotated {
-    position: relative;
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    perspective: 1000px;
-    transition: transform 2s cubic-bezier(.2, .8, .8, .2);
-    transform-style: preserve-3d;
-    transform: rotateX(90deg) translateZ(70px);
-
-    img {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 200px;
-    }
-
-    .layer1 {
-      transform: translateX(-50%) translateZ(-60px);
-    }
-
-    .layer2 {
-      transform: translateX(-50%) scale(0.8) translateZ(-40px);
-    }
-
-    .layer3 {
-      transform: translateX(-50%) rotateZ(45deg) translateZ(-20px);
-    }
-
-    .layer4 {
-      transform: translateX(-50%) rotateZ(-45deg) translateZ(-10px);
-    }
-
-    .victory-text {
-      font-family: 'Grenze Gotisch', serif;
-      font-size: 30px;
-      color: #edb;
-      -webkit-text-stroke: 5px #0008;
-      paint-order: stroke fill;
-    }
-
-  }
-
-  opacity: 0;
-}
-
-.celebrating.started {
-  opacity: 1;
-
-  .rotated {
-    transform: rotateX(-90deg) translateZ(25px);
-  }
 }
 </style>

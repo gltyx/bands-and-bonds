@@ -155,8 +155,8 @@ export const store: base.Store = {
     }
     return m;
   },
-  takeTurn(turn, skipConfirmation) {
-    return takeTurn(turn, skipConfirmation);
+  takeTurn(turn) {
+    return takeTurn(turn);
   },
 }
 
@@ -216,7 +216,7 @@ function addDamage(x: number) {
       store.run.room.poison = 0;
     } else {
       // Victory!
-      store.run.timers.celebrating = { duration: 2000 };
+      store.run.timers.celebrating = { duration: 1000 };
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
       const rewards = store.getRewards(enemy);
@@ -229,8 +229,7 @@ function addDamage(x: number) {
   }
 }
 
-function takeTurn(turn: string, skipConfirmation?: boolean) {
-  if (!skipConfirmation && !window.confirm(`${turn}?`)) return;
+function takeTurn(turn: string) {
   store.run.room = startingRoomData();
   store.run.steps += 1;
   if (turn !== 'Keep going') {

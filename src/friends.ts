@@ -481,7 +481,7 @@ Uses left: ${numberSpan(1 - store.run.skips)}`,
         const next = store.currentRoom().next;
         const options = next ? Object.keys(next) : ['Keep going'];
         const choice = options[Math.floor(Math.random() * options.length)];
-        store.takeTurn(choice, true);
+        store.takeTurn(choice);
       },
     }],
     super: {
@@ -499,7 +499,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
           const next = store.currentRoom().next;
           const options = next ? Object.keys(next) : ['Keep going'];
           const choice = options[Math.floor(Math.random() * options.length)];
-          store.takeTurn(choice, true);
+          store.takeTurn(choice);
         },
       }],
     },

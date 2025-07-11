@@ -3,7 +3,7 @@ import type { Room } from './base';
 export const allRooms: Room[] = [
   {
     x: 407, y: 527, type: "none", next: {
-      'Enter the Dungeon': { label: 'enter', description: 'Treasures and adventure await inside.', skipConfirmation: true },
+      'Enter the Dungeon': { label: 'enter', description: 'Treasures and adventure await inside.' },
     },
   },
   { x: 407, y: 484, type: "combat", name: "Wild Slime", label: 'enter', },
