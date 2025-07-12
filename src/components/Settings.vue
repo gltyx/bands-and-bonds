@@ -4,6 +4,7 @@ import { store } from "../store.ts";
 import { allFriends } from "../friends.ts";
 import { allRooms, roomKey } from "../rooms.ts";
 import { ref } from "vue";
+import version from "../version.json";
 
 function reset() {
   if (resetConfirmation.value < 2) {
@@ -118,6 +119,7 @@ const resetConfirmation = ref(0);
       Written in TypeScript using <a href="https://vuejs.org/" target="_blank">Vue.js</a> and
       <a href="https://vite.dev/" target="_blank">Vite</a>.
       See the source code on <a href="https://github.com/darabos/bands-and-bonds/" target="_blank">GitHub</a>.
+      Last updated on {{ version.date }}.
     </div>
   </div>
 </template>

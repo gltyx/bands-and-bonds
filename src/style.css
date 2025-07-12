@@ -131,6 +131,7 @@ p:last-child {
 
 .numbers {
   font-family: "Germania One", system-ui;
+  font-variant-numeric: tabular-nums;
 }
 
 .resource-icon {
