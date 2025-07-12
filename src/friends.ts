@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { numberFormat, type Friend } from './base';
+import { numberFormat, type Ability, type Friend } from './base';
 
 function numberSpan(n: number, extra?: string): string {
   const e = extra ?? '';
@@ -802,6 +802,8 @@ const costs: Record<string, number> = {
   "Zaktar Kadoque": 25,
 }
 export const friendsByName = {} as Record<string, Friend>;
+const abilitiesByName = {} as Record<string, Ability>;
+const abilityOwners = {} as Record<string, string>;
 for (const f of allFriends) {
   friendsByName[f.name] = f;
   f.cost = costs[f.name];
@@ -812,4 +814,83 @@ for (const f of allFriends) {
       f.super.descriptionHtml = marked(f.super.description);
     }
   }
+  for (const ab of f.abilities ?? []) {
+    abilityOwners[ab.name] = f.name;
+    abilitiesByName[ab.name] = ab;
+  }
+}
+// Set up combined abilities for Smiling Pilot.
+function getDamageForSmilingPilot(ab: Ability): number {
+  if (ab.name === 'Claws & Thorns') return 100;
+  if (ab.name === 'Poison Strike') return 1;
+  if (typeof ab.damage === 'number') return ab.damage;
+  throw new Error(`Ability ${ab.name} does not have a numeric damage value.`);
+}
+const ATTACKS = ['Battle Rhythm', 'Claws & Thorns', 'Flood', 'Glacial Strike', 'Illuminate', 'Poison Strike', 'Steel Jab', 'Wooden Stick'];
+friendsByName['Smiling Pilot'].abilities = [];
+for (const an1 of ATTACKS) {
+  const a1 = abilitiesByName[an1];
+  const dmg1 = getDamageForSmilingPilot(a1);
+  for (const an2 of ATTACKS) {
+    if (an1 >= an2) continue;
+    const a2 = abilitiesByName[an2];
+    const dmg2 = getDamageForSmilingPilot(a2);
+    const combined: Ability = {
+      name: `Combined ${a1.name} and ${a2.name}`,
+      tags: [...(a1.tags ?? []), ...(a2.tags ?? [])],
+      duration: Math.sqrt(a1.duration * a2.duration),
+      damage: Math.sqrt(dmg1 * dmg2),
+      description: `Smiling Pilot has copied this from ${abilityOwners[an1]} and ${abilityOwners[an2]}.`,
+      hidden(store) {
+        const pos = store.onboard('Smiling Pilot');
+        const pos1 = store.onboard(abilityOwners[an1]);
+        const pos2 = store.onboard(abilityOwners[an2]);
+        if (!pos || !pos1 || !pos2) return true;
+        if (pos1.row !== pos.row || pos2.row !== pos.row) return true;
+        return Math.abs(pos1.col - pos.col) > 1 || Math.abs(pos2.col - pos.col) > 1;
+      }
+    };
+    if (combined.tags?.includes('poison')) {
+      combined.onCompleted = (store, self) => {
+        const e = store.abilityEffects(self);
+        if (Math.random() >= e.hitChance) return;
+        store.addPoison((self.damage as number) * e.damageMultiplier);
+      };
+    }
+    friendsByName['Smiling Pilot'].abilities.push(combined);
+  }
+}
+const NICENAMES: Record<string, string> = {
+  'Combined Glacial Strike and Wooden Stick': 'Glacial Stick',
+  'Combined Glacial Strike and Steel Jab': 'Glacial Jab',
+  'Combined Glacial Strike and Illuminate': 'Illuminated Glacier',
+  'Combined Steel Jab and Wooden Stick': 'Wooden Jab',
+  'Combined Illuminate and Wooden Stick': 'Illuminated Stick',
+  'Combined Illuminate and Steel Jab': 'Illuminated Jab',
+  'Combined Battle Rhythm and Wooden Stick': 'Wooden Rhythm',
+  'Combined Battle Rhythm and Glacial Strike': 'Glacier Rhythm',
+  'Combined Battle Rhythm and Steel Jab': 'Steel Rhythm',
+  'Combined Battle Rhythm and Illuminate': 'Illuminated Rhythm',
+  'Combined Battle Rhythm and Flood': 'Flooded Rhythm',
+  'Combined Flood and Wooden Stick': 'Flooded Stick',
+  'Combined Flood and Glacial Strike': 'Glacial Flood',
+  'Combined Flood and Steel Jab': 'Flooded Jab',
+  'Combined Flood and Illuminate': 'Illuminated Flood',
+  'Combined Claws & Thorns and Wooden Stick': 'Claws & Stick',
+  'Combined Claws & Thorns and Glacial Strike': 'Glacial Claws',
+  'Combined Claws & Thorns and Steel Jab': 'Claws & Jab',
+  'Combined Claws & Thorns and Illuminate': 'Illuminated Claws & Thorns',
+  'Combined Claws & Thorns and Flood': 'Claws & Flood',
+  'Combined Battle Rhythm and Claws & Thorns': 'Claws & Rhythm',
+  'Combined Glacial Strike and Poison Strike': 'Glacial Poison',
+  'Combined Illuminate and Poison Strike': 'Illuminated Poison',
+  'Combined Battle Rhythm and Poison Strike': 'Poison Rhythm',
+  'Combined Flood and Poison Strike': 'Poison Flood',
+  'Combined Claws & Thorns and Poison Strike': 'Claws & Poison',
+  'Combined Poison Strike and Wooden Stick': 'Wooden Poison',
+  'Combined Poison Strike and Steel Jab': 'Steel Poison',
+}
+for (const ab of friendsByName['Smiling Pilot'].abilities) {
+  ab.image = ab.name;
+  ab.name = NICENAMES[ab.name];
 }

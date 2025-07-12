@@ -368,6 +368,8 @@ export function friendAt(row: number, col: number): base.Friend | undefined {
   return friendsByName[store.local.band[col + row * store.local.band.width]];
 }
 export function nextTo(name: string, row: number, col: number): [number, number] | null {
+  const sw = name === 'Azrekta' && nextTo('Smiling Wizard', row, col);
+  if (sw) return sw;
   const b = bandByName.value[name];
   return b && Math.abs(b.row - row) + Math.abs(b.col - col) === 1 ? [b.row, b.col] : null;
 }
