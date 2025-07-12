@@ -67,7 +67,7 @@ function mainLoop() {
     if (regen === 0) lastRegenTime.value = currentTime;
   }
   if (store.run.saplings > 0) {
-    const fruitPerSecond = multiplier * store.run.saplings;
+    const fruitPerSecond = multiplier * store.run.saplings * store.fruitMultiplier();
     let fruits = (baseTime - lastSaplingTime.value) * fruitPerSecond / 1000;
     while (fruits > 1) {
       store.run.fruit += 1;

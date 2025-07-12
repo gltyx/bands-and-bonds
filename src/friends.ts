@@ -567,7 +567,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
         consumes: { gold: 100 },
         description: 'Buy a piece of fruit at the Hedge Market.',
         onCompleted(store) {
-          store.run.fruit += 1;
+          store.run.fruit += store.fruitMultiplier();
         },
       }, {
         name: "Buy Sapling",
@@ -576,7 +576,8 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
         description: (store) => `
 Buy a fruit sapling at the Hedge Market.${store.run.saplings ? `
 (Currently ${numberSpan(store.run.saplings)} saplings producing
-${numberSpan(store.run.saplings, ' <img src="/images/generated/fruit.webp" class="resource-icon" />')} per second.)` : ''}`,
+${numberSpan(store.run.saplings * store.fruitMultiplier(),
+          ' <img src="images/generated/fruit.webp" class="resource-icon" />')} per second.)` : ''}`,
         onCompleted(store) {
           store.run.saplings += 1;
         },
