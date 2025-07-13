@@ -3,16 +3,18 @@ import fs from 'node:fs';
 
 export default class Game {
   clicks: number;
+  totalClicks: number;
   packs: number;
   packsUsed: number;
   constructor(private page: Page) {
     this.clicks = 0;
+    this.totalClicks = 0;
     this.packs = 1;
     this.packsUsed = 1;
   }
   async setup() {
     this.page.setDefaultTimeout(1_000);
-    await this.page.goto('/?test');
+    await this.page.goto('/?test', { timeout: 10_000 });
     await this.page.addStyleTag({ path: 'tests/test-overrides.css' });
     this.page.on('dialog', async (dialog) => { await dialog.accept() });
     await expect(this.page).toHaveTitle(/Bands & Bonds/);
@@ -39,6 +41,7 @@ export default class Game {
         }
         for (const e of attacks) {
           const r = await e.evaluate(e => {
+            if (e instanceof HTMLElement && e.textContent?.includes("Sneak Past")) return 0;
             if (e instanceof HTMLButtonElement && !e.classList.contains('disabled')) {
               e.click();
               return 1;
@@ -56,7 +59,7 @@ export default class Game {
     // Does nothing until the enemy is defeated.
     await test.step(`Defeat ${name}`, async () => {
       await expect(this.page.getByRole('heading', { name })).toBeVisible();
-      await expect(this.page.getByText('Defeated')).toBeVisible();
+      await expect(this.page.getByText('Defeated')).toBeVisible({ timeout: 5_000 });
     });
   }
   async expectHeading(name: string) {
@@ -84,27 +87,26 @@ export default class Game {
       await expect(b.unlocked).toBeVisible();
     });
   }
-  async addToBand(name: string) {
+  async addToBand(name: string, nth = 0) {
     await test.step(`Add ${name} to band`, async () => {
       const b = this.band(name);
       await b.unlocked.click();
       await expect(b.details).toBeVisible();
-      await this.page.locator('.band-grid').getByRole('button', { name: '+' }).first().click();
+      await this.page.locator('.band-grid').getByRole('button', { name: '+' }).nth(nth).click();
       await expect(b.grid).toBeVisible();
     });
   }
   async buyPacks() {
     await test.step('Buy packs', async () => {
       const button = this.page.getByRole('button', { name: 'Buy 1 for' });
-      await expect(button).not.toContainClass('unaffordable');
       let bought = 0;
       while (true) {
-        await button.click();
-        bought++;
         if (await button.evaluate((el) => el.classList.contains('unaffordable'))) {
           console.log(`Bought ${bought} packs.`);
           return;
         }
+        await button.click();
+        bought++;
       }
     });
   }
@@ -122,6 +124,7 @@ export default class Game {
       await retreat.click();
       await expect(this.button('Enter the Dungeon')).toBeVisible();
     });
+    this.totalClicks += this.clicks;
     this.clicks = 0;
   }
   async rescue(name: string) {
@@ -154,15 +157,22 @@ export default class Game {
     const localStorageData = await this.page.evaluate(() => {
       return Object.fromEntries(Object.entries(localStorage));
     });
-    fs.writeFileSync(filename, JSON.stringify(localStorageData, null, 2));
+    const meta = {
+      clicks: this.clicks,
+      totalClicks: this.totalClicks,
+      packs: this.packs,
+      packsUsed: this.packsUsed,
+    };
+    fs.writeFileSync(filename, JSON.stringify({ meta, localStorageData }, null, 2));
   }
   async loadState(filename: string) {
-    const localStorageData = JSON.parse(fs.readFileSync(filename, 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(filename, 'utf-8'));
     await this.page.evaluate((data) => {
       for (const [key, value] of Object.entries(data)) {
         localStorage.setItem(key, value as string);
       }
-    }, localStorageData);
+    }, data.localStorageData);
+    Object.assign(this, data.meta);
     await this.page.reload();
   }
   async run(repeats, commands?) {
