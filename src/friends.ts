@@ -26,6 +26,7 @@ The starting weapon level is the square root of the highest level achieved.
           store.team.bestWeaponLevel = store.run.weaponLevel;
         }
       },
+      peaceful: true,
     }, {
       name: "Unforge",
       duration: 5,
@@ -62,6 +63,7 @@ The starting weapon level is the highest level achieved.
             store.team.bestWeaponLevel = store.run.weaponLevel;
           }
         },
+        peaceful: true,
       },
       {
         name: "Unforge",
@@ -175,6 +177,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
         onCompleted(store) {
           store.run.desertBlessingMultiplier += 1;
         },
+        peaceful: true,
       }],
     },
   },
@@ -317,7 +320,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       abilities: [{
         name: "Snatch",
         duration: 2.5,
-        description: "Steals a piece of gold. Affected by the weapon level.",
+        description: (store) => `Steals ${store.run.weaponLevel > 1 ? `${store.run.weaponLevel} pieces` : 'a piece'} of gold.`,
         onCompleted(store) {
           store.run.gold += store.run.weaponLevel;
         },
@@ -336,6 +339,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       onCompleted(store) {
         store.run.speedLevel += 1;
       },
+      peaceful: true,
     }],
     super: {
       name: 'Kit Storming',
@@ -348,6 +352,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
         onCompleted(store) {
           store.run.speedLevel *= 2;
         },
+        peaceful: true,
       }],
     },
   },
@@ -375,6 +380,7 @@ and see more details on the map.
           }
           store.run.steps = steps;
         },
+        peaceful: true,
       }],
     }
   },
@@ -558,6 +564,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
       onCompleted(store) {
         store.run.fruit += store.fruitMultiplier();
       },
+      peaceful: true,
     }],
     super: {
       name: 'Hedge Found',
@@ -569,6 +576,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
         onCompleted(store) {
           store.run.fruit += store.fruitMultiplier();
         },
+        peaceful: true,
       }, {
         name: "Buy Sapling",
         duration: 5,
@@ -581,6 +589,7 @@ ${numberSpan(store.run.saplings * store.fruitMultiplier(),
         onCompleted(store) {
           store.run.saplings += 1;
         },
+        peaceful: true,
       }],
     },
   },
@@ -600,6 +609,7 @@ He is particularly interested in the fruit you're holding.
       onCompleted(store) {
         store.run.weaponLevel += 1;
       },
+      peaceful: true,
     }],
     super: {
       name: 'Zaktar Kadoque Karr',
@@ -612,6 +622,7 @@ He is particularly interested in the fruit you're holding.
         onCompleted(store) {
           store.run.weaponLevel *= 2;
         },
+        peaceful: true,
       }],
     },
   },

@@ -115,7 +115,8 @@ const passiveEffects = computed(() => {
   }
   if (enemy.value.dodge) {
     effects.push(
-      `${enemy.value.name} dodge${s} attacks that take longer than ${numberFormat(enemy.value.dodge)} seconds.
+      `${enemy.value.name} dodge${s} attacks that take longer
+      than ${numberFormat(enemy.value.dodge)} second${enemy.value.dodge === 1 ? "" : "s"}.
       Faster attacks have a chance to hit.`);
   }
   if (ethereal.value) {
@@ -233,20 +234,22 @@ for (const url of [
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
   <Victory :show="!!store.run.timers.celebrating" @on-start="hideActions = true;" @on-end="hideActions = false;" />
   <div class="actions" v-show="!hideActions">
+    <template v-for="ab in abilities" :key="ab.name">
+      <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
+        :title="ab.name" :description="describeAbility(ab)" :cost="abilityPrice(ab)"
+        :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
+        @done="executeAbility(ab)" :autostart="ab.automatic" />
+    </template>
+    <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
+    <template v-for="monster in store.run.capturedMonsters" :key="monster">
+      <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
+        <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
+          :title="ab.name" :description="describeAbility(ab)" :cost="abilityPrice(ab)"
+          :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
+          @done="executeAbility(ab)" :autostart="ab.automatic" />
+      </template>
+    </template>
     <template v-if="fighting">
-      <template v-for="ab in abilities" :key="ab.name">
-        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
-      </template>
-      <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
-      <template v-for="monster in store.run.capturedMonsters" :key="monster">
-        <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
-          <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-            :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-            :duration="ab.duration * 1000" @done="executeAbility(ab)" :autostart="ab.automatic" />
-        </template>
-      </template>
       <div class="section">Navigation</div>
     </template>
     <template v-else-if="plannedTurn">

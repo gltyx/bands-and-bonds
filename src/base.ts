@@ -118,6 +118,7 @@ export type Ability = {
   onCompleted?: (store: Store, self: Ability) => void;
   automatic?: boolean;
   tags?: string[];
+  peaceful?: boolean; // If true, can be used outside of combat.
   source?: { name: string; row: number; col: number }; // The friend this comes from.
 };
 

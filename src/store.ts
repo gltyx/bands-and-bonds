@@ -224,7 +224,9 @@ function addDamage(x: number) {
       store.run.room.poison = 0;
     } else {
       // Victory!
-      store.run.timers.celebrating = { duration: 1000 };
+      if (!window.location.search.includes('test')) {
+        store.run.timers.celebrating = { duration: 1000 };
+      }
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
       const rewards = store.getRewards(enemy);

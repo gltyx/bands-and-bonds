@@ -1,11 +1,12 @@
 import type { Enemy, Ability } from "./base";
+import { store } from "./store";
 
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },
-  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 3 }, weaknesses: ["fire", "ice", "left"] },
-  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 5 }, weaknesses: ["front", "blunt"] },
+  { name: "Poison Crow", health: 20, rewards: { gold: 2, fruit: 1 }, weaknesses: ["fire", "ice", "left"] },
+  { name: "Animated Skeleton", health: 50, rewards: { gold: 5, fruit: 3 }, weaknesses: ["front", "blunt"] },
   { name: "Thick Door", health: 10, rewards: { gold: 0, fruit: 0 }, armor: 3, weaknesses: ["fire", "blunt", "back"] },
-  { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 5 }, count: 5 },
+  { name: "Bandlings", health: 5, rewards: { gold: 5, fruit: 2 }, count: 5 },
 
   { name: "Dead Gladiator", health: 100, armor: 10, rewards: { gold: 5, fruit: 20 } },
   { name: "Lobster Daddy", health: 100, armor: 100, rewards: { gold: 10, fruit: 10 } },
@@ -15,7 +16,7 @@ export const allEnemies: Enemy[] = [
   { name: "Clockomancer", health: 100_000, rewards: { fruit: 1000 }, passiveEffects: ["The Clockomancer slows down time."] },
 
   { name: "Glass Dragon", health: 100_000, rewards: { gold: 100, fruit: 10 }, weaknesses: ["blunt", "back"] },
-  { name: "Xaranthian Construct", health: 750_000, rewards: { gold: 250 } },
+  { name: "Xaranthian Construct", health: 650_000, rewards: { gold: 250 } },
   { name: "Potato Golem", health: 1_000, armor: 1_000, rewards: { fruit: 70 }, weaknesses: ["sharp", "fire"] },
   { name: "Fortified Door", health: 100, armor: 1000, rewards: {} },
   { name: "Master of Doors", health: 1_250_000, armor: 10_000, rewards: { fruit: 60 } },
@@ -81,11 +82,11 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes." }],
   "Thick Door": [{ name: "Creaking", duration: 10, damage: 0, description: "The door creaks ominously." }],
   "Bandlings": [{ name: "Swarm of Bandlings", duration: 5, damage: 1, description: "A swarm of fierce little warriors." }],
-  "Dead Gladiator": [{ name: "Revenge", duration: 1, damage: 100, description: "A vengeful gladiator attacks." }],
-  "Lobster Daddy": [{ name: "Claw Smash", duration: 1000, damage: 10, description: "A powerful claw attack." }],
+  "Dead Gladiator": [{ name: "Blades of Revenge", duration: 1, damage: 100, description: "A vengeful gladiator attacks." }],
+  "Lobster Daddy": [{ name: "Claw Smash", duration: 100, damage: 1000, description: "A powerful claw attack." }],
   "Will-o-Wasp": [{ name: "Sting", duration: 0.05, damage: 1, description: "The quick and painful sting of a wasp." }],
   "The Shroud": [{ name: "Shroud of Darkness", duration: 1, damage: 1000, description: "Envelops the enemy in darkness." }],
-  "Dark Lord": [{ name: "Shadow Strike", duration: 1, damage: 1, description: "The Dark Lord strikes from the shadows.", tags: ['dark'] }],
+  "Dark Lord": [{ name: "Shadow Strike", duration: 1, damage: 10, description: "The Dark Lord never misses.", tags: ['dark', 'undodgeable'] }],
   "Clockomancer": [{
     name: "Time Wrap", duration: 1, description: "Slows down time.",
     onCompleted(store) { store.run.speedLevel = 1; },
@@ -93,9 +94,15 @@ const enemyAbilities: Record<string, Ability[]> = {
     name: "Time Burp", duration: 1, description: "Pushes time forward.",
     onCompleted(store) { store.run.skipTime += 2_000; },
   }],
-  "Glass Dragon": [{ name: "Shatter", duration: 1, damage: 1, description: "A devastating glass attack.", tags: ['sharp'] }],
-  "Xaranthian Construct": [{ name: "Xaranthian Beam", duration: 1, damage: 1, description: "Fires a beam of pure energy." }],
-  "Potato Golem": [{ name: "Spud Smash", duration: 1, damage: 1, description: "A heavy smash with a potato." }],
+  "Glass Dragon": [{ name: "Shatter", duration: 1, damage: 100_000, description: "The repairs are expensive.", consumes: { gold: 100 }, tags: ['sharp'] }],
+  "Xaranthian Construct": [{ name: "Fire Xaranthian Cannons", duration: 10, damage: 1_000_000, description: "Sounds like thunder, looks like lightning bolts flying straight at the target." }],
+  "Potato Golem": [{
+    name: "Fertilize Saplings", duration: 1, description: "The number of saplings you have is effectively doubled. Potato magic.",
+    peaceful: true, consumes: (store) => ({ gold: store.run.saplings }),
+    onCompleted(store) {
+      store.run.saplings *= 2;
+    },
+  }],
   "Fortified Door": [{ name: "Reinforced Slam", duration: 1, damage: 1, description: "Slams shut with reinforced strength." }],
   "Master of Doors": [{ name: "Master Key", duration: 1, damage: 1, description: "Unlocks all doors in the vicinity." }],
   "Corrupted Bounty Hunter": [{ name: "Corruption Strike", duration: 1, damage: 1, description: "A strike infused with dark energy." }],

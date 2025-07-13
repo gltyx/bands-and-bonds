@@ -97,6 +97,10 @@ const pointerDown = ref(false);
 </template>
 
 <style scoped>
+.text {
+  width: 100%;
+}
+
 .cost {
   float: right;
   margin: 5px;
