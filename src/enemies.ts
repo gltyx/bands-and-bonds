@@ -94,7 +94,7 @@ const enemyAbilities: Record<string, Ability[]> = {
     onCompleted(store) { store.run.skipTime += 2_000; },
   }],
   "Glass Dragon": [{ name: "Shatter", duration: 1, damage: 100_000, description: "The repairs are expensive.", consumes: { gold: 100 }, tags: ['sharp'] }],
-  "Xaranthian Construct": [{ name: "Fire Xaranthian Cannons", duration: 10, damage: 1_000_000, description: "Sounds like thunder, looks like lightning bolts flying straight at the target." }],
+  "Xaranthian Construct": [{ name: "Fire Xaranthian Cannons", duration: 10, damage: 650_000, description: "Sounds like thunder, looks like lightning bolts flying straight at the target." }],
   "Potato Golem": [{
     name: "Fertilize Saplings", duration: 1, description: "The number of saplings you have is effectively doubled. Potato magic.",
     peaceful: true, consumes: (store) => ({ gold: store.run.saplings }),
@@ -102,15 +102,28 @@ const enemyAbilities: Record<string, Ability[]> = {
       store.run.saplings *= 2;
     },
   }],
-  "Fortified Door": [{ name: "Reinforced Slam", duration: 1, damage: 1, description: "Slams shut with reinforced strength." }],
-  "Master of Doors": [{ name: "Master Key", duration: 1, damage: 1, description: "Unlocks all doors in the vicinity." }],
-  "Corrupted Bounty Hunter": [{ name: "Corruption Strike", duration: 1, damage: 1, description: "A strike infused with dark energy." }],
-  "Lior the Weaver": [{ name: "Web of Fate", duration: 1, damage: 1, description: "Entangles the enemy in a web." }],
-  "Skeletron": [{ name: "Bone Shatter", duration: 1, damage: 1, description: "A powerful attack that shatters bones." }],
-  "Chago's Chamber": [{ name: "Chamber Trap", duration: 1, damage: 1, description: "A trap that ensnares intruders." }],
+  "Fortified Door": [{ name: "Fortified Slam", duration: 1, damage: 1, description: "Slams shut with a sound so loud, it is felt by everyone.", tags: ['blunt', 'sound', 'undodgeable'] }],
+  "Master of Doors": [{
+    name: "Master Key", duration: 1, description: "Immediately defeats door-type enemies.",
+    onCompleted(store) {
+      const enemy = store.currentEnemy();
+      if (enemy?.name?.includes("Door")) {
+        store.run.room.damage = enemy.health ?? 0;
+      }
+    },
+  }],
+  "Corrupted Bounty Hunter": [{ name: "Hyper Beam", duration: 100, damage: 1_250_000, description: "Imagine a rainbow turning to violence." }],
+  "Lior the Weaver": [{ name: "Fabric of Reality", duration: 1, damage: 1, description: "" }],
+  "Skeletron": [{ name: "Bonetron", duration: 1, damage: 1, description: "" }],
+  "Chago's Chamber": [{ name: "Spring Trap", duration: 1, damage: 1, description: "" }],
   "Chago": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Door of Loathing": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Zakatrixos": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Zakatrixos": [{
+    name: "Pierce the Veil", duration: 100,
+    description: `
+For the duration of the spell, Zakatrixos shifts the band into the ethereal plane.
+This negates the defenses of ethereal enemies.`,
+  }],
   "Wands from the Depths": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Skyrmions": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Defensive Installation": [{ name: "", duration: 1, damage: 1, description: "" }],

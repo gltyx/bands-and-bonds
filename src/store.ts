@@ -275,7 +275,11 @@ export function describeAbility(ab: base.Ability): string {
   return d;
 }
 
-export const ethereal = computed(() => (onboard("Azrekta") || store.currentEnemy()?.ethereal) && !onboard("Kevout"));
+export const ethereal = computed(() => {
+  if (onboard("Kevout")) return false;
+  if (store.run.timers["ability-Pierce the Veil"]) return false;
+  return onboard("Azrekta") || store.currentEnemy()?.ethereal;
+});
 
 export function abilityEffects(ab: base.Ability): base.AbilityEffects {
   const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
