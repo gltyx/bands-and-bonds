@@ -264,7 +264,9 @@ for (const url of [
         <img :src="`images/generated/${turn.title}.webp`" />
         <div class="text">
           <div class="title">{{ turn.title }}</div>
-          <div class="description">{{ turn.description }}</div>
+          <div class="description">
+            <p>{{ turn.description }}</p>
+          </div>
         </div>
       </button>
     </template>
@@ -273,20 +275,22 @@ for (const url of [
       <div class="text">
         <div class="title">Retreat</div>
         <div class="description">
-          Leave the dungeon and return to safety.
-          <template v-if="store.run.gold > 0 && store.run.fruit > 0">
-            You will lose
-            <Gold :amount="store.run.gold" /> but keep the
-            <Fruit :amount="store.run.fruit" /> you've collected.
-          </template>
-          <template v-else-if="store.run.gold > 0">
-            You will lose
-            <Gold :amount="store.run.gold" />.
-          </template>
-          <template v-else-if="store.run.fruit > 0">
-            You keep the
-            <Fruit :amount="store.run.fruit" /> you've collected.
-          </template>
+          <p>
+            Leave the dungeon and return to safety.
+            <template v-if="store.run.gold > 0 && store.run.fruit > 0">
+              You will lose
+              <Gold :amount="store.run.gold" /> but keep the
+              <Fruit :amount="store.run.fruit" /> you've collected.
+            </template>
+            <template v-else-if="store.run.gold > 0">
+              You will lose
+              <Gold :amount="store.run.gold" />.
+            </template>
+            <template v-else-if="store.run.fruit > 0">
+              You keep the
+              <Fruit :amount="store.run.fruit" /> you've collected.
+            </template>
+          </p>
         </div>
       </div>
     </button>

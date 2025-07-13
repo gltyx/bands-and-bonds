@@ -46,11 +46,9 @@ const resetConfirmation = ref(0);
         <div class="title">{{ store.local.settings.online ? 'Disable online features' : 'Enable online features' }}
         </div>
         <div class="description">
-          When enabled, you can play Bands & Bonds with friends.
+          <p>When enabled, you can play Bands & Bonds with friends.</p>
+          <p>You share persistent progress, and everyone can go on dungeon runs independently.</p>
         </div>
-        <p class="description">
-          You share persistent progress, and everyone can go on dungeon runs independently.
-        </p>
       </div>
     </button>
     <button @click="copyTeamLink()" v-if="store.local.settings.online && store.local.settings.teamId">
@@ -58,7 +56,7 @@ const resetConfirmation = ref(0);
       <div class="text">
         <div class="title">Copy invite link</div>
         <div class="description">
-          Share this link with a friend to let them join your team.
+          <p>Share this link with a friend to let them join your team.</p>
         </div>
       </div>
     </button>
@@ -67,7 +65,7 @@ const resetConfirmation = ref(0);
       <div class="text">
         <div class="title">{{ store.local.settings.blurImages ? 'Unblur images' : 'Blur images' }}</div>
         <div class="description">
-          All images in this prototype are AI generated. If you would rather not see them, turn on blurring.
+          <p>All images in this prototype are AI generated. If you would rather not see them, turn on blurring.</p>
         </div>
       </div>
     </button>
@@ -77,13 +75,15 @@ const resetConfirmation = ref(0);
       <div class="text">
         <div class="title">Reset data</div>
         <div class="description">
-          Throw away all your progress and start over.
-          <template v-if="resetConfirmation >= 1">
+          <p>
+            Throw away all your progress and start over.
+          </p>
+          <p v-if="resetConfirmation >= 1">
             Click again if you are sure.
-          </template>
-          <template v-if="resetConfirmation >= 2">
+          </p>
+          <p v-if="resetConfirmation >= 2">
             Click again if you are super sure.
-          </template>
+          </p>
         </div>
       </div>
     </button>
@@ -92,7 +92,7 @@ const resetConfirmation = ref(0);
       <div class="text">
         <div class="title">Help I'm stuck</div>
         <div class="description">
-          If you want to skip ahead, you can cheat and double your fruit.
+          <p>If you want to skip ahead, you can cheat and double your fruit.</p>
         </div>
       </div>
     </button>
@@ -101,7 +101,7 @@ const resetConfirmation = ref(0);
       <div class="text">
         <div class="title">Unlock everything</div>
         <div class="description">
-          Unlocks all characters. Definitely spoils the game.
+          <p>Unlocks all characters. Definitely spoils the game.</p>
         </div>
       </div>
     </button>
