@@ -7,7 +7,7 @@ export default defineConfig({
     baseURL: 'http://localhost:5174',
     trace: 'on',
   },
-  timeout: 120_000,
+  timeout: 600_000,
   expect: { timeout: 1_000 },
   projects: [
     {

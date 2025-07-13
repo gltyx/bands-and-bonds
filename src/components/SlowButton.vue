@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, type PropType } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch, type PropType } from 'vue';
 import { store } from '../store.ts';
 import { marked } from 'marked';
 import Gold from './Gold.vue';
@@ -54,10 +54,12 @@ const description = computed(() => {
 });
 const affordable = computed(() => {
   const aff = store.run.gold >= (props.cost.gold ?? 0) && store.run.fruit >= (props.cost.fruit ?? 0);
-  if (aff && props.autostart) {
+  return aff;
+});
+watch(affordable, (newVal) => {
+  if (newVal && props.autostart) {
     start();
   }
-  return aff;
 });
 const running = computed(() => {
   return !!store.run.timers[props.timerKey];
