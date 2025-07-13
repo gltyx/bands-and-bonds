@@ -29,6 +29,7 @@ The starting weapon level is the square root of the highest level achieved.
       peaceful: true,
     }, {
       name: "Unforge",
+      hidden: (store) => store.run.room.armorDamage === (store.currentEnemy()?.armor ?? 0),
       duration: 5,
       description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier)} damage`,
       onCompleted(store, self) {

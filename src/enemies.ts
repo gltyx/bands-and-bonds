@@ -1,5 +1,4 @@
 import type { Enemy, Ability } from "./base";
-import { store } from "./store";
 
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },

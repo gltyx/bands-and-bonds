@@ -173,7 +173,7 @@ export default class Game {
       }
     }, data.localStorageData);
     Object.assign(this, data.meta);
-    await this.page.reload();
+    await this.page.reload({ timeout: 10_000 });
   }
   async run(repeats, commands?) {
     const _commands = commands ? commands : repeats;

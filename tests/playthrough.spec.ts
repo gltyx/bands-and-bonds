@@ -318,15 +318,7 @@ test('playthrough', async ({ page }) => {
     await game.addToBand('Knight of Claws', 2);
   });
 
-  console.log(`Total clicks: ${game.totalClicks}`);
-  await game.saveState('last state.json');
-});
-test('next steps', async ({ page }) => {
-  const game = new Game(page);
-  await game.setup();
-  await game.loadState('last state.json');
-
-  await game.run(async () => {
+  async function goLeft() {
     await game.defeatEnemy('Wild Slime');
     await game.clickButton('Keep going');
     await game.clickButton('Go straight');
@@ -344,6 +336,9 @@ test('next steps', async ({ page }) => {
     await game.clickButton('Keep going');
     await game.clickButton('Go straight');
     await game.clickButton('Go straight');
+  }
+  await game.run(async () => {
+    await goLeft();
     await game.clickButton('Open door');
     await game.defeatEnemy('Fortified Door');
     await game.clickButton('Keep going');
@@ -352,6 +347,52 @@ test('next steps', async ({ page }) => {
     await game.rescue('Kit Flash');
   });
 
+  await game.run(async () => {
+    await goLeft();
+    await game.clickButton('Go straight');
+    await game.clickButton('Open door');
+    await game.clickButton('Sneak Past');
+    await game.rescue('Mongreler');
+  });
+
+  await game.run(async () => {
+    await goLeft();
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Sneak Past');
+    await game.rescue('Azrekta');
+  });
+
+  console.log(`Total clicks: ${game.totalClicks}`);
+  await game.saveState('last state.json');
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
+
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Royal Fruitbearer');
+    await game.addToBand('Azrekta');
+    await game.addToBand('The Silent Song');
+  });
+  await game.run(3, async () => {
+    await game.defeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.defeatEnemy('Poison Crow');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy('Animated Skeleton');
+  });
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Royal Fruitbearer');
+    await game.addToBand('Azrekta');
+    await game.addToBand('The Silent Song');
+  });
   return;
 
   await game.run(async () => {
