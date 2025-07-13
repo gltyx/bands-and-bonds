@@ -37,7 +37,10 @@ export const allRooms: Room[] = [
 
   {
     x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dead Gladiator',
-    next: { 'Turn left': { label: 'main-left' }, 'Turn right': { label: 'main-right' } }
+    next: {
+      'Turn left': { label: 'main-left', description: 'Exit the arena to the left. Wails of prisoners echo from the corridor.' },
+      'Turn right': { label: 'main-right', description: 'Exit the arena to the right. A smell of rotten fruit wafts from the corridor.' },
+    },
   },
   { x: 342, y: 359, type: "rescue", name: 'Dark Chef', label: 'main-left' },
   { x: 288, y: 359, type: "none" },
@@ -45,7 +48,10 @@ export const allRooms: Room[] = [
   { x: 288, y: 293, type: "rescue", name: 'Royal Fruitbearer' },
   {
     x: 288, y: 236, type: "combat", name: 'Will-o-Wasp',
-    next: { 'Turn left': { label: 'left2' }, 'Go straight': { label: 'straight2' } },
+    next: {
+      'Turn left': { label: 'left2', description: 'Leave this twisting corridor through the alcove to the left.' },
+      'Go straight': { label: 'straight2', description: 'Continue down the corridor.' },
+    },
   },
   { x: 288, y: 219, type: "none", label: 'straight2' },
   { x: 351, y: 219, type: "combat", name: 'The Shroud' },
@@ -65,18 +71,27 @@ export const allRooms: Room[] = [
   { x: 277, y: 379, type: "none" },
   {
     x: 277, y: 413, type: "none",
-    next: { 'Open door': { label: 'door3' }, 'Go straight': { label: 'straight3' } },
+    next: {
+      'Open door': { label: 'door3', description: 'Open the heavy door. You smell damp earth.' },
+      'Go straight': { label: 'straight3', description: 'Continue down the corridor.' },
+    },
   },
   { x: 243, y: 413, type: "combat", name: 'Potato Golem', label: 'door3', end: true },
   {
     x: 277, y: 459, type: "none", label: 'straight3',
-    next: { 'Open door': { label: 'door4' }, 'Go straight': { label: 'straight4' } },
+    next: {
+      'Open door': { label: 'door4', description: 'Open the heavy door. You smell iron and blood.' },
+      'Go straight': { label: 'straight4', description: 'Continue down the corridor.' },
+    },
   },
   { x: 243, y: 459, type: "rescue", name: "Pecquer", label: 'door4', end: true },
   { x: 277, y: 498, type: "none", label: 'straight4' },
   {
     x: 196, y: 498, type: "none",
-    next: { 'Go straight': { label: 'straight5' }, 'Open door': { label: 'door5' } },
+    next: {
+      'Open door': { label: 'door5', description: 'Open the heavy door. You smell nothing, except maybe the door.' },
+      'Go straight': { label: 'straight5', description: 'Continue down the corridor.' },
+    },
   },
   { x: 196, y: 460, type: "combat", name: 'Fortified Door', label: 'door5' },
   { x: 196, y: 410, type: "rescue", name: 'Knight of Claws' },
@@ -84,7 +99,10 @@ export const allRooms: Room[] = [
   { x: 196, y: 300, type: "rescue", name: 'Kit Flash', end: true },
   {
     x: 126, y: 498, type: "none", label: 'straight5',
-    next: { 'Go straight': { label: 'straight6' }, 'Open door': { label: 'door6' } },
+    next: {
+      'Open door': { label: 'door6', description: 'Open the heavy door. You hear nothing from the other side.' },
+      'Go straight': { label: 'straight6', description: 'Continue down the corridor.' },
+    },
   },
   { x: 126, y: 466, type: "combat", name: 'Corrupted Bounty Hunter', label: 'door6' },
   { x: 126, y: 390, type: "rescue", name: 'Mongreler', end: true },
@@ -95,7 +113,10 @@ export const allRooms: Room[] = [
   { x: 124, y: 206, type: "combat", name: 'Skeletron' },
   {
     x: 124, y: 160, type: "none",
-    next: { 'Turn left': { label: 'left7' }, 'Turn right': { label: 'right7' } },
+    next: {
+      'Turn left': { label: 'left7', description: 'Turn left into an opulent corridor.' },
+      'Turn right': { label: 'right7', description: 'Turn right into a loathsome corridor.' },
+    },
   },
   { x: 84, y: 160, type: "none", label: 'left7' },
   { x: 84, y: 193, type: "none", },
@@ -124,7 +145,10 @@ export const allRooms: Room[] = [
   { x: 210, y: 122, type: "combat", name: 'Zakatrixos' },
   {
     x: 246, y: 122, type: "combat", name: 'Wands from the Depths',
-    next: { 'Turn left': { label: 'left8' }, 'Go straight': { label: 'straight8' } },
+    next: {
+      'Turn left': { label: 'left8', description: 'You found a small opening leading north.' },
+      'Go straight': { label: 'straight8', description: 'Continue down the series of rooms.' },
+    },
   },
   { x: 282, y: 122, type: "combat", name: "Crystal Man", label: 'straight8' },
   { x: 318, y: 122, type: "combat", name: "Power Crystal" },
@@ -134,7 +158,10 @@ export const allRooms: Room[] = [
 
   {
     x: 246, y: 79, type: "combat", name: "Skyrmions", label: 'left8',
-    next: { 'Turn left': { label: 'left9' }, 'Turn right': { label: 'right9' } },
+    next: {
+      'Turn left': { label: 'left9', description: 'The haunted tunnel forks here. Continue left.' },
+      'Turn right': { label: 'right9', description: 'The haunted tunnel forks here. Continue right.' },
+    },
   },
   { x: 162, y: 79, type: "combat", name: "Tenebra", label: 'left9' },
   { x: 162, y: 123, type: "combat", name: "Landas Wizard" },
@@ -149,7 +176,10 @@ export const allRooms: Room[] = [
   { x: 501, y: 359, type: "none" },
   {
     x: 501, y: 322, type: "rescue", name: 'Anvilomancer',
-    next: { 'Turn left': { label: 'left10' }, 'Turn right': { label: 'right10' } },
+    next: {
+      'Turn left': { label: 'left10', description: 'Continue left, where the air is cooler.' },
+      'Turn right': { label: 'right10', description: 'Continue right, where the air is warmer.' },
+    },
   },
   { x: 459, y: 322, type: "combat", name: 'Trollish Maiden', label: 'left10' },
   { x: 459, y: 277, type: "combat", name: 'Dryfin Carp' },
