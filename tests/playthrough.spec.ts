@@ -374,9 +374,72 @@ test('next steps', async ({ page }) => {
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
     await game.addToBand('Lamplighter');
+    await game.addToBand('Kit Flash');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('Knight of Claws', 2);
+  });
+
+  await game.run(async () => {
+    await game.defeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.defeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn right');
+    await game.defeatEnemy('Frozen Centurion');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.defeatEnemy('Geckalog');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy('Jaw Maw Maw');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Decay Manifest");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Striped Horror")
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Dragonfly Agaric");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Artifact Seeker")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Golden Chest")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("King of Tadpoles")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Hopanoids");
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Tosyl Rose")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Sullen Bearer")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Unwelcoming Glade")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Food Mimic")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Frog Assassin")
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Enantiomers");
+    await game.clickButton('Keep going');
+    await game.rescue('Smiling Pilot');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy("Gnollish Ambassador");
+    await game.clickButton('Keep going');
+    await game.rescue('Hedge Lost');
+  });
+
+  await game.manageBand(async () => {
+    await game.addToBand('Hedge Lost', 2);
+  });
+  return;
+
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
     await game.addToBand('Royal Fruitbearer');
     await game.addToBand('Azrekta');
-    await game.addToBand('The Silent Song');
+    await game.addToBand('The Silent Song', 2);
   });
   await game.run(3, async () => {
     await game.defeatEnemy('Wild Slime');
@@ -387,7 +450,7 @@ test('next steps', async ({ page }) => {
     await game.defeatEnemy('Animated Skeleton');
   });
   await game.manageBand(async () => {
-    await game.removeFromBand('Lamplighter');
+    await game.removeFromBand('Lamperlighter');
     await game.addToBand('Lamplighter');
     await game.addToBand('Royal Fruitbearer');
     await game.addToBand('Azrekta');
@@ -437,11 +500,9 @@ test('next steps', async ({ page }) => {
     await game.clickButton('Keep going');
     await game.defeatEnemy("Enantiomers");
     await game.clickButton('Keep going');
-    await game.rescue('Smiling Pilot');
     await game.clickButton('Keep going');
     await game.defeatEnemy("Gnollish Ambassador");
     await game.clickButton('Keep going');
-    await game.rescue('Hedge Lost');
     await game.clickButton('Keep going');
     await game.defeatEnemy("Web of Power")
     await game.clickButton('Keep going');
