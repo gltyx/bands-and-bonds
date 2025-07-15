@@ -12,7 +12,7 @@ export const allEnemies: Enemy[] = [
   { name: "Will-o-Wasp", health: 100, dodge: 3, rewards: { gold: 15, fruit: 1 } },
   { name: "The Shroud", health: 1000, ethereal: true, rewards: { gold: 10, fruit: 14 } },
   { name: "Dark Lord", health: 10_000, armor: 100, rewards: { gold: 10, fruit: 20 } },
-  { name: "Clockomancer", health: 100_000, rewards: { fruit: 1000 }, passiveEffects: ["The Clockomancer slows down time."] },
+  { name: "Clockomancer", health: 100_000, rewards: { fruit: 1000 }, slowTime: 100, passiveEffects: ["The Clockomancer slows down time."] },
 
   { name: "Glass Dragon", health: 100_000, rewards: { gold: 100, fruit: 10 }, weaknesses: ["blunt", "back"] },
   { name: "Xaranthian Construct", health: 650_000, rewards: { gold: 250 } },

@@ -147,6 +147,7 @@ export type Enemy = {
   abilities?: Ability[];
   passiveEffects?: string[];
   weaknesses?: string[];
+  slowTime?: number;
 };
 
 const _numberFormat = new Intl.NumberFormat("en-US", {

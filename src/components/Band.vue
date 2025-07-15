@@ -5,7 +5,7 @@ import { store, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import Fruit from "./Fruit.vue";
 import Packs from "./Packs.vue";
-import { costOfPacks } from "../base.ts";
+import { costOfPacks, type Ability } from "../base.ts";
 
 const selected = ref(undefined as string | undefined);
 
@@ -165,6 +165,15 @@ function buyPack() {
   }
   store.team.packs += 1;
 }
+function abilityPrice(ab: Ability) {
+  if (ab.consumes) {
+    if (typeof ab.consumes === 'function') {
+      return ab.consumes(store);
+    }
+    return ab.consumes;
+  }
+  return {};
+}
 
 const enabled = computed(() => {
   if (store.run.steps === 0) return true;
@@ -230,7 +239,7 @@ const enabled = computed(() => {
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
         <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :image="`images/generated/${ab.name}.webp`" v-if="!ab.hidden?.(store)" />
+          :image="`images/generated/${ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityPrice(ab)" />
       </template>
     </div>
   </div>

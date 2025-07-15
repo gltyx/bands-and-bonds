@@ -30,8 +30,9 @@ function mainLoop() {
   if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   const multiplier = window.location.search.includes("test") ? 100 : 1;
   deltaTime *= multiplier;
-  if (store.currentEnemy()?.name === 'Clockomancer') {
-    deltaTime /= 100;
+  const enemy = store.currentEnemy();
+  if (enemy && store.run.room.damage < enemy.health) {
+    deltaTime /= enemy?.slowTime ?? 1;
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
@@ -45,7 +46,6 @@ function mainLoop() {
       t.cb?.(t);
     }
   }
-  const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
     const regenPerSecond = multiplier * ((enemy.regen ?? 0) - store.run.room.poison);
     let regen = (baseTime - lastRegenTime.value) * regenPerSecond / 1000;
