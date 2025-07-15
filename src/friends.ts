@@ -361,8 +361,9 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
     name: 'Wayfinder',
     cost: 0,
     description: `
-A master of navigation, Wayfinder will guide your band through a path without fail.
+A master of navigation, Wayfinder will guide your band through the dark corridors of the dungeon.
 Just point to your destination on the map to get started.
+To repeat the run after reaching the destination, place Wayfinder at the front of your band.
 
 With Wayfinder in your band, you can replace members of your band at campfires
 and see more details on the map.

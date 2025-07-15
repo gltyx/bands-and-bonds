@@ -78,8 +78,12 @@ const possibleTurns = computed(() => {
 });
 
 const plannedTurn = computed(() => {
-  if (store.run.steps === 0 || !onboard("Wayfinder") || !store.local.destination) return;
+  const wf = onboard("Wayfinder");
+  if (store.run.steps === 0 || !wf || !store.local.destination) return;
   const room = store.currentRoom();
+  if (roomKey(room) === store.local.destination && wf.row < 2) {
+    return { title: 'Retreat', description: 'The Wayfinder leads you back to the beginning.' };
+  }
   if (room.end) return;
   const path = destinationToPath(store.local.destination);
   if (path.length <= store.run.steps + 1) return;
@@ -91,6 +95,14 @@ const plannedTurn = computed(() => {
     }
   }
 });
+function takeTurn(turn: string) {
+  if (turn === 'Retreat') {
+    retreat();
+    store.run.steps += 1; // Get started on the next run immediately.
+  } else {
+    store.takeTurn(turn);
+  }
+}
 
 const passiveEffects = computed(() => {
   const effects = [] as string[];
@@ -256,7 +268,7 @@ for (const url of [
       <div class="section">Navigation</div>
       <SlowButton v-if="!hideActions" timer-key="wayfinder-turn" :duration="1000" :title="plannedTurn.title!"
         :description="plannedTurn.description" :image="`images/generated/${plannedTurn.title}.webp`"
-        @done="store.takeTurn(plannedTurn.title!)" :autostart="true" />
+        @done="takeTurn(plannedTurn.title!)" :autostart="true" />
     </template>
     <template v-else>
       <SlowButton v-if="rescueAvailable" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"

@@ -115,7 +115,7 @@ export default class Game {
       const retreat = this.button('Retreat');
       await expect(retreat).toBeVisible();
       const text = await retreat.textContent();
-      const m = text?.match(/keep the (\d+)/);
+      const m = text?.match(/keep the ([0-9,]+)/);
       if (m) {
         console.log(`Retreated after ${this.clicks} clicks with ${m[1]} fruit.`);
       } else {
