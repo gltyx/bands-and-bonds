@@ -72,7 +72,7 @@ export const allRooms: Room[] = [
   {
     x: 277, y: 413, type: "none",
     next: {
-      'Open door': { label: 'door3', description: 'Open the heavy door. You smell damp earth.' },
+      'Open door': { label: 'door3', description: 'A heavy door to the west. You smell damp earth.' },
       'Go straight': { label: 'straight3', description: 'Continue down the corridor.' },
     },
   },
@@ -80,7 +80,7 @@ export const allRooms: Room[] = [
   {
     x: 277, y: 459, type: "none", label: 'straight3',
     next: {
-      'Open door': { label: 'door4', description: 'Open the heavy door. You smell iron and blood.' },
+      'Open door': { label: 'door4', description: 'A heavy door to the west. You smell iron and blood.' },
       'Go straight': { label: 'straight4', description: 'Continue down the corridor.' },
     },
   },
@@ -89,7 +89,7 @@ export const allRooms: Room[] = [
   {
     x: 196, y: 498, type: "none",
     next: {
-      'Open door': { label: 'door5', description: 'Open the heavy door. You smell nothing, except maybe the door.' },
+      'Open door': { label: 'door5', description: 'A heavy door to the north. You listen and sniff, but hear and smell nothing other than the door itself.' },
       'Go straight': { label: 'straight5', description: 'Continue down the corridor.' },
     },
   },
@@ -100,7 +100,7 @@ export const allRooms: Room[] = [
   {
     x: 126, y: 498, type: "none", label: 'straight5',
     next: {
-      'Open door': { label: 'door6', description: 'Open the heavy door. You hear nothing from the other side.' },
+      'Open door': { label: 'door6', description: 'A heavy door to the north. You hear nothing from the other side.' },
       'Go straight': { label: 'straight6', description: 'Continue down the corridor.' },
     },
   },

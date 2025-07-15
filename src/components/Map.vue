@@ -71,6 +71,8 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
     <svg width="100%" height="100%">
       <path :d="line" stroke="white" :stroke-width="5 * scale" fill="none" />
       <path :d="planLine" stroke="white" :stroke-width="3 * scale" stroke-dasharray="3 5" fill="none" />
+      <circle v-if="rooms?.[rooms.length - 1]?.type === 'none'" :cx="rooms[rooms.length - 1].x * scale"
+        :cy="rooms[rooms.length - 1].y * scale" :r="5 * scale" fill="white" />
     </svg>
     <template v-for="room in allRooms">
       <img v-if="room.type !== 'none'" :alt="room.name" :style="style(room)" @mouseenter="hoveredRoom = room"
