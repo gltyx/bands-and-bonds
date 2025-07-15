@@ -56,10 +56,10 @@ The starting weapon level is the highest level achieved.
       abilities: [{
         name: "Forge",
         duration: 5,
-        consumes: (store) => ({ gold: store.run.weaponLevel }),
+        consumes: { gold: 5 },
         description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
         onCompleted(store) {
-          store.run.weaponLevel *= 2;
+          store.run.weaponLevel += 10;
           if (store.run.weaponLevel > store.team.bestWeaponLevel) {
             store.team.bestWeaponLevel = store.run.weaponLevel;
           }
@@ -605,7 +605,7 @@ He is particularly interested in the fruit you're holding.
     `,
     abilities: [{
       name: "Eat Fruit",
-      duration: 10,
+      duration: 1,
       consumes: { fruit: 1 },
       description: 'Do you have too much fruit? Zaktar Kadoque can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
       onCompleted(store) {
@@ -618,7 +618,7 @@ He is particularly interested in the fruit you're holding.
       description: "Zaktar finds great joy in exposure to Azrekta's magic. His appetite for new experiences knows no bounds.",
       abilities: [{
         name: "Eat Fruit",
-        duration: 10,
+        duration: 1,
         consumes: (store) => ({ fruit: store.run.weaponLevel }),
         description: 'Do you have too much fruit? Zaktar Kadoque Karr can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
         onCompleted(store) {
