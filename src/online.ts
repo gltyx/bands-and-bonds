@@ -18,6 +18,7 @@ export async function subscribe(teamId: string, store: Store) {
   subscribedTeamId = teamId;
   const doc = await getTeam(teamId);
   receiveFromDatabase(doc as TeamData, store);
+  updateTeam(teamId, store.team);
   unsubscribe = client.subscribe(`databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents.${teamId}`, response => {
     receiveFromDatabase(response.payload as TeamData, store);
   });
@@ -65,7 +66,7 @@ export async function newTeam(): Promise<string> {
   return doc.$id;
 }
 
-export async function updateTeam(teamId: string, data: Partial<TeamData>): Promise<void> {
+export async function updateTeam(teamId: string, data: TeamData): Promise<void> {
   await databases.updateDocument(
     DATABASE_ID,
     COLLECTION_ID,
