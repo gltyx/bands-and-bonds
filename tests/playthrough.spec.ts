@@ -363,14 +363,6 @@ test('playthrough', async ({ page }) => {
     await game.rescue('Azrekta');
   });
 
-  console.log(`Total clicks: ${game.totalClicks}`);
-  await game.saveState('last state.json');
-});
-test('next steps', async ({ page }) => {
-  const game = new Game(page);
-  await game.setup();
-  await game.loadState('last state.json');
-
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
     await game.addToBand('Lamplighter');
@@ -430,8 +422,103 @@ test('next steps', async ({ page }) => {
   });
 
   await game.manageBand(async () => {
-    await game.addToBand('Hedge Lost', 2);
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('Bayla', 1);
+    await game.addToBand('Royal Fruitbearer', 1);
+    await game.addToBand('The Silent Song', 1);
   });
+
+  async function fruitRun() {
+    await game.waitToDefeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.waitToDefeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn right');
+    await game.defeatEnemy('Frozen Centurion'); // Immune to ice. Defeat manually.
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.waitToDefeatEnemy('Geckalog');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Jaw Maw Maw');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Decay Manifest");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Striped Horror")
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Dragonfly Agaric");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Artifact Seeker")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Golden Chest")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("King of Tadpoles")
+  }
+  await game.run(fruitRun);
+
+  await game.manageBand(async () => {
+    await game.addToBand('Stick Master');
+  });
+
+  await game.run(2, fruitRun);
+  await game.manageBand(async () => {
+    await game.addToBand('Kin of Pump');
+  });
+  await game.run(2, fruitRun);
+  console.log(`Total clicks: ${game.totalClicks}`);
+  await game.saveState('last state.json');
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
+
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Friend of Metal');
+    await game.addToBand('Pecquer', 1);
+    await game.addToBand('Azrekta');
+    await game.addToBand('Lord of Gears', 1);
+    await game.addToBand('Anvilomancer', 1);
+  });
+
+  await game.run(async () => {
+    await game.waitToDefeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.waitToDefeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn left');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Lobster Daddy');
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy('Will-o-Wasp');
+    await game.clickButton('Turn left');
+    await game.waitToDefeatEnemy('Glass Dragon');
+    await game.clickButton('Keep going');
+    await game.clickButton('Sneak Past');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Sneak Past');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Skeletron');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn left');
+    await game.waitToDefeatEnemy("Chago's Chamber");
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Chago');
+    await game.clickButton('Keep going');
+    await game.rescue('Kevin');
+  });
+
   return;
 
   await game.manageBand(async () => {
