@@ -26,7 +26,10 @@ function start() {
   if (!store.run.timers[props.timerKey]) {
     store.run.gold -= props.cost.gold || 0;
     store.run.fruit -= props.cost.fruit || 0;
-    store.run.timers[props.timerKey] = { duration: props.duration };
+    store.run.timers[props.timerKey] = {
+      duration: props.duration,
+      automatic: props.cost,
+    };
   }
 }
 function style() {

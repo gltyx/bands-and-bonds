@@ -42,37 +42,41 @@ function mainLoop() {
       t.time += Math.floor(deltaTime * store.run.speedLevel);
     }
     if (t.time >= t.duration) {
+      // Fire the callback.
+      t.time -= t.duration;
       delete store.run.timers[key];
+      store.timerCallbacks[key]?.(key);
+    }
+    while (
+      t.automatic && t.time >= t.duration &&
+      store.run.gold >= (t.automatic.gold ?? 0) && store.run.fruit >= (t.automatic.fruit ?? 0)) {
+      // Fire multiple times if it's automatic and we have exceeded the duration multiple times.
+      t.time -= t.duration;
+      // Deduct the cost for these extra runs.
+      store.run.gold -= t.automatic.gold ?? 0;
+      store.run.fruit -= t.automatic.fruit ?? 0;
       store.timerCallbacks[key]?.(key);
     }
   }
   if (enemy && store.run.room.damage < enemy.health) {
     const regenPerSecond = multiplier * ((enemy.regen ?? 0) - store.run.room.poison);
-    let regen = (baseTime - lastRegenTime.value) * regenPerSecond / 1000;
-    while (regen > 1) {
-      store.run.room.damage = Math.max(0, store.run.room.damage - 1);
-      regen -= 1;
-      lastRegenTime.value += 1000 / regenPerSecond;
+    const regen = (baseTime - lastRegenTime.value) * regenPerSecond / 1000;
+    if (regen > 1) {
+      store.run.room.damage = Math.max(0, store.run.room.damage - Math.floor(regen));
+      lastRegenTime.value += Math.floor(regen) / regenPerSecond * 1000;
+    } else if (regen < -1) {
+      store.addDamage(Math.floor(-regen));
+      lastRegenTime.value -= Math.floor(-regen) / regenPerSecond * 1000;
+    } else if (regen === 0) {
+      lastRegenTime.value = currentTime;
     }
-    while (regen < -1) {
-      store.addDamage(1);
-      if (store.run.room.poison === 0) {
-        // The enemy died.
-        regen = 0;
-        break;
-      }
-      regen += 1;
-      lastRegenTime.value -= 1000 / regenPerSecond;
-    }
-    if (regen === 0) lastRegenTime.value = currentTime;
   }
   if (store.run.saplings > 0) {
     const fruitPerSecond = multiplier * store.run.saplings * store.fruitMultiplier();
-    let fruits = (baseTime - lastSaplingTime.value) * fruitPerSecond / 1000;
-    while (fruits > 1) {
-      store.run.fruit += 1;
-      fruits -= 1;
-      lastSaplingTime.value += 1000 / fruitPerSecond;
+    const fruits = (baseTime - lastSaplingTime.value) * fruitPerSecond / 1000;
+    if (fruits > 1) {
+      store.run.fruit += Math.floor(fruits);
+      lastSaplingTime.value += Math.floor(fruits) * 1000 / fruitPerSecond;
     }
   } else {
     lastSaplingTime.value = currentTime;

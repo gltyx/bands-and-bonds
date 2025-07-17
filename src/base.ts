@@ -1,6 +1,7 @@
 export type Timer = {
   time?: number;
   duration: number;
+  automatic?: { gold?: number; fruit?: number };
 };
 
 export type Band = {
@@ -154,7 +155,7 @@ const _numberFormat = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 export function numberFormat(x: number) {
-  if (x > 1_000_000_000) {
+  if (x > 9_999_999_999) {
     return `${_numberFormat.format(x / 1_000_000_000)} B`;
   }
   return _numberFormat.format(x);

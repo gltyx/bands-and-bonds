@@ -128,7 +128,7 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
         name: "Poison Strike",
         duration: 5,
         tags: ['poison', 'undodgeable'],
-        description: (store) => store.run.room.poison ? `Poison the air. (Currently ${numberSpan(store.run.room.poison)} damage per second.)` : 'Damage over time.',
+        description: (store) => store.run.room.poison ? `Poison the air. (Currently ${numberSpan(store.run.room.poison)} damage per second.)` : 'Poison the air.',
         onCompleted(store, self) {
           const e = store.abilityEffects(self);
           if (Math.random() >= e.hitChance) return;
@@ -797,7 +797,7 @@ const costs: Record<string, number> = {
   "Pur Lion": 23,
   "Smiling Pilot": 24,
   "Zaktar Kadoque": 25,
-}
+};
 export const friendsByName = {} as Record<string, Friend>;
 const abilitiesByName = {} as Record<string, Ability>;
 const abilityOwners = {} as Record<string, string>;

@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type Locator } from '@playwright/test';
 import fs from 'node:fs';
 
 export default class Game {
@@ -55,19 +55,63 @@ export default class Game {
       }
     });
   }
-  async waitToDefeatEnemy(name: string) {
+  async waitToDefeatEnemy(name: string, timeout = 5_000) {
     // Does nothing until the enemy is defeated.
     await test.step(`Defeat ${name} passively`, async () => {
       await expect(this.page.getByRole('heading', { name })).toBeVisible();
-      await expect(this.page.getByText('Defeated')).toBeVisible({ timeout: 5_000 });
+      await expect(this.page.getByText('Defeated')).toBeVisible({ timeout });
     });
   }
-  async holdToDefeatEnemy(enemy: string, action: string) {
+  async holdToDefeatEnemy(enemy: string, action: string, timeout = 5_000) {
     await test.step(`Defeat ${enemy} by holding ${action}`, async () => {
-      await this.button(action).hover();
+      await expect(this.page.getByRole('heading', { name: enemy })).toBeVisible();
+      const unforge = this.button('Unforge');
+      if (await unforge.isVisible()) {
+        // Wait for "Unforge" to disappear, otherwise it can interfere with the hold.
+        await this.button(action).hover();
+        await this.page.mouse.down();
+        await expect(unforge).not.toBeVisible({ timeout });
+        await this.page.mouse.up();
+        this.clicks++;
+      }
+      if (await this.button(action).isVisible()) {
+        await this.button(action).hover();
+        await this.page.mouse.down();
+        await expect(this.page.getByText('Defeated')).toBeVisible({ timeout });
+        await this.waitToDefeatEnemy(enemy);
+        this.clicks++;
+      }
+    });
+  }
+  async waitForNumberToReach(counter: Locator, target: number) {
+    await expect.poll(async () => {
+      const text = await counter.textContent();
+      const match = text?.match(/Currently ([0-9,]+)/);
+      return match ? Number.parseInt(match[1].replace(/,/g, ''), 10) : 0;
+    }, {
+      message: `waiting for counter to reach ${target}`,
+      timeout: 10_000,
+    }).toBeGreaterThanOrEqual(target);
+  }
+  async xaranthianDefeatEnemy(enemy: string, quota: number, timeout = 5_000) {
+    await test.step(`Defeat ${enemy} the Xaranthian way`, async () => {
+      await expect(this.page.getByRole('heading', { name: enemy })).toBeVisible();
+      await this.button("Construct Grower").click();
+      await this.button("Construct Grower").hover();
       await this.page.mouse.down();
-      await this.waitToDefeatEnemy(enemy);
+      await this.waitForNumberToReach(this.button("Construct Grower"), quota);
       await this.page.mouse.up();
+      this.clicks++;
+      await this.button("Grow Guns").click();
+      await this.button("Grow Guns").hover();
+      await this.page.mouse.down();
+      await this.waitForNumberToReach(this.button("Grow Guns"), quota * quota);
+      await this.page.mouse.up();
+      this.clicks++;
+      await this.button("Fire Xaranthian Guns").hover();
+      await this.page.mouse.down();
+      await expect(this.page.getByText('Defeated')).toBeVisible({ timeout });
+      await this.waitToDefeatEnemy(enemy);
       this.clicks++;
     });
   }

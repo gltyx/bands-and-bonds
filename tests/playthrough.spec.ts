@@ -543,6 +543,56 @@ test('playthrough', async ({ page }) => {
   }
   await game.run(2, fruitRunShort);
 
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Kin of Pump');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Bayla');
+    await game.addToBand('Kit Flash');
+    await game.addToBand('Desert Rabbit');
+  });
+
+  await game.run(async () => {
+    await game.holdToDefeatEnemy('Wild Slime', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.holdToDefeatEnemy('Dead Gladiator', 'Battle Rhythm');
+    await game.clickButton('Turn left');
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Lobster Daddy', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Will-o-Wasp', 'Battle Rhythm');
+    await game.clickButton('Turn left');
+    await game.holdToDefeatEnemy('Glass Dragon', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Xaranthian Construct', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.clickButton('Go straight');
+    await game.holdToDefeatEnemy('Lior the Weaver', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Skeletron', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.holdToDefeatEnemy('Door of Loathing', 'Illuminate', 10_000);
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Zakatrixos', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.holdToDefeatEnemy('Wands from the Depths', 'Battle Rhythm');
+    await game.clickButton('Turn left');
+    await game.holdToDefeatEnemy('Skyrmions', 'Battle Rhythm', 20_000);
+    await game.clickButton('Turn right');
+    await game.holdToDefeatEnemy('Defensive Installation', 'Battle Rhythm');
+    await game.clickButton('Keep going');
+    await game.rescue('Xaranthian Constructor');
+  });
+
   console.log(`Total clicks: ${game.totalClicks}`);
   await game.saveState('last state.json');
 });
@@ -551,126 +601,84 @@ test('next steps', async ({ page }) => {
   await game.setup();
   await game.loadState('last state.json');
 
-  // // Ramp up best weapon level.
-  // await game.manageBand(async () => {
-  //   await game.removeFromBand('Lamplighter');
-  //   await game.addToBand('Lamplighter');
-  //   await game.addToBand('Kit Flash');
-  //   await game.addToBand('Kin of Pump', 1);
-  //   await game.addToBand('Azrekta');
-  //   await game.addToBand('Lord of Gears', 1);
-  //   await game.addToBand('Anvilomancer', 1);
-  // });
-
-  // await game.run(async () => {
-  //   await game.holdToDefeatEnemy('Wild Slime', 'Illuminate');
-  //   await game.clickButton('Keep going');
-  //   await game.clickButton('Go straight');
-  //   await game.defeatEnemy('Dead Gladiator', 'Illuminate');
-  //   await game.clickButton('Turn left');
-  //   await game.clickButton('Keep going');
-  //   await game.holdToDefeatEnemy('Lobster Daddy', 'Illuminate');
-  //   await game.clickButton('Keep going');
-  //   await game.clickButton('Keep going');
-  //   await game.holdToDefeatEnemy('Will-o-Wasp', 'Illuminate');
-  //   await game.clickButton('Turn left');
-  //   await game.holdToDefeatEnemy('Glass Dragon', 'Illuminate');
-  //   // Spend all gold on upgrades.
-  //   await expect(game.button('Forge')).toHaveClass('disabled')
-  // });
-
-  return;
-
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
     await game.addToBand('Lamplighter');
-    await game.addToBand('Royal Fruitbearer');
-    await game.addToBand('Azrekta');
-    await game.addToBand('The Silent Song', 2);
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Kit Flash');
+    await game.addToBand('Kin of Pump');
+    await game.addToBand('Xaranthian Constructor');
+    // TODO: Find out why Growers don't work when Stick Master is not in the band.
+    await game.addToBand('Stick Master');
   });
-  await game.run(3, async () => {
-    await game.defeatEnemy('Wild Slime');
-    await game.clickButton('Keep going');
-    await game.clickButton('Turn right');
-    await game.defeatEnemy('Poison Crow');
-    await game.clickButton('Keep going');
-    await game.defeatEnemy('Animated Skeleton');
-  });
-  await game.manageBand(async () => {
-    await game.removeFromBand('Lamperlighter');
-    await game.addToBand('Lamplighter');
-    await game.addToBand('Royal Fruitbearer');
-    await game.addToBand('Azrekta');
-    await game.addToBand('The Silent Song');
-  });
-  return;
 
   await game.run(async () => {
-    await game.defeatEnemy('Wild Slime');
+    await game.waitToDefeatEnemy('Wild Slime');
     await game.clickButton('Keep going');
     await game.clickButton('Go straight');
-    await game.defeatEnemy('Dead Gladiator');
+    await game.waitToDefeatEnemy('Dead Gladiator');
     await game.clickButton('Turn right');
-    await game.defeatEnemy('Frozen Centurion');
+    await game.waitToDefeatEnemy('Frozen Centurion');
     await game.clickButton('Keep going');
     await game.clickButton('Turn right');
-    await game.defeatEnemy('Geckalog');
+    await game.waitToDefeatEnemy('Geckalog', 20_000);
     await game.clickButton('Keep going');
-    await game.defeatEnemy('Jaw Maw Maw');
+    await game.waitToDefeatEnemy('Jaw Maw Maw', 10_000);
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Decay Manifest");
-    await game.clickButton('Keep going');
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Striped Horror")
+    await game.waitToDefeatEnemy("Decay Manifest", 10_000);
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Dragonfly Agaric");
+    await game.waitToDefeatEnemy("Striped Horror", 10_000);
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Artifact Seeker")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Golden Chest")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("King of Tadpoles")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Hopanoids");
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Tosyl Rose")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Sullen Bearer")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Unwelcoming Glade")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Food Mimic")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Frog Assassin")
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Enantiomers");
+    await game.waitToDefeatEnemy("Dragonfly Agaric", 20_000);
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Gnollish Ambassador");
+    await game.waitToDefeatEnemy("Artifact Seeker")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Golden Chest")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("King of Tadpoles");
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Hopanoids");
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Tosyl Rose")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Sullen Bearer")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Unwelcoming Glade")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Food Mimic")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Frog Assassin")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Enantiomers");
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Web of Power")
+    await game.waitToDefeatEnemy("Gnollish Ambassador");
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Tombstone of the Forgotten");
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Hippogryph")
+    await game.waitToDefeatEnemy("Web of Power");
     await game.clickButton('Keep going');
-    await game.defeatEnemy("The King's Armor");
+    await game.waitToDefeatEnemy("Tombstone of the Forgotten");
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Corridor of Illusions");
+    await game.waitToDefeatEnemy("Hippogryph");
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("The King's Armor");
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Corridor of Illusions");
     await game.clickButton('Keep going');
     await game.rescue('Zaktar Kadoque');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Hiber Conduit");
+    await game.waitToDefeatEnemy("Hiber Conduit");
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Core Diver")
+    await game.xaranthianDefeatEnemy("Core Diver", 60);
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Smother Mother");
+    await game.xaranthianDefeatEnemy("Smother Mother", 70);
     await game.clickButton('Keep going');
-    await game.defeatEnemy("The Final Warden");
+    await game.xaranthianDefeatEnemy("The Final Warden", 100);
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Skelemasterion");
+    await game.xaranthianDefeatEnemy("Skelemasterion", 1000);
   });
 });
