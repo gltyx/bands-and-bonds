@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import Game from './game';
 
 test('playthrough', async ({ page }) => {
@@ -437,7 +437,7 @@ test('playthrough', async ({ page }) => {
     await game.clickButton('Go straight');
     await game.waitToDefeatEnemy('Dead Gladiator');
     await game.clickButton('Turn right');
-    await game.defeatEnemy('Frozen Centurion'); // Immune to ice. Defeat manually.
+    await game.holdToDefeatEnemy('Frozen Centurion', 'Illuminate');
     await game.clickButton('Keep going');
     await game.clickButton('Turn right');
     await game.waitToDefeatEnemy('Geckalog');
@@ -498,7 +498,7 @@ test('next steps', async ({ page }) => {
     await game.waitToDefeatEnemy('Lobster Daddy');
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy('Will-o-Wasp');
+    await game.holdToDefeatEnemy('Will-o-Wasp', 'Illuminate');
     await game.clickButton('Turn left');
     await game.waitToDefeatEnemy('Glass Dragon');
     await game.clickButton('Keep going');
@@ -519,6 +519,74 @@ test('next steps', async ({ page }) => {
     await game.rescue('Kevin');
   });
 
+  // // Ramp up best weapon level.
+  // await game.manageBand(async () => {
+  //   await game.removeFromBand('Lamplighter');
+  //   await game.addToBand('Lamplighter');
+  //   await game.addToBand('Kit Flash');
+  //   await game.addToBand('Kin of Pump', 1);
+  //   await game.addToBand('Azrekta');
+  //   await game.addToBand('Lord of Gears', 1);
+  //   await game.addToBand('Anvilomancer', 1);
+  // });
+
+  // await game.run(async () => {
+  //   await game.holdToDefeatEnemy('Wild Slime', 'Illuminate');
+  //   await game.clickButton('Keep going');
+  //   await game.clickButton('Go straight');
+  //   await game.defeatEnemy('Dead Gladiator', 'Illuminate');
+  //   await game.clickButton('Turn left');
+  //   await game.clickButton('Keep going');
+  //   await game.holdToDefeatEnemy('Lobster Daddy', 'Illuminate');
+  //   await game.clickButton('Keep going');
+  //   await game.clickButton('Keep going');
+  //   await game.holdToDefeatEnemy('Will-o-Wasp', 'Illuminate');
+  //   await game.clickButton('Turn left');
+  //   await game.holdToDefeatEnemy('Glass Dragon', 'Illuminate');
+  //   // Spend all gold on upgrades.
+  //   await expect(game.button('Forge')).toHaveClass('disabled')
+  // });
+
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Stick Master');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('The Silent Song');
+    await game.addToBand('Azrekta');
+    await game.addToBand('Royal Fruitbearer', 8);
+  });
+
+  async function fruitRun() {
+    await game.waitToDefeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.waitToDefeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn right');
+    await game.defeatEnemy('Frozen Centurion');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.waitToDefeatEnemy('Geckalog');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Jaw Maw Maw');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Decay Manifest");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Striped Horror")
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Dragonfly Agaric");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Artifact Seeker")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Golden Chest")
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("King of Tadpoles")
+  }
+  await game.run(fruitRun);
   return;
 
   await game.manageBand(async () => {

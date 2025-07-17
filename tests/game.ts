@@ -57,9 +57,18 @@ export default class Game {
   }
   async waitToDefeatEnemy(name: string) {
     // Does nothing until the enemy is defeated.
-    await test.step(`Defeat ${name}`, async () => {
+    await test.step(`Defeat ${name} passively`, async () => {
       await expect(this.page.getByRole('heading', { name })).toBeVisible();
       await expect(this.page.getByText('Defeated')).toBeVisible({ timeout: 5_000 });
+    });
+  }
+  async holdToDefeatEnemy(enemy: string, action: string) {
+    await test.step(`Defeat ${enemy} by holding ${action}`, async () => {
+      await this.button(action).hover();
+      await this.page.mouse.down();
+      await this.waitToDefeatEnemy(enemy);
+      await this.page.mouse.up();
+      this.clicks++;
     });
   }
   async expectHeading(name: string) {
@@ -71,7 +80,7 @@ export default class Game {
   band(name: string) {
     return {
       grid: this.page.locator('.band-grid').getByRole('button', { name }),
-      details: this.page.locator('.band-details').getByRole('heading', { name }),
+      details: this.page.locator('.band-details').getByRole('heading', { name: FRIEND_MATCHERS[name] || name }),
       unlocked: this.page.locator('.band-unlocked').getByRole('button', { name }),
     };
   }
@@ -187,3 +196,29 @@ export default class Game {
     }
   }
 }
+
+const FRIEND_MATCHERS = {
+  "Anvilomancer": /Anvilomancer|Anvilominator/,
+  "Coldblade": /Coldblade|Hotblade/,
+  "Dark Chef": /Dark Chef|Dark Sommelier/,
+  "Desert Rabbit": /Desert Rabbit|Desert Armadillo/,
+  "Friend of Metal": /Friend of Metal|Friend of Metal and Fire/,
+  "Lamplighter": /Lamplighter|Lamperlighter/,
+  "Royal Fruitbearer": /Royal Fruitbearer|Royal Fruitwearer/,
+  "Stick Master": /Stick Master|Stick Grandmaster/,
+  "The Silent Song": /The Silent Song|The Silent Quartet/,
+  "Lord of Gears": /Lord of Gears|Gear of Lords/,
+  "Pur Lion": /Pur Lion|Sir Pur Lion/,
+  "Kit Flash": /Kit Flash|Kit Storming/,
+  "Wayfinder": /Wayfinder|Wayfindest/,
+  "Bayla": /Bayla|Baylanda/,
+  "Kin of Pump": /Kin of Pump|King of Pump/,
+  "Kevin": /Kevin|Kevout/,
+  "Smiling Pilot": /Smiling Pilot|Smiling Wizard/,
+  "Mongreler": /Mongreler|Monster Juggler/,
+  "Eighth Swimmer": /Eighth Swimmer|Seventh Swimmer/,
+  "Pecquer": /Pecquer|Le Pecquer/,
+  "Hedge Lost": /Hedge Lost|Hedge Found/,
+  "Zaktar Kadoque": /Zaktar Kadoque|Zaktar Kadoque Karr/,
+  "Xaranthian Constructor": /Xaranthian Constructor|Xaranthian Power Constructor/,
+};
