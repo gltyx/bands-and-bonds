@@ -43,7 +43,7 @@ function mainLoop() {
     }
     if (t.time >= t.duration) {
       delete store.run.timers[key];
-      t.cb?.(t);
+      store.timerCallbacks[key]?.(key);
     }
   }
   if (enemy && store.run.room.damage < enemy.health) {

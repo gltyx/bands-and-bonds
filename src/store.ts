@@ -98,6 +98,7 @@ export const store: base.Store = {
   run: runData,
   local: localData,
   team: teamData,
+  timerCallbacks: {},
   currentRoom() {
     return current.value.room ?? allRooms[0];
   },

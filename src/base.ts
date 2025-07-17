@@ -1,7 +1,6 @@
 export type Timer = {
   time?: number;
   duration: number;
-  cb?: (timer: Timer) => void;
 };
 
 export type Band = {
@@ -75,6 +74,7 @@ export type Store = {
   run: RunData;
   local: LocalData;
   team: TeamData;
+  timerCallbacks: Record<string, (key: string) => void>;
   currentEnemy: () => Enemy | undefined;
   currentRoom: () => Room;
   currentPath: () => Room[];

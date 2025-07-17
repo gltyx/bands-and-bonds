@@ -23,12 +23,10 @@ function done() {
 function start() {
   if (!affordable.value || running.value) return;
   if (!props.duration) return;
-  if (store.run.timers[props.timerKey]) {
-    store.run.timers[props.timerKey].cb = done;
-  } else {
+  if (!store.run.timers[props.timerKey]) {
     store.run.gold -= props.cost.gold || 0;
     store.run.fruit -= props.cost.fruit || 0;
-    store.run.timers[props.timerKey] = { duration: props.duration, cb: done };
+    store.run.timers[props.timerKey] = { duration: props.duration };
   }
 }
 function style() {
@@ -65,11 +63,13 @@ const running = computed(() => {
   return !!store.run.timers[props.timerKey];
 });
 onMounted(() => {
+  store.timerCallbacks[props.timerKey] = done;
   if (props.autostart) {
     start();
   }
 });
 onUnmounted(() => {
+  delete store.timerCallbacks[props.timerKey];
   if (store.run.timers[props.timerKey]) {
     delete store.run.timers[props.timerKey];
     // Refund price.
