@@ -470,13 +470,7 @@ test('playthrough', async ({ page }) => {
     await game.addToBand('Kin of Pump');
   });
   await game.run(2, fruitRun);
-  console.log(`Total clicks: ${game.totalClicks}`);
-  await game.saveState('last state.json');
-});
-test('next steps', async ({ page }) => {
-  const game = new Game(page);
-  await game.setup();
-  await game.loadState('last state.json');
+
 
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
@@ -518,6 +512,14 @@ test('next steps', async ({ page }) => {
     await game.clickButton('Keep going');
     await game.rescue('Kevin');
   });
+
+  console.log(`Total clicks: ${game.totalClicks}`);
+  await game.saveState('last state.json');
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
 
   // // Ramp up best weapon level.
   // await game.manageBand(async () => {
@@ -575,18 +577,12 @@ test('next steps', async ({ page }) => {
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
     await game.waitToDefeatEnemy("Striped Horror")
-    await game.clickButton('Keep going');
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("Dragonfly Agaric");
-    await game.clickButton('Keep going');
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("Artifact Seeker")
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("Golden Chest")
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("King of Tadpoles")
   }
-  await game.run(fruitRun);
+  await game.run(2, fruitRun);
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+  });
   return;
 
   await game.manageBand(async () => {

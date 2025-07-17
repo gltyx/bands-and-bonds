@@ -54,14 +54,13 @@ function retreat() {
   if (store.run.fruit) {
     store.team.fruit += store.run.fruit;
   }
+  if (store.weaponLevel() > store.team.bestWeaponLevel) {
+    store.team.bestWeaponLevel = store.weaponLevel();
+  }
   const capturedMonsters = store.run.capturedMonsters;
   Object.assign(store.run, startingRunData());
   if (onboard("Monster Juggler")) {
     store.run.capturedMonsters = capturedMonsters;
-  }
-  for (const friend in store.bandByName()) {
-    const f = friendsByName[friend];
-    f.onAdded?.(store);
   }
 }
 const KEEP_GOING: Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };

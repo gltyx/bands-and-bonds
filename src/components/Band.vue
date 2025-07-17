@@ -16,13 +16,6 @@ function imageFor(row: number, col: number): string | undefined {
   return `images/generated/${imageName}.webp`;
 }
 function remove(key: number) {
-  const name = store.local.band[key];
-  const friend = friendsByName[name];
-  if (friend.super?.name && onboard(friend.super.name)) {
-    friend.super.onRemoved?.(store);
-  } else {
-    friend.onRemoved?.(store);
-  }
   delete store.local.band[key];
 }
 function canSet(name: string): boolean {
@@ -42,12 +35,6 @@ function set(row: number, col: number, name: string) {
     store.local.band[col + row * store.local.band.width] = name;
   } else if (store.team.packs >= packsSpent.value + cost && store.available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
-    const friend = friendsByName[name];
-    if (friend.super?.name && onboard(friend.super.name)) {
-      friend.super.onAdded?.(store);
-    } else {
-      friend.onAdded?.(store);
-    }
   }
 }
 function clear(row: number, col: number) {

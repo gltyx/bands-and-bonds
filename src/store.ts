@@ -24,7 +24,7 @@ export function startingRoomData(): base.RoomData {
 export function startingRunData(): base.RunData {
   // Everything specific to the current run. Deleted when the run ends.
   return {
-    weaponLevel: 1,
+    weaponLevelAdded: 0,
     desertBlessingMultiplier: 2,
     speedLevel: 1,
     steps: 0,
@@ -166,6 +166,15 @@ export const store: base.Store = {
   abilityEffects(ab) {
     return abilityEffects(ab);
   },
+  weaponLevel() {
+    if (onboard("Anvilominator")) {
+      return store.team.bestWeaponLevel + store.run.weaponLevelAdded;
+    }
+    if (onboard("Anvilomancer")) {
+      return Math.floor(Math.sqrt(store.team.bestWeaponLevel)) + store.run.weaponLevelAdded;
+    }
+    return 1;
+  },
 }
 
 const lightRadius = computed(() => {
@@ -294,7 +303,7 @@ export function abilityEffects(ab: base.Ability): base.AbilityEffects {
     hitChance *= 0.1;
   }
   let mult = 1;
-  mult *= store.run.weaponLevel;
+  mult *= store.weaponLevel();
   if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
     mult *= 2;
   }

@@ -28,7 +28,7 @@ export type RoomData = {
 };
 export type RunData = {
   // Everything specific to the current run. Deleted when the run ends.
-  weaponLevel: number;
+  weaponLevelAdded: number;
   speedLevel: number;
   desertBlessingMultiplier: number;
   steps: number;
@@ -89,6 +89,7 @@ export type Store = {
   takeTurn: (turn: string) => void;
   fruitMultiplier: () => number;
   abilityEffects: (ab: Ability) => AbilityEffects;
+  weaponLevel: () => number;
 };
 
 export type Turn = {
@@ -130,8 +131,6 @@ export type Friend = {
   super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;
   passiveEffects?: string[];
-  onAdded?: (store: Store) => void;
-  onRemoved?: (store: Store) => void;
 }
 
 export type Enemy = {

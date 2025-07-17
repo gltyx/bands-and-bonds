@@ -13,10 +13,10 @@ const lastRegenTime = ref(performance.now());
 const lastSaplingTime = ref(performance.now());
 
 type SelectedPage = 'combat' | 'map' | 'band' | 'settings';
-const loadedPage = localStorage.getItem('current page') as SelectedPage;
+const loadedPage = localStorage.getItem('bnb-current-page') as SelectedPage;
 const page = ref<SelectedPage>(loadedPage ?? 'combat');
 watch(page, (newValue) => {
-  localStorage.setItem('current page', newValue);
+  localStorage.setItem('bnb-current-page', newValue);
 });
 
 function mainLoop() {

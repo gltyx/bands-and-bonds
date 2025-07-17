@@ -19,12 +19,9 @@ The starting weapon level is the square root of the highest level achieved.
       name: "Forge",
       duration: 5,
       consumes: { gold: 1 },
-      description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
+      description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.weaponLevel())}.)`,
       onCompleted(store) {
-        store.run.weaponLevel += 1;
-        if (store.run.weaponLevel > store.team.bestWeaponLevel) {
-          store.team.bestWeaponLevel = store.run.weaponLevel;
-        }
+        store.run.weaponLevelAdded += 1;
       },
       peaceful: true,
     }, {
@@ -40,12 +37,6 @@ The starting weapon level is the square root of the highest level achieved.
           store.run.room.armorDamage + e.damageMultiplier);
       },
     }],
-    onAdded(store) {
-      store.run.weaponLevel = Math.max(store.run.weaponLevel, Math.floor(Math.sqrt(store.team.bestWeaponLevel)));
-    },
-    onRemoved(store) {
-      store.run.weaponLevel = 1;
-    },
     super: {
       name: 'Anvilominator',
       description: `
@@ -57,12 +48,9 @@ The starting weapon level is the highest level achieved.
         name: "Forge",
         duration: 5,
         consumes: { gold: 5 },
-        description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.run.weaponLevel)}.)`,
+        description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.weaponLevel())}.)`,
         onCompleted(store) {
-          store.run.weaponLevel += 10;
-          if (store.run.weaponLevel > store.team.bestWeaponLevel) {
-            store.team.bestWeaponLevel = store.run.weaponLevel;
-          }
+          store.run.weaponLevelAdded += 10;
         },
         peaceful: true,
       },
@@ -80,12 +68,6 @@ The starting weapon level is the highest level achieved.
           );
         },
       }],
-      onAdded(store) {
-        store.run.weaponLevel = store.team.bestWeaponLevel;
-      },
-      onRemoved(store) {
-        store.run.weaponLevel = 1;
-      },
     },
   },
   {
@@ -322,9 +304,9 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       abilities: [{
         name: "Snatch",
         duration: 2.5,
-        description: (store) => `Steals ${store.run.weaponLevel > 1 ? `${store.run.weaponLevel} pieces` : 'a piece'} of gold.`,
+        description: (store) => `Steals ${store.weaponLevel() > 1 ? `${store.weaponLevel()} pieces` : 'a piece'} of gold.`,
         onCompleted(store) {
-          store.run.gold += store.run.weaponLevel;
+          store.run.gold += store.weaponLevel();
         },
       }],
     },
@@ -610,7 +592,7 @@ He is particularly interested in the fruit you're holding.
       consumes: { fruit: 1 },
       description: 'Do you have too much fruit? Zaktar Kadoque can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
       onCompleted(store) {
-        store.run.weaponLevel += 1;
+        store.run.weaponLevelAdded += 1;
       },
       peaceful: true,
     }],
@@ -620,10 +602,10 @@ He is particularly interested in the fruit you're holding.
       abilities: [{
         name: "Eat Fruit",
         duration: 1,
-        consumes: (store) => ({ fruit: store.run.weaponLevel }),
+        consumes: (store) => ({ fruit: store.weaponLevel() }),
         description: 'Do you have too much fruit? Zaktar Kadoque Karr can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
         onCompleted(store) {
-          store.run.weaponLevel *= 2;
+          store.run.weaponLevelAdded += store.weaponLevel();
         },
         peaceful: true,
       }],
