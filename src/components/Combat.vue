@@ -10,6 +10,7 @@ import { destinationToPath, roomKey } from "../rooms.ts";
 import EnemyRewards from "./EnemyRewards.vue";
 import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
+import Num from "./Num.vue";
 import Victory from "./Victory.vue";
 
 const enemy = computed(() => store.currentEnemy());
@@ -154,7 +155,7 @@ const passiveEffects = computed(() => {
 function nth(n: number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
-  return `${n}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
+  return `${numberFormat(n)}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
 }
 
 const rescuedFriend = computed(() => {
@@ -207,9 +208,10 @@ for (const url of [
     <template v-if="enemy.count && enemy.count > 1">
       <div class="description" v-if="store.run.room.kills < enemy.count">Currently fighting the
         <span class="numbers" v-html="nth(store.run.room.kills + 1)" /> of
-        <span class="numbers">{{ enemy.count }}</span>
+        <Num :amount="enemy.count" />
       </div>
-      <div class="description" v-else>Defeated {{ enemy.count }} enemies! You gained
+      <div class="description" v-else>Defeated
+        <Num :amount="enemy.count" /> enemies! You gained
         <EnemyRewards :enemy="enemy" />.
       </div>
     </template>

@@ -513,6 +513,36 @@ test('playthrough', async ({ page }) => {
     await game.rescue('Kevin');
   });
 
+  await game.manageBand(async () => {
+    await game.removeFromBand('Lamplighter');
+    await game.addToBand('Lamplighter');
+    await game.addToBand('Stick Master');
+    await game.addToBand('Lord of Gears');
+    await game.addToBand('Anvilomancer');
+    await game.addToBand('The Silent Song');
+    await game.addToBand('Azrekta');
+    await game.addToBand('Royal Fruitbearer', 8);
+  });
+  async function fruitRunShort() {
+    await game.waitToDefeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.waitToDefeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn right');
+    await game.waitToDefeatEnemy('Frozen Centurion');
+    await game.clickButton('Keep going');
+    await game.clickButton('Turn right');
+    await game.waitToDefeatEnemy('Geckalog');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy('Jaw Maw Maw');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Decay Manifest");
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Striped Horror")
+  }
+  await game.run(2, fruitRunShort);
+
   console.log(`Total clicks: ${game.totalClicks}`);
   await game.saveState('last state.json');
 });
@@ -549,40 +579,6 @@ test('next steps', async ({ page }) => {
   //   await expect(game.button('Forge')).toHaveClass('disabled')
   // });
 
-  await game.manageBand(async () => {
-    await game.removeFromBand('Lamplighter');
-    await game.addToBand('Lamplighter');
-    await game.addToBand('Stick Master');
-    await game.addToBand('Lord of Gears');
-    await game.addToBand('Anvilomancer');
-    await game.addToBand('The Silent Song');
-    await game.addToBand('Azrekta');
-    await game.addToBand('Royal Fruitbearer', 8);
-  });
-
-  async function fruitRun() {
-    await game.waitToDefeatEnemy('Wild Slime');
-    await game.clickButton('Keep going');
-    await game.clickButton('Go straight');
-    await game.waitToDefeatEnemy('Dead Gladiator');
-    await game.clickButton('Turn right');
-    await game.defeatEnemy('Frozen Centurion');
-    await game.clickButton('Keep going');
-    await game.clickButton('Turn right');
-    await game.waitToDefeatEnemy('Geckalog');
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy('Jaw Maw Maw');
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("Decay Manifest");
-    await game.clickButton('Keep going');
-    await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy("Striped Horror")
-  }
-  await game.run(2, fruitRun);
-  await game.manageBand(async () => {
-    await game.removeFromBand('Lamplighter');
-    await game.addToBand('Lamplighter');
-  });
   return;
 
   await game.manageBand(async () => {
