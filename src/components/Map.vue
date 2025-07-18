@@ -90,7 +90,7 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
         ethereal: hoveredRoom.type !== 'rescue' && hoveredEnemy?.ethereal
       }" :src="`images/generated/${hoveredRoom.name}.webp`" :alt="hoveredRoom.name" />
       <h1>{{ hoveredRoom.name }}</h1>
-      <p v-if="hoveredEnemy && onboard('Wayfinder')">
+      <p v-if="hoveredEnemy && store.team.unlocked.includes('Wayfinder')">
         <template v-if="hoveredEnemy.count">
           <Num :amount="hoveredEnemy.count">×</Num>&nbsp;
         </template>
