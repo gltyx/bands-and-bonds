@@ -31,8 +31,8 @@ export const allEnemies: Enemy[] = [
   { name: "Defensive Installation", health: 1_000_000, armor: 1_000, rewards: { gold: 6_000 }, weaknesses: ["blunt", "front"] },
   { name: "Tenebra", health: 300_000, ethereal: true, rewards: {}, weaknesses: ["fire", "front"] },
   { name: "Landas Wizard", health: 320_000, dodge: 1, rewards: { gold: 200, fruit: 100 }, weaknesses: ["water", "back"] },
-  { name: "Crystal Man", health: 600, dodge: 0.01, rewards: { gold: 2000, fruit: 1200 }, weaknesses: ["blunt", "ice"] },
-  { name: "Power Crystal", health: 1, armor: 100_000, rewards: { fruit: 1_000_000 }, weaknesses: ["blunt"] },
+  { name: "Crystal Man", health: 600, dodge: 0.01, rewards: { gold: 2000, fruit: 500 }, weaknesses: ["blunt", "ice"] },
+  { name: "Power Crystal", health: 1, armor: 100_000, rewards: { fruit: 10_000 }, weaknesses: ["blunt"] },
 
   { name: "Frozen Centurion", health: 200, dodge: 10, rewards: { gold: 3, fruit: 10 }, immune: ["ice"], weaknesses: ["fire", "front"] },
   { name: "Trollish Maiden", health: 1000, regen: 100, rewards: { gold: 8, fruit: 10 }, passiveEffects: ["The Trollish Maiden heals quickly."] },
