@@ -39,8 +39,9 @@ function mainLoop() {
     if (key === 'ability-Running Start' || key === 'celebrating' || key === 'rescue-unlock' || key === 'wayfinder-turn') {
       t.time += Math.floor(deltaTime);
     } else {
-      // Restrict speed level to 1000 for now.
-      t.time += Math.floor(deltaTime * Math.min(1000, store.run.speedLevel));
+      t.time += Math.floor(deltaTime * store.run.speedLevel);
+      // Avoid triggering the timer more than once per millisecond.
+      t.time = Math.min(t.time, t.duration * deltaTime);
     }
     while (store.run.timers[key] && t.time >= t.duration) {
       // Fire multiple times if it's automatic and we have exceeded the duration multiple times.

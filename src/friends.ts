@@ -304,7 +304,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       abilities: [{
         name: "Snatch",
         duration: 2.5,
-        description: (store) => `Steals ${store.weaponLevel() > 1 ? `${store.weaponLevel()} pieces` : 'a piece'} of gold.`,
+        description: (store) => `Steals ${store.weaponLevel() > 1 ? `${numberSpan(store.weaponLevel())} pieces` : 'a piece'} of gold.`,
         onCompleted(store) {
           store.run.gold += store.weaponLevel();
         },
