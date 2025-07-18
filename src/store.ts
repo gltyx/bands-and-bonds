@@ -1,6 +1,6 @@
-import { computed, reactive, watch } from 'vue';
-import { allRooms, turnsToPath, roomKey } from './rooms.ts';
-import { allEnemies } from './enemies.ts';
+import { computed, reactive, ref, watch } from 'vue';
+import { allRooms, turnsToPath, roomKey, destinationToPath } from './rooms.ts';
+import { allEnemies, enemiesByName } from './enemies.ts';
 import { friendsByName } from './friends.ts';
 import * as base from './base';
 import * as online from './online.ts';
@@ -98,7 +98,19 @@ export const store: base.Store = {
   run: runData,
   local: localData,
   team: teamData,
-  timerCallbacks: {},
+  startTimer(key: string, t: base.Timer) {
+    if (store.run.timers[key]) return; // Already started.
+    const cost = t.cost ?? {};
+    cost.gold ??= 0;
+    cost.fruit ??= 0;
+    if (store.run.gold < cost.gold || store.run.fruit < cost.fruit) return; // Not enough resources.
+    store.run.gold -= cost.gold || 0;
+    store.run.fruit -= cost.fruit || 0;
+    store.run.timers[key] = t;
+  },
+  timerFinished(key: string, t: base.Timer) {
+    timerFinished(key, t);
+  },
   currentRoom() {
     return current.value.room ?? allRooms[0];
   },
@@ -353,6 +365,106 @@ export function getAbilityBaseDamage(ab: base.Ability): number {
   return dmg;
 }
 
+function timerFinished(key: string, timer: base.Timer) {
+  delete store.run.timers[key];
+  if (key === 'rescue-unlock') {
+    unlockRescue();
+  } else if (key === 'wayfinder-turn' && plannedTurn.value?.title) {
+    takePlannedTurn(plannedTurn.value.title);
+  } else if (key.startsWith('ability-')) {
+    const ab = abilities.value.find(a => `ability-${a.name}` === key);
+    if (ab) {
+      executeAbility(ab);
+    }
+    if (timer.automatic) store.startTimer(key, timer);
+  } else if (key.startsWith('monster-')) {
+    const m = /monster-(.*)-ability-(.*)/.exec(key);
+    if (!m) return;
+    const [, monster, abilityName] = m;
+    const ab = enemiesByName[monster]?.abilities?.find(a => a.name === abilityName);
+    if (ab) {
+      executeAbility(ab);
+    }
+    if (timer.automatic) store.startTimer(key, timer);
+  }
+}
+
+export const KEEP_GOING: base.Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
+export const plannedTurn = computed(() => {
+  const wf = onboard("Wayfinder");
+  if (store.run.steps === 0 || !wf || !store.local.destination) return;
+  const room = store.currentRoom();
+  if (roomKey(room) === store.local.destination && wf.row < 2) {
+    return { title: 'Retreat', description: 'The Wayfinder leads you back to the beginning.' };
+  }
+  if (room.end) return;
+  const path = destinationToPath(store.local.destination);
+  if (path.length <= store.run.steps + 1) return;
+  if (!room.next) return roomKey(room) === roomKey(path[store.run.steps]) ? KEEP_GOING : undefined;
+  const nextRoom = path[store.run.steps + 1];
+  for (const [title, next] of Object.entries(room.next)) {
+    if (nextRoom.label === next.label) {
+      return { title, description: next.description };
+    }
+  }
+});
+function takePlannedTurn(turn: string) {
+  if (turn === 'Retreat') {
+    retreat();
+    store.run.steps += 1; // Get started on the next run immediately.
+  } else {
+    store.takeTurn(turn);
+  }
+}
+
+export function retreat() {
+  if (store.run.fruit) {
+    store.team.fruit += store.run.fruit;
+  }
+  if (store.weaponLevel() > store.team.bestWeaponLevel) {
+    store.team.bestWeaponLevel = store.weaponLevel();
+  }
+  const capturedMonsters = store.run.capturedMonsters;
+  Object.assign(store.run, startingRunData());
+  if (onboard("Monster Juggler")) {
+    store.run.capturedMonsters = capturedMonsters;
+  }
+}
+
+export const abilities = computed(() => {
+  const abilities = [] as base.Ability[];
+  const allAutomatic = !!onboard('Gear of Lords');
+  const band = store.local.band;
+  for (let row = 0; row < band.height; row++) {
+    for (let col = 0; col < band.width; col++) {
+      const place = col + row * band.width;
+      const friend = friendsByName[band[place]];
+      if (!friend) continue;
+      const automatic = allAutomatic || !!nextTo('Lord of Gears', row, col);
+      const az = nextTo('Azrekta', row, col);
+      const abs = (az && friend.super?.abilities) || friend.abilities || [];
+      for (const ab of abs) {
+        if (ab.hidden?.(store)) continue;
+        abilities.push({ ...ab, automatic, source: { name: friend.name, row, col } });
+      }
+    }
+  }
+  return abilities;
+});
+
+function executeAbility(ab: base.Ability) {
+  if (ab.onCompleted) {
+    return ab.onCompleted(store, ab);
+  }
+  if (ab.damage) {
+    const e = abilityEffects(ab);
+    if (Math.random() < e.hitChance) {
+      const dmg = getAbilityBaseDamage(ab);
+      store.addDamage(Math.floor(dmg * e.damageMultiplier));
+    }
+  }
+}
+
 export const bandByName = computed(() => {
   const byName = {} as Record<string, { row: number, col: number }>;
   for (let row = 0; row < store.local.band.height; row++) {
@@ -393,3 +505,27 @@ export function onboard(name: string): { row: number, col: number } | undefined 
   const sup = friendsByName[name].super?.name;
   return bandByName.value[name] || sup && bandByName.value[sup];
 }
+
+export const rescuedFriend = computed(() => {
+  const room = store.currentRoom();
+  if (room?.type === 'rescue' && room.name) {
+    return friendsByName[room.name];
+  }
+});
+export const rescueAvailable = computed(() => {
+  const friend = rescuedFriend.value;
+  return friend && !store.team.unlocked.includes(friend.name);
+});
+export const justRescued = ref<base.Friend | null>(null);
+function unlockRescue() {
+  const friend = rescuedFriend.value;
+  if (!friend) return;
+  if (store.team.unlocked.includes(friend.name)) return;
+  store.team.unlocked.push(friend.name);
+  justRescued.value = friend;
+}
+watch(() => store.run.steps, () => {
+  if (justRescued.value && store.currentRoom().name !== justRescued.value.name) {
+    justRescued.value = null;
+  }
+});

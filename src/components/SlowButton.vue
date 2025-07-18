@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch, type PropType } from 'vue';
-import { store } from '../store.ts';
 import { marked } from 'marked';
-import Gold from './Gold.vue';
+import { computed, onUnmounted, ref, watch, type PropType } from 'vue';
+import { store } from '../store.ts';
 import Fruit from './Fruit.vue';
+import Gold from './Gold.vue';
 const props = defineProps({
-  timerKey: { type: String, required: true },
+  timerKey: { type: String, required: false },
   title: { type: String, required: true },
   image: { type: String, required: true },
   duration: { type: Number, required: false },
@@ -13,27 +13,16 @@ const props = defineProps({
   autostart: { type: Boolean, default: false },
   cost: { type: Object as PropType<{ gold?: number; fruit?: number }>, default: () => ({}) },
 });
-const emit = defineEmits(['done']);
-function done() {
-  emit('done');
-  if (props.autostart || pointerDown.value) {
-    start();
-  }
-}
 function start() {
-  if (!affordable.value || running.value) return;
-  if (!props.duration) return;
-  if (!store.run.timers[props.timerKey]) {
-    store.run.gold -= props.cost.gold || 0;
-    store.run.fruit -= props.cost.fruit || 0;
-    store.run.timers[props.timerKey] = {
-      duration: props.duration,
-      automatic: props.cost,
-    };
-  }
+  if (!props.timerKey || !props.duration) return;
+  store.startTimer(props.timerKey, {
+    duration: props.duration,
+    cost: props.cost,
+    automatic: props.autostart || pointerDown.value,
+  });
 }
 function style() {
-  if (!props.duration) {
+  if (!props.duration || !props.timerKey) {
     return {};
   }
   if (!store.run.timers[props.timerKey]) {
@@ -62,25 +51,25 @@ watch(affordable, (newVal) => {
     start();
   }
 });
+if (props.autostart && affordable.value) {
+  start();
+}
 const running = computed(() => {
-  return !!store.run.timers[props.timerKey];
+  return props.timerKey && !!store.run.timers[props.timerKey];
 });
-onMounted(() => {
-  store.timerCallbacks[props.timerKey] = done;
-  if (props.autostart) {
-    start();
-  }
+const pointerDown = ref(false);
+watch(pointerDown, (newVal) => {
+  if (!props.timerKey || props.autostart || !store.run.timers[props.timerKey]) return;
+  store.run.timers[props.timerKey].automatic = newVal;
 });
 onUnmounted(() => {
-  delete store.timerCallbacks[props.timerKey];
-  if (store.run.timers[props.timerKey]) {
+  if (props.timerKey && store.run.timers[props.timerKey]) {
     delete store.run.timers[props.timerKey];
     // Refund price.
     store.run.gold += props.cost.gold ?? 0;
     store.run.fruit += props.cost.fruit ?? 0;
   }
 });
-const pointerDown = ref(false);
 </script>
 
 <template>

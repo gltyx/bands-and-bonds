@@ -1,7 +1,8 @@
 export type Timer = {
   time?: number;
   duration: number;
-  automatic?: { gold?: number; fruit?: number };
+  cost?: { gold?: number; fruit?: number };
+  automatic?: boolean;
 };
 
 export type Band = {
@@ -75,7 +76,8 @@ export type Store = {
   run: RunData;
   local: LocalData;
   team: TeamData;
-  timerCallbacks: Record<string, (key: string) => void>;
+  startTimer: (key: string, timer: Timer) => void;
+  timerFinished: (key: string, timer: Timer) => void;
   currentEnemy: () => Enemy | undefined;
   currentRoom: () => Room;
   currentPath: () => Room[];

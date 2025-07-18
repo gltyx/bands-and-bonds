@@ -42,21 +42,10 @@ function mainLoop() {
       // Restrict speed level to 1000 for now.
       t.time += Math.floor(deltaTime * Math.min(1000, store.run.speedLevel));
     }
-    if (t.time >= t.duration) {
-      // Fire the callback.
-      t.time -= t.duration;
-      delete store.run.timers[key];
-      store.timerCallbacks[key]?.(key);
-    }
-    while (
-      t.automatic && t.time >= t.duration &&
-      store.run.gold >= (t.automatic.gold ?? 0) && store.run.fruit >= (t.automatic.fruit ?? 0)) {
+    while (store.run.timers[key] && t.time >= t.duration) {
       // Fire multiple times if it's automatic and we have exceeded the duration multiple times.
       t.time -= t.duration;
-      // Deduct the cost for these extra runs.
-      store.run.gold -= t.automatic.gold ?? 0;
-      store.run.fruit -= t.automatic.fruit ?? 0;
-      store.timerCallbacks[key]?.(key);
+      store.timerFinished(key, t);
     }
   }
   if (enemy && store.run.room.damage < enemy.health) {

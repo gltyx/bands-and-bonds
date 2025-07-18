@@ -225,8 +225,8 @@ const enabled = computed(() => {
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
-        <SlowButton :timer-key="`ability-${ab.name}`" :title="ab.name" :description="describeAbility(ab)"
-          :image="`images/generated/${ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityPrice(ab)" />
+        <SlowButton :title="ab.name" :description="describeAbility(ab)" :image="`images/generated/${ab.name}.webp`"
+          v-if="!ab.hidden?.(store)" :cost="abilityPrice(ab)" />
       </template>
     </div>
   </div>
