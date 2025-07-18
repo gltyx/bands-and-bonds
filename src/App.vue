@@ -39,7 +39,8 @@ function mainLoop() {
     if (key === 'ability-Running Start' || key === 'celebrating' || key === 'rescue-unlock' || key === 'wayfinder-turn') {
       t.time += Math.floor(deltaTime);
     } else {
-      t.time += Math.floor(deltaTime * store.run.speedLevel);
+      // Restrict speed level to 1000 for now.
+      t.time += Math.floor(deltaTime * Math.min(1000, store.run.speedLevel));
     }
     if (t.time >= t.duration) {
       // Fire the callback.
