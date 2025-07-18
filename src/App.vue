@@ -21,13 +21,22 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
+  // Spend at most 200 ms wall time catching up in chunks of 100 ms game time.
+  let k = 0;
+  while (lastFrameTime.value < currentTime && performance.now() < currentTime + 200) {
+    runTo(Math.min(lastFrameTime.value + 100, currentTime));
+    k++;
+  }
+  if (k > 1) console.log(`Caught up ${k} frames.`);
+  animationFrameId.value = requestAnimationFrame(mainLoop);
+}
+function runTo(currentTime: number) {
   let baseTime = currentTime;
   if (store.run.skipTime) {
     baseTime += store.run.skipTime;
     store.run.skipTime = 0;
   }
   let deltaTime = baseTime - lastFrameTime.value;
-  if (deltaTime > 100) { console.log('catching up:', deltaTime); }
   const multiplier = window.location.search.includes("test") ? 100 : 1;
   deltaTime *= multiplier;
   const enemy = store.currentEnemy();
@@ -73,7 +82,6 @@ function mainLoop() {
     lastSaplingTime.value = currentTime;
   }
   lastFrameTime.value = currentTime;
-  animationFrameId.value = requestAnimationFrame(mainLoop);
 }
 
 const fruit = computed(() => store.team.fruit + store.run.fruit - costOfPacks(store.team.packs));
