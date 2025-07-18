@@ -135,7 +135,7 @@ for (const url of [
   <div class="rescue" v-if="st.justRescued.value">
     <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name" />
     <h1>{{ st.justRescued.value?.name }}</h1>
-    <p class="description" style="margin-top: 0;">has joined you!</p>
+    <p class="description" style="margin-top: 0;">is now free!</p>
     <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
   </div>
   <div class="scene" v-else-if="st.rescueAvailable.value">

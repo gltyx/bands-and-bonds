@@ -205,7 +205,7 @@ const enabled = computed(() => {
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <p v-if="!enabled" class="description" style="color: #edb; margin-bottom: 0;">
-    You cannot change your band now. Enemies are nearby. Retreat to a safe place to make changes.
+    You cannot change your band now. The dungeon is dangerous. Retreat to a safe place to make changes.
   </p>
   <div class="below-grid">
     <div class="band-unlocked" v-show="unusedFriends.length > 0">
