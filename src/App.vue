@@ -36,7 +36,7 @@ function mainLoop() {
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    if (key === 'ability-Running Start' || key === 'celebrating') {
+    if (key === 'ability-Running Start' || key === 'celebrating' || key === 'rescue-unlock' || key === 'wayfinder-turn') {
       t.time += Math.floor(deltaTime);
     } else {
       t.time += Math.floor(deltaTime * store.run.speedLevel);

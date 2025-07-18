@@ -471,7 +471,6 @@ test('playthrough', async ({ page }) => {
   });
   await game.run(2, fruitRun);
 
-
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
     await game.addToBand('Lamplighter');
@@ -496,7 +495,8 @@ test('playthrough', async ({ page }) => {
     await game.clickButton('Turn left');
     await game.waitToDefeatEnemy('Glass Dragon');
     await game.clickButton('Keep going');
-    await game.clickButton('Sneak Past');
+    await game.waitToDefeatEnemy('Xaranthian Construct');
+    await game.clickButton('Keep going');
     await game.clickButton('Go straight');
     await game.clickButton('Go straight');
     await game.clickButton('Go straight');
@@ -508,8 +508,7 @@ test('playthrough', async ({ page }) => {
     await game.clickButton('Turn left');
     await game.waitToDefeatEnemy("Chago's Chamber");
     await game.clickButton('Keep going');
-    await game.waitToDefeatEnemy('Chago');
-    await game.clickButton('Keep going');
+    await game.clickButton('Sneak Past');
     await game.rescue('Kevin');
   });
 
@@ -593,14 +592,6 @@ test('playthrough', async ({ page }) => {
     await game.rescue('Xaranthian Constructor');
   });
 
-  console.log(`Total clicks: ${game.totalClicks}`);
-  await game.saveState('last state.json');
-});
-test('next steps', async ({ page }) => {
-  const game = new Game(page);
-  await game.setup();
-  await game.loadState('last state.json');
-
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');
     await game.addToBand('Lamplighter');
@@ -673,12 +664,20 @@ test('next steps', async ({ page }) => {
     await game.clickButton('Keep going');
     await game.waitToDefeatEnemy("Hiber Conduit");
     await game.clickButton('Keep going');
-    await game.xaranthianDefeatEnemy("Core Diver", 60);
+    await game.xaranthianDefeatEnemy("Core Diver", 30);
     await game.clickButton('Keep going');
-    await game.xaranthianDefeatEnemy("Smother Mother", 70);
+    await game.xaranthianDefeatEnemy("Smother Mother", 40);
     await game.clickButton('Keep going');
-    await game.xaranthianDefeatEnemy("The Final Warden", 100);
+    await game.xaranthianDefeatEnemy("The Final Warden", 50);
     await game.clickButton('Keep going');
-    await game.xaranthianDefeatEnemy("Skelemasterion", 1000);
+    await game.xaranthianDefeatEnemy("Skelemasterion", 500);
   });
+
+  console.log(`Total clicks: ${game.totalClicks}`);
+  await game.saveState('last state.json');
+});
+test('next steps', async ({ page }) => {
+  const game = new Game(page);
+  await game.setup();
+  await game.loadState('last state.json');
 });

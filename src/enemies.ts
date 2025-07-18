@@ -23,7 +23,7 @@ export const allEnemies: Enemy[] = [
   { name: "Lior the Weaver", health: 160_000, armor: 1, dodge: 0.1, rewards: { gold: 200, fruit: 110 }, weaknesses: ["sharp", "fire"] },
   { name: "Skeletron", health: 100_000, armor: 200, rewards: { gold: 100 }, weaknesses: ["blunt", "back"], },
   { name: "Chago's Chamber", health: 600_000, armor: 1000, rewards: { gold: 200 }, weaknesses: ["blunt", "water"] },
-  { name: "Chago", health: 140_000, armor: 25_000, rewards: { fruit: 120 }, weaknesses: ["blunt", "water"] },
+  { name: "Chago", health: 140_000, armor: 25_000, rewards: { fruit: 120 }, dodge: 1, weaknesses: ["blunt", "water"] },
   { name: "Door of Loathing", health: 1_000_000, armor: 10_000, immune: ['sharp', 'blunt'], rewards: { gold: 200 }, weaknesses: ["ice", "light"] },
   { name: "Zakatrixos", health: 120_000, ethereal: true, rewards: {} },
   { name: "Wands from the Depths", health: 600_000, armor: 24_000, rewards: { gold: 200, fruit: 40 }, immune: ["water"], weaknesses: ["ice"] },
@@ -43,11 +43,11 @@ export const allEnemies: Enemy[] = [
   { name: "Geckalog", health: 80_000, rewards: { gold: 80, fruit: 15 }, weaknesses: ["ice", "left"] },
   { name: "Jaw Maw Maw", health: 60_000, regen: 60, rewards: { gold: 60, fruit: 16 }, passiveEffects: ["Jaw Maw Maw heals quickly."] },
   { name: "Decay Manifest", health: 120_000, rewards: { gold: 20, fruit: 19 }, weaknesses: ["fire", "right"] },
-  { name: "Striped Horror", health: 200_000, dodge: 10, rewards: { gold: 10, fruit: 10 } },
-  { name: "Dragonfly Agaric", health: 600_000, rewards: { gold: 20, fruit: 40 }, immune: ["poison"], weaknesses: ["fire", "left"] },
-  { name: "Artifact Seeker", health: 70_000, dodge: 2, rewards: { gold: 2000, fruit: 60 }, weaknesses: ["ice", "fire", "water"] },
+  { name: "Striped Horror", health: 200_000, dodge: 10, rewards: { gold: 10, fruit: 20 } },
+  { name: "Dragonfly Agaric", health: 600_000, rewards: { gold: 20, fruit: 60 }, immune: ["poison"], weaknesses: ["fire", "left"] },
+  { name: "Artifact Seeker", health: 70_000, dodge: 2, rewards: { gold: 2000, fruit: 80 }, weaknesses: ["ice", "fire", "water"] },
   { name: "Golden Chest", health: 1, armor: 10_000, rewards: { gold: 20_000 }, weaknesses: ["blunt"] },
-  { name: "King of Tadpoles", health: 1_250_000, rewards: { gold: 100, fruit: 80 }, immune: ["water"] },
+  { name: "King of Tadpoles", health: 1_250_000, rewards: { gold: 100, fruit: 120 }, immune: ["water"] },
   { name: "Hopanoids", count: 10, health: 50_000, armor: 1_000, dodge: 1, rewards: { fruit: 200 }, weaknesses: ["fire"] },
   { name: "Tosyl Rose", health: 860_000, armor: 4_000, rewards: { gold: 100, fruit: 200 }, weaknesses: ["fire", "right"] },
   { name: "Sullen Bearer", health: 990_000, armor: 10_000, rewards: { gold: 200 }, weaknesses: ["back"] },
@@ -63,7 +63,7 @@ export const allEnemies: Enemy[] = [
   { name: "Corridor of Illusions", health: 6_000_000, dodge: 0.1, rewards: { gold: 6_000, fruit: 600 }, weaknesses: ["light"] },
   { name: "Hiber Conduit", health: 100_000_000, regen: 8_000, rewards: { gold: 800, fruit: 800 }, immune: ["ice"], weaknesses: ["fire"] },
   { name: "Core Diver", health: 510_000_000, regen: 80_000, rewards: { gold: 200, fruit: 1000 }, immune: ["fire"], weaknesses: ["water"] },
-  { name: "Smother Mother", health: 250_000_000, armor: 800_000, rewards: { gold: 200, fruit: 1500 }, immune: ["fire"], weaknesses: ["left", "water"] },
+  { name: "Smother Mother", health: 250_000_000, armor: 800_000, rewards: { gold: 200, fruit: 1500 }, immune: ["fire", "light"], weaknesses: ["left", "water"] },
   { name: "The Final Warden", dodge: 0.1, health: 999_000_000, regen: 600_000, rewards: { gold: 15_000, fruit: 5000 }, immune: ["fire"], weaknesses: ["holy", "ice"] },
   { name: "Skelemasterion", health: 1_000_000_000, armor: 1_000_000_000, regen: 10_000_000, ethereal: true, rewards: { gold: 1_000_000_000, fruit: 1_000_000_000 }, passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."] },
 ];
@@ -113,20 +113,41 @@ const enemyAbilities: Record<string, Ability[]> = {
     },
   }],
   "Corrupted Bounty Hunter": [{ name: "Hyper Beam", duration: 100, damage: 1_250_000, description: "Imagine a rainbow turning to violence." }],
-  "Lior the Weaver": [{ name: "Fabric of Reality", duration: 1, damage: 1, description: "" }],
+  "Lior the Weaver": [{
+    name: "Fabric of Reality", duration: 5, damage: 120_000, tags: ['left', 'right', 'front', 'back'],
+    description: "An attack that comes from all directions at once."
+  }],
   "Skeletron": [{ name: "Bonetron", duration: 1, damage: 1, description: "" }],
   "Chago's Chamber": [{ name: "Spring Trap", duration: 1, damage: 1, description: "" }],
-  "Chago": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Door of Loathing": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Chago": [{
+    name: "Create Cheese Demon", duration: 300, description: "Chago releases a demon to chew on the enemy.",
+    onCompleted(store) {
+      store.addPoison(160000);
+    },
+  }],
+  "Door of Loathing": [{
+    name: "Look of Loathing", duration: 60, damage: 1,
+    description: "The Door of Loathing taunts the enemy and draws its attacks onto itself."
+  }],
   "Zakatrixos": [{
     name: "Pierce the Veil", duration: 100,
     description: `
 For the duration of the spell, Zakatrixos shifts the band into the ethereal plane.
 This negates the defenses of ethereal enemies.`,
   }],
-  "Wands from the Depths": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Skyrmions": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Defensive Installation": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Wands from the Depths": [
+    { name: "Sapphire Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['water'] },
+    { name: "Emerald Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['acid'] },
+    { name: "Ruby Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['fire'] },
+  ],
+  "Skyrmions": [{
+    name: "Release Excitation Energy", duration: 107, damage: 107,
+    description: "Skyrmion pairing of opposite charges from opposite valleys is favored by both Coulomb and effective Zeeman terms."
+  }],
+  "Defensive Installation": [{
+    name: "Set Up Defenses", duration: 1200, damage: 800_000_000,
+    description: "The best defense is a slow but devastating attack."
+  }],
   "Tenebra": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Landas Wizard": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Crystal Man": [{ name: "", duration: 1, damage: 1, description: "" }],

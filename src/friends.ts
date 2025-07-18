@@ -213,7 +213,7 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
   {
     name: 'Lamplighter',
     cost: 0,
-    description: "Lights up tiles around it, letting you expand your band.",
+    description: "Lamplighter lights up the tiles around it, letting you expand your band.",
     abilities: [{
       name: "Illuminate",
       duration: 1,

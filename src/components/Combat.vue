@@ -170,6 +170,7 @@ const justRescued = ref<Friend | null>(null);
 function unlockRescue() {
   const friend = rescuedFriend.value;
   if (!friend) return;
+  if (store.team.unlocked.includes(friend.name)) return;
   store.team.unlocked.push(friend.name);
   justRescued.value = friend;
 }
