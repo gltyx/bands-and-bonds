@@ -600,8 +600,6 @@ test('playthrough', async ({ page }) => {
     await game.addToBand('Kit Flash');
     await game.addToBand('Kin of Pump');
     await game.addToBand('Xaranthian Constructor');
-    // TODO: Find out why Growers don't work when Stick Master is not in the band.
-    await game.addToBand('Stick Master');
   });
 
   await game.run(async () => {
