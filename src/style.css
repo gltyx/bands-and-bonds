@@ -62,7 +62,6 @@ button {
 button[disabled],
 button.disabled {
   border-color: transparent !important;
-  cursor: not-allowed;
 }
 
 .title {

@@ -97,12 +97,16 @@ export default class Game {
     await test.step(`Defeat ${enemy} the Xaranthian way`, async () => {
       await expect(this.page.getByRole('heading', { name: enemy })).toBeVisible();
       await this.button("Construct Grower").click();
+      this.clicks++;
+      await expect(this.button("Grow Gun").or(this.button("Grow Guns"))).toBeVisible();
       await this.button("Construct Grower").hover();
       await this.page.mouse.down();
       await this.waitForNumberToReach(this.button("Construct Grower"), quota);
       await this.page.mouse.up();
       this.clicks++;
       await this.button("Grow Guns").click();
+      this.clicks++;
+      await expect(this.button("Fire Xaranthian Guns")).toBeVisible();
       await this.button("Grow Guns").hover();
       await this.page.mouse.down();
       await this.waitForNumberToReach(this.button("Grow Guns"), quota * quota);
