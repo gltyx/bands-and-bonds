@@ -379,7 +379,7 @@ of her enemies. She's great friends with the Desert Rabbit.
     abilities: [{
       name: "Battle Rhythm",
       duration: 1,
-      damage: 100,
+      damage: 50,
       tags: ['sharp', 'fire', 'ice'],
       description: "A flight of small magical blades timed perfectly to find the weak spots of the enemy.",
     }],
