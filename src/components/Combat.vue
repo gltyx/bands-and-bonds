@@ -155,7 +155,7 @@ for (const url of [
   <div class="actions" v-show="!hideActions">
     <template v-for="ab in st.abilities.value" :key="ab.name">
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
-        :title="ab.name" :description="st.describeAbility(ab)" :cost="abilityPrice(ab)"
+        :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="abilityPrice(ab)"
         :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
         :autostart="ab.automatic" />
     </template>
@@ -163,9 +163,10 @@ for (const url of [
     <template v-for="monster in store.run.capturedMonsters" :key="monster">
       <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
         <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)"
-          :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name" :description="st.describeAbility(ab)"
-          :cost="abilityPrice(ab)" :image="`images/generated/${ab.image ?? ab.name}.webp`"
-          :duration="ab.duration * 1000" :autostart="ab.automatic" />
+          :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name"
+          :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="abilityPrice(ab)"
+          :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
+          :autostart="ab.automatic" />
       </template>
     </template>
     <template v-if="fighting">

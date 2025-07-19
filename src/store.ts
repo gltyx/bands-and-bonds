@@ -282,13 +282,12 @@ function takeTurn(turn: string) {
   }
 }
 
-export function describeAbility(ab: base.Ability): string {
+export function describeAbility(ab: base.Ability, e: base.AbilityEffects): string {
   let d = ab.description;
   if (typeof d === "function") {
     d = d(store, ab);
   }
   if (ab.damage) {
-    const e = abilityEffects(ab);
     const dmg = Math.floor(getAbilityBaseDamage(ab) * e.damageMultiplier / e.weaknessMultiplier);
     const text = e.weaknessMultiplier > 1 ?
       `${base.numberFormat(e.weaknessMultiplier)} × ${base.numberFormat(dmg)}` : base.numberFormat(dmg);
