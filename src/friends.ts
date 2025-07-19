@@ -87,7 +87,7 @@ Her enemies become ethereal, making them challenging to hit.
       name: "Glacial Strike",
       description: "A very cold blade with a very sharp edge.",
       duration: 3600 * 24 * 365 * 1000,
-      damage: 1000000000,
+      damage: 1000000000000,
       tags: ['sharp', 'cold'],
     }],
     super: {
@@ -97,7 +97,7 @@ Her enemies become ethereal, making them challenging to hit.
         name: "Glacial Flame Strike",
         description: "A very hot blade with a very sharp edge.",
         duration: 3600 * 24 * 365 * 1000,
-        damage: 1000000000,
+        damage: 1000000000000,
         tags: ['sharp', 'fire'],
       }],
     },
