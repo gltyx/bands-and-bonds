@@ -205,7 +205,8 @@ const enabled = computed(() => {
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <p v-if="enabled" class="description" style="color: #edb; margin-bottom: 0;">
-    You can change your band now. Tap members to select or remove them. Tap empty spaces to move or add members.
+    You can change your band now. Tap members to select or remove them. Tap empty spaces to move or add the selected
+    member.
   </p>
   <p v-else class="description" style="color: #edb; margin-bottom: 0;">
     You cannot change your band now. The dungeon is dangerous. Retreat to a safe place to make changes.

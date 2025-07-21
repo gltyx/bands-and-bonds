@@ -284,29 +284,29 @@ test('playthrough', async ({ page }) => {
 
 
   await game.run(async () => {
-    await game.defeatEnemy('Wild Slime');
+    await game.waitToDefeatEnemy('Wild Slime');
     await game.clickButton('Keep going');
     await game.clickButton('Go straight');
-    await game.defeatEnemy('Dead Gladiator');
+    await game.waitToDefeatEnemy('Dead Gladiator');
     await game.clickButton('Turn right');
-    await game.defeatEnemy('Frozen Centurion');
+    await game.waitToDefeatEnemy('Frozen Centurion');
     await game.clickButton('Keep going');
     await game.clickButton('Turn right');
-    await game.defeatEnemy('Geckalog');
+    await game.waitToDefeatEnemy('Geckalog');
     await game.clickButton('Keep going');
-    await game.defeatEnemy('Jaw Maw Maw');
+    await game.waitToDefeatEnemy('Jaw Maw Maw');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Decay Manifest");
-    await game.clickButton('Keep going');
-    await game.clickButton('Keep going');
-    await game.defeatEnemy("Striped Horror")
+    await game.waitToDefeatEnemy("Decay Manifest");
     await game.clickButton('Keep going');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Dragonfly Agaric");
+    await game.waitToDefeatEnemy("Striped Horror")
+    await game.clickButton('Keep going');
+    await game.clickButton('Keep going');
+    await game.waitToDefeatEnemy("Dragonfly Agaric");
     await game.clickButton('Keep going');
     await game.rescue('Bayla');
     await game.clickButton('Keep going');
-    await game.defeatEnemy("Artifact Seeker")
+    await game.waitToDefeatEnemy("Artifact Seeker")
   });
 
   await game.manageBand(async () => {
@@ -362,6 +362,8 @@ test('playthrough', async ({ page }) => {
     await game.clickButton('Sneak Past');
     await game.rescue('Azrekta');
   });
+
+  await game.saveState('last state.json');
 
   await game.manageBand(async () => {
     await game.removeFromBand('Lamplighter');

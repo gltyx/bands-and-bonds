@@ -88,7 +88,7 @@ Her enemies become ethereal, making them challenging to hit.
       description: "A very cold blade with a very sharp edge.",
       duration: 3600 * 24 * 365 * 1000,
       damage: 1000000000000,
-      tags: ['sharp', 'cold'],
+      tags: ['sharp', 'ice'],
     }],
     super: {
       name: 'Hotblade',
@@ -379,7 +379,7 @@ of her enemies. She's great friends with the Desert Rabbit.
     abilities: [{
       name: "Battle Rhythm",
       duration: 1,
-      damage: 50,
+      damage: 10,
       tags: ['sharp', 'fire', 'ice'],
       description: "A flight of small magical blades timed perfectly to find the weak spots of the enemy.",
     }],
@@ -783,19 +783,19 @@ const costs: Record<string, number> = {
   "Pecquer": 9,
   "Friend of Metal": 10,
   "Desert Rabbit": 11,
-  "Bayla": 12,
-  "Kit Flash": 13,
-  "Kevin": 14,
-  "Hedge Lost": 15,
-  "Knight of Claws": 16,
-  "Royal Fruitbearer": 17,
-  "Xaranthian Constructor": 18,
+  "Royal Fruitbearer": 12,
+  "Smiling Pilot": 13,
+  "Knight of Claws": 14,
+  "Kevin": 15,
+  "Hedge Lost": 16,
+  "Bayla": 17,
+  "Eighth Swimmer": 18,
   "Mongreler": 19,
-  "Azrekta": 20,
-  "Eighth Swimmer": 21,
-  "Coldblade": 22,
-  "Pur Lion": 23,
-  "Smiling Pilot": 24,
+  "Coldblade": 20,
+  "Kit Flash": 21,
+  "Xaranthian Constructor": 22,
+  "Azrekta": 23,
+  "Pur Lion": 24,
   "Zaktar Kadoque": 25,
 };
 export const friendsByName = {} as Record<string, Friend>;
@@ -890,4 +890,11 @@ const NICENAMES: Record<string, string> = {
 for (const ab of friendsByName['Smiling Pilot'].abilities) {
   ab.image = ab.name;
   ab.name = NICENAMES[ab.name];
+}
+for (const an of ATTACKS) {
+  const ab = abilitiesByName[an];
+  const dmg = getDamageForSmilingPilot(ab);
+  console.log(
+    `Ability: ${ab.name}, Damage per second: ${dmg / ab.duration}, Tags: ${ab.tags?.join(', ')}`
+  );
 }
