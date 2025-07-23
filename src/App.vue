@@ -21,11 +21,13 @@ watch(page, (newValue) => {
 
 function mainLoop() {
   const currentTime = performance.now();
-  // Spend at most 200 ms wall time catching up in chunks of 100 ms game time.
+  // Spend at most 200 ms wall time catching up in chunks of increasing game time.
   let k = 0;
+  let chunk = 100;
   while (lastFrameTime.value < currentTime && performance.now() < currentTime + 200) {
-    runTo(Math.min(lastFrameTime.value + 100, currentTime));
+    runTo(Math.min(lastFrameTime.value + chunk, currentTime));
     k++;
+    chunk = Math.floor(chunk * 1.1);
   }
   if (k > 1) console.log(`Caught up ${k} frames.`);
   animationFrameId.value = requestAnimationFrame(mainLoop);
@@ -49,13 +51,11 @@ function runTo(currentTime: number) {
       t.time += Math.floor(deltaTime);
     } else {
       t.time += Math.floor(deltaTime * store.run.speedLevel);
-      // Avoid triggering the timer more than once per millisecond.
-      t.time = Math.min(t.time, t.duration * deltaTime);
     }
-    while (store.run.timers[key] && t.time >= t.duration) {
-      // Fire multiple times if it's automatic and we have exceeded the duration multiple times.
-      t.time -= t.duration;
-      store.timerFinished(key, t);
+    const times = Math.floor(t.time / t.duration);
+    if (times > 0) {
+      t.time -= t.duration * times;
+      store.timerFinished(key, t, times);
     }
   }
   if (enemy && store.run.room.damage < enemy.health) {
@@ -65,7 +65,7 @@ function runTo(currentTime: number) {
       store.run.room.damage = Math.max(0, store.run.room.damage - Math.floor(regen));
       lastRegenTime.value += Math.floor(regen) / regenPerSecond * 1000;
     } else if (regen < -1) {
-      store.addDamage(Math.floor(-regen));
+      store.addDamage(Math.floor(-regen), 1);
       lastRegenTime.value -= Math.floor(-regen) / regenPerSecond * 1000;
     } else if (regen === 0) {
       lastRegenTime.value = currentTime;

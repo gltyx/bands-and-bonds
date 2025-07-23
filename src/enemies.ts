@@ -65,17 +65,17 @@ export const allEnemies: Enemy[] = [
   { name: "Core Diver", health: 510_000_000, regen: 80_000, rewards: { gold: 200, fruit: 1000 }, immune: ["fire"], weaknesses: ["water"] },
   { name: "Smother Mother", health: 250_000_000, armor: 800_000, rewards: { gold: 200, fruit: 1500 }, immune: ["fire", "light"], weaknesses: ["left", "water"] },
   { name: "The Final Warden", dodge: 0.1, health: 999_000_000, regen: 600_000, rewards: { gold: 15_000, fruit: 5000 }, immune: ["fire"], weaknesses: ["holy", "ice"] },
-  { name: "Skelemasterion", health: 1_000_000_000, armor: 1_000_000_000, regen: 10_000_000, ethereal: true, rewards: { gold: 1_000_000_000, fruit: 1_000_000_000 }, passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."] },
+  { name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000_000, regen: 10_000_000, ethereal: true, rewards: { gold: 1_000_000_000, fruit: 1_000_000_000 }, passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."] },
 ];
 
 const enemyAbilities: Record<string, Ability[]> = {
   "Wild Slime": [{ name: "Slobber", duration: 5, damage: 1, description: "Cover the enemy in slime." }],
   "Poison Crow": [{
     name: "Crow Blast", duration: 5, description: "An explosion of feathers and poison.",
-    onCompleted(store, self) {
+    onCompleted(store, times, self) {
       const e = store.abilityEffects(self);
-      if (e.hitChance < Math.random()) return;
-      store.addPoison(10 * e.damageMultiplier);
+      const hits = e.rndHits(times);
+      store.addPoison(10 * e.damageMultiplier * hits);
     },
   }],
   "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes." }],

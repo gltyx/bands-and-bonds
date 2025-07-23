@@ -199,18 +199,10 @@ for (const url of [
         <div class="description">
           <p>
             Leave the dungeon and return to safety.
-            <template v-if="store.run.gold > 0 && store.run.fruit > 0">
-              You will lose
-              <Gold :amount="store.run.gold" /> but keep the
+            <template v-if="store.run.fruit > 0">
+              You start over, but keep the
               <Fruit :amount="store.run.fruit" /> you've collected.
-            </template>
-            <template v-else-if="store.run.gold > 0">
-              You will lose
-              <Gold :amount="store.run.gold" />.
-            </template>
-            <template v-else-if="store.run.fruit > 0">
-              You keep the
-              <Fruit :amount="store.run.fruit" /> you've collected.
+              Spend it on your band!
             </template>
           </p>
         </div>

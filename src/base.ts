@@ -70,6 +70,7 @@ export type AbilityEffects = {
   damageMultiplier: number; // Total multiplier.
   weaknessMultiplier: number; // For information.
   hitChance: number;
+  rndHits(numAttacks: number): number; // Returns the random number of hits based on the hit chance.
 };
 
 export type Store = {
@@ -77,11 +78,11 @@ export type Store = {
   local: LocalData;
   team: TeamData;
   startTimer: (key: string, timer: Timer) => void;
-  timerFinished: (key: string, timer: Timer) => void;
+  timerFinished: (key: string, timer: Timer, times: number) => void;
   currentEnemy: () => Enemy | undefined;
   currentRoom: () => Room;
   currentPath: () => Room[];
-  addDamage: (amount: number) => void;
+  addDamage: (amount: number, times: number) => void;
   addPoison: (amount: number) => void;
   bandByName: () => Record<string, { row: number; col: number }>;
   onboard: (name: string) => { row: number; col: number } | undefined;
@@ -119,7 +120,8 @@ export type Ability = {
   duration: number;
   damage?: number | ((store: Store) => number);
   consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
-  onCompleted?: (store: Store, self: Ability) => void;
+  onCompleted?: (store: Store, times: number, self: Ability) => void;
+  preventRepeat?: boolean; // If true, fire at most once per tick. Use it if "consumes" is not fixed!
   automatic?: boolean;
   tags?: string[];
   peaceful?: boolean; // If true, can be used outside of combat.

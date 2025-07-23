@@ -108,8 +108,8 @@ export const store: base.Store = {
     store.run.fruit -= cost.fruit || 0;
     store.run.timers[key] = t;
   },
-  timerFinished(key: string, t: base.Timer) {
-    timerFinished(key, t);
+  timerFinished(key: string, t: base.Timer, times: number) {
+    timerFinished(key, t, times);
   },
   currentRoom() {
     return current.value.room ?? allRooms[0];
@@ -120,8 +120,8 @@ export const store: base.Store = {
   currentPath() {
     return current.value.path ?? allRooms[0];
   },
-  addDamage(x: number) {
-    return addDamage(x);
+  addDamage(x: number, times: number) {
+    return addDamage(x, times);
   },
   addPoison(x: number) {
     const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
@@ -225,7 +225,7 @@ const current = computed(() => {
   return { path, room, enemy };
 });
 
-function addDamage(x: number) {
+function addDamage(x: number, times: number) {
   const enemy = store.currentEnemy();
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.
@@ -236,7 +236,8 @@ function addDamage(x: number) {
   }
   dmg -= (enemy.armor ?? 0) - store.run.room.armorDamage;
   if (dmg < 0) return;
-  store.run.room.damage += dmg;
+  store.run.room.damage += dmg * times;
+  // TODO: Implement multi-kill.
   if (store.run.room.damage >= enemy.health) {
     store.run.room.kills += 1;
     const remaining = (enemy.count ?? 1) - store.run.room.kills;
@@ -343,7 +344,34 @@ export function abilityEffects(ab: base.Ability): base.AbilityEffects {
       }
     }
   }
-  return { damageMultiplier: mult * weaknessMultiplier, weaknessMultiplier, hitChance };
+  return {
+    damageMultiplier: mult * weaknessMultiplier,
+    weaknessMultiplier,
+    hitChance,
+    rndHits: (numAttacks: number) => rndHits(numAttacks, hitChance),
+  };
+}
+
+function rndHits(numAttacks: number, hitChance: number): number {
+  if (hitChance >= 1) return numAttacks;
+  if (numAttacks < 10) {
+    let hits = 0;
+    for (let i = 0; i < numAttacks; i++) {
+      if (Math.random() < hitChance) {
+        hits += 1;
+      }
+    }
+    return hits;
+  }
+  // For larger numbers of attacks, use a normal approximation.
+  const mean = numAttacks * hitChance;
+  const stdDev = Math.sqrt(numAttacks * hitChance * (1 - hitChance));
+  // Use https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform to get standard normal.
+  const u1 = Math.random();
+  const u2 = Math.random();
+  const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  // Shift to the desired mean and stddev and clip.
+  return Math.max(0, Math.min(numAttacks, Math.round(mean + z * stdDev)));
 }
 
 export function getWeaknesses(enemy: base.Enemy | null) {
@@ -364,28 +392,40 @@ export function getAbilityBaseDamage(ab: base.Ability): number {
   return dmg;
 }
 
-function timerFinished(key: string, timer: base.Timer) {
-  delete store.run.timers[key];
-  if (key === 'rescue-unlock') {
-    unlockRescue();
-  } else if (key === 'wayfinder-turn' && plannedTurn.value?.title) {
-    takePlannedTurn(plannedTurn.value.title);
-  } else if (key.startsWith('ability-')) {
-    const ab = abilities.value.find(a => `ability-${a.name}` === key);
-    if (ab) {
-      executeAbility(ab);
-    }
-    if (timer.automatic) store.startTimer(key, timer);
+function findAbility(key: string): base.Ability | undefined {
+  if (key.startsWith('ability-')) {
+    return abilities.value.find(a => `ability-${a.name}` === key);
   } else if (key.startsWith('monster-')) {
     const m = /monster-(.*)-ability-(.*)/.exec(key);
     if (!m) return;
     const [, monster, abilityName] = m;
-    const ab = enemiesByName[monster]?.abilities?.find(a => a.name === abilityName);
-    if (ab) {
-      executeAbility(ab);
-    }
-    if (timer.automatic) store.startTimer(key, timer);
+    return enemiesByName[monster]?.abilities?.find(a => a.name === abilityName);
   }
+}
+
+function timerFinished(key: string, timer: base.Timer, times: number) {
+  delete store.run.timers[key];
+  if (key === 'rescue-unlock') {
+    return unlockRescue();
+  } else if (key === 'wayfinder-turn' && plannedTurn.value?.title) {
+    return takePlannedTurn(plannedTurn.value.title);
+  }
+  const ab = findAbility(key);
+  if (!ab) return;
+  // The timer has been paid for once in advance. See how many runs we can afford.
+  let _times = times;
+  if (ab.preventRepeat) {
+    _times = 1;
+  } else {
+    if (timer.cost?.gold) _times = Math.min(_times, store.run.gold / (timer.cost?.gold ?? 1));
+    if (timer.cost?.fruit) _times = Math.min(_times, store.run.fruit / (timer.cost?.fruit ?? 1));
+    if (timer.cost?.gold) store.run.gold -= timer.cost?.gold * _times;
+    if (timer.cost?.fruit) store.run.fruit -= timer.cost?.fruit * _times;
+  }
+  if (_times && ab) {
+    executeAbility(ab, _times);
+  }
+  if (timer.automatic) store.startTimer(key, timer);
 }
 
 export const KEEP_GOING: base.Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
@@ -451,16 +491,15 @@ export const abilities = computed(() => {
   return abilities;
 });
 
-function executeAbility(ab: base.Ability) {
+function executeAbility(ab: base.Ability, times: number) {
   if (ab.onCompleted) {
-    return ab.onCompleted(store, ab);
+    return ab.onCompleted(store, times, ab);
   }
   if (ab.damage) {
     const e = abilityEffects(ab);
-    if (Math.random() < e.hitChance) {
-      const dmg = getAbilityBaseDamage(ab);
-      store.addDamage(Math.floor(dmg * e.damageMultiplier));
-    }
+    const hits = e.rndHits(times);
+    const dmg = getAbilityBaseDamage(ab);
+    store.addDamage(Math.floor(dmg * e.damageMultiplier), hits);
   }
 }
 
