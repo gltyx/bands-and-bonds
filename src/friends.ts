@@ -216,14 +216,14 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
     name: 'Royal Fruitbearer',
     cost: 0,
     description: `
-With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
+With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets ten pieces.
     `,
     passiveEffects: ["When you find fruit, every member of the party gets ten pieces. (Thanks to the Royal Fruitbearer.)"],
     super: {
       name: 'Royal Fruitwearer',
       description: `
 With the Royal Fruitwearer in your band, whenever you find fruit in the dungeon,
-every member of the party gives one piece to every other member.
+every member of the party gives one hundred pieces to every other member.
       `,
       passiveEffects: ["When you find fruit, every member of the party gives a hundred pieces to every other member. (Thanks to the Royal Fruitwearer.)"],
     },
@@ -536,7 +536,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
   {
     name: 'Hedge Lost',
     cost: 0,
-    description: "",
+    description: "Hedge Lost is the only trader in the Hedge Market who is not originally a shrew.",
     abilities: [{
       name: "Buy Fruit",
       duration: 5,
@@ -549,6 +549,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
     }],
     super: {
       name: 'Hedge Found',
+      description: "Hedge Found is the only trader admitted to the Inner Hedge Market who is not originally a shrew.",
       abilities: [{
         name: "Buy Fruit",
         duration: 5,
