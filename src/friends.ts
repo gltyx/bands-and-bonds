@@ -620,7 +620,7 @@ a Xaranthian person, and neither has anyone else in your band.
     `,
     abilities: [{
       name: "Construct Grower",
-      consumes: { gold: 10 },
+      consumes: { gold: 1000 },
       duration: 5,
       description: (store) =>
         `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
@@ -629,7 +629,7 @@ a Xaranthian person, and neither has anyone else in your band.
       }
     }, {
       name: "Grow Gun",
-      consumes: { gold: 10 },
+      consumes: { gold: 100 },
       hidden: (store) => store.run.room.xaranthian.growers !== 1,
       duration: 5,
       description: (store) =>
@@ -639,7 +639,7 @@ a Xaranthian person, and neither has anyone else in your band.
       },
     }, {
       name: "Grow Guns",
-      consumes: { gold: 10 },
+      consumes: { gold: 100 },
       hidden: (store) => store.run.room.xaranthian.growers < 2,
       duration: 5,
       description: (store) =>
@@ -664,7 +664,7 @@ a Xaranthian person, and neither has anyone else in your band.
       name: 'Xaranthian Power Constructor',
       abilities: [{
         name: "Construct Factory",
-        consumes: { gold: 10 },
+        consumes: { gold: 1000000 },
         duration: 5,
         description: (store) =>
           `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${numberSpan(store.run.room.xaranthian.factories)} factories.)` : ''}`,
@@ -673,7 +673,7 @@ a Xaranthian person, and neither has anyone else in your band.
         },
       }, {
         name: "Produce Turtle",
-        consumes: { gold: 10 },
+        consumes: { gold: 100000 },
         hidden: (store) => store.run.room.xaranthian.factories !== 1,
         duration: 5,
         description: (store) =>
@@ -683,7 +683,7 @@ a Xaranthian person, and neither has anyone else in your band.
         },
       }, {
         name: "Produce Turtles",
-        consumes: { gold: 10 },
+        consumes: { gold: 100000 },
         hidden: (store) => store.run.room.xaranthian.factories < 2,
         duration: 5,
         description: (store) =>
@@ -693,7 +693,7 @@ a Xaranthian person, and neither has anyone else in your band.
         },
       }, {
         name: "Build Deployer",
-        consumes: { gold: 10 },
+        consumes: { gold: 10000 },
         hidden: (store) => store.run.room.xaranthian.turtles !== 1,
         duration: 5,
         description: (store) =>
@@ -703,7 +703,7 @@ a Xaranthian person, and neither has anyone else in your band.
         }
       }, {
         name: "Build Deployers",
-        consumes: { gold: 10 },
+        consumes: { gold: 10000 },
         hidden: (store) => store.run.room.xaranthian.turtles < 2,
         duration: 5,
         description: (store) =>
@@ -713,7 +713,7 @@ a Xaranthian person, and neither has anyone else in your band.
         }
       }, {
         name: "Deploy Grower",
-        consumes: { gold: 10 },
+        consumes: { gold: 1000 },
         hidden: (store) => store.run.room.xaranthian.deployers !== 1,
         duration: 5,
         description: (store) =>
@@ -723,7 +723,7 @@ a Xaranthian person, and neither has anyone else in your band.
         }
       }, {
         name: "Deploy Growers",
-        consumes: { gold: 10 },
+        consumes: { gold: 1000 },
         hidden: (store) => store.run.room.xaranthian.deployers < 2,
         duration: 5,
         description: (store) =>
@@ -733,7 +733,7 @@ a Xaranthian person, and neither has anyone else in your band.
         }
       }, {
         name: "Grow Gun",
-        consumes: { gold: 10 },
+        consumes: { gold: 100 },
         hidden: (store) => store.run.room.xaranthian.growers !== 1,
         duration: 5,
         description: (store) =>
@@ -743,7 +743,7 @@ a Xaranthian person, and neither has anyone else in your band.
         },
       }, {
         name: "Grow Guns",
-        consumes: { gold: 10 },
+        consumes: { gold: 100 },
         hidden: (store) => store.run.room.xaranthian.growers < 2,
         duration: 5,
         description: (store) =>
