@@ -47,10 +47,10 @@ function runTo(currentTime: number) {
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    if (key === 'ability-Running Start' || key === 'celebrating' || key === 'rescue-unlock' || key === 'wayfinder-turn') {
-      t.time += Math.floor(deltaTime);
-    } else {
+    if (t.attack) {
       t.time += Math.floor(deltaTime * store.run.speedLevel);
+    } else {
+      t.time += Math.floor(deltaTime);
     }
     const times = Math.floor(t.time / t.duration);
     if (times > 0) {

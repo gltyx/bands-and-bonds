@@ -2,12 +2,11 @@
 import * as st from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import { enemiesByName } from "../enemies.ts";
-import { type Ability, numberFormat } from "../base.ts";
+import { numberFormat } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
-import Gold from "./Gold.vue";
 import Fruit from "./Fruit.vue";
 import Num from "./Num.vue";
 import Victory from "./Victory.vue";
@@ -58,7 +57,7 @@ const passiveEffects = computed(() => {
   }
   if (st.ethereal.value) {
     effects.push(
-      `Enemy is ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}. Most attacks will miss.`);
+      `Enemy is ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}. Attacks will often miss.`);
   }
   if (st.onboard("Desert Rabbit")) {
     const weaknesses = [];
@@ -81,16 +80,6 @@ function nth(n: number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
   return `${numberFormat(n)}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
-}
-
-function abilityPrice(ab: Ability) {
-  if (ab.consumes) {
-    if (typeof ab.consumes === 'function') {
-      return ab.consumes(store);
-    }
-    return ab.consumes;
-  }
-  return {};
 }
 
 const hideActions = ref(false);
@@ -155,18 +144,18 @@ for (const url of [
   <div class="actions" v-show="!hideActions">
     <template v-for="ab in st.abilities.value" :key="ab.name">
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
-        :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="abilityPrice(ab)"
-        :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
-        :autostart="ab.automatic" />
+        :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
+        :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
+        :autostart="ab.automatic" :attack="!ab.peaceful" />
     </template>
     <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
     <template v-for="monster in store.run.capturedMonsters" :key="monster">
       <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
         <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)"
           :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name"
-          :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="abilityPrice(ab)"
-          :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="ab.duration * 1000"
-          :autostart="ab.automatic" />
+          :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
+          :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
+          :autostart="ab.automatic" :attack="!ab.peaceful" />
       </template>
     </template>
     <template v-if="fighting">

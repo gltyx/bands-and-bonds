@@ -7,7 +7,6 @@ const props = defineProps<{
 </script>
 
 <template>
-  <span class="numbers">{{ numberFormat(props.amount) }}
-    <slot></slot>
+  <span class="numbers">{{ numberFormat(props.amount) }}&nbsp;<slot></slot>
   </span>
 </template>

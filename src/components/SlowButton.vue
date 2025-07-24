@@ -11,7 +11,8 @@ const props = defineProps({
   duration: { type: Number, required: false },
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
-  cost: { type: Object as PropType<{ gold?: number; fruit?: number }>, default: () => ({}) },
+  attack: { type: Boolean, default: false },
+  cost: { type: Object as PropType<{ gold: number; fruit: number }>, default: () => ({ gold: 0, fruit: 0 }) },
 });
 function start() {
   if (!props.timerKey || !props.duration) return;
@@ -19,16 +20,18 @@ function start() {
     duration: props.duration,
     cost: props.cost,
     automatic: props.autostart || pointerDown.value,
+    attack: props.attack,
   });
 }
 function style() {
   if (!props.duration || !props.timerKey) {
     return {};
   }
-  if (!store.run.timers[props.timerKey]) {
+  const t = store.run.timers[props.timerKey];
+  if (!t) {
     return { 'background': '#333' };
   }
-  const percent = (store.run.timers[props.timerKey].time ?? 0) / props.duration * 100;
+  const percent = (t.time ?? 0) / t.duration * 100;
   const color = '#486';
   const bgColor = '#333';
   return {
@@ -43,7 +46,7 @@ const description = computed(() => {
   return props.description ? marked(props.description) : "";
 });
 const affordable = computed(() => {
-  const aff = store.run.gold >= (props.cost.gold ?? 0) && store.run.fruit >= (props.cost.fruit ?? 0);
+  const aff = store.run.gold >= props.cost.gold && store.run.fruit >= props.cost.fruit;
   return aff;
 });
 watch(affordable, (newVal) => {
@@ -65,10 +68,39 @@ watch(pointerDown, (newVal) => {
 onUnmounted(() => {
   if (props.timerKey && store.run.timers[props.timerKey]) {
     delete store.run.timers[props.timerKey];
-    // Refund price.
-    store.run.gold += props.cost.gold ?? 0;
-    store.run.fruit += props.cost.fruit ?? 0;
+    // Refund cost.
+    store.run.gold += props.cost.gold;
+    store.run.fruit += props.cost.fruit;
   }
+});
+
+const duration = computed(() => {
+  if (!props.duration) return "";
+  let duration = props.attack ? props.duration / store.run.speedLevel : props.duration;
+  const units = ['year', 'day', 'hour', 'minute', 'second', 'ms', 'µs', 'ns'];
+  const divisors = [365, 24, 60, 60, 1000, 1000, 1000];
+  let level = units.indexOf('ms');
+  while (level > 0 && duration >= divisors[level - 1]) {
+    duration /= divisors[level - 1];
+    level--;
+  }
+  while (level < divisors.length - 1 && duration < 1) {
+    duration *= divisors[level];
+    level++;
+  }
+  if (duration < 2 && level < divisors.length - 1) {
+    const remainder = Math.round((duration - 1) * divisors[level]);
+    if (remainder === 0) {
+      return `1 ${units[level]}`;
+    }
+    if (remainder === 1) {
+      return `1 ${units[level]} 1 ${units[level + 1]}`;
+    }
+    const plural = units[level + 1].endsWith('s') ? '' : 's';
+    return `1 ${units[level]} ${remainder} ${units[level + 1]}${plural}`;
+  }
+  const plural = units[level].endsWith('s') ? '' : 's';
+  return `${Math.round(duration)} ${units[level]}${plural}`;
 });
 </script>
 
@@ -78,14 +110,15 @@ onUnmounted(() => {
     :class="{ disabled: !affordable || running }" class="slow">
     <img v-bind:src="props.image" />
     <div class="text">
-      <div class="cost" v-if="(props.cost.gold ?? 0) > 0" :class="{ unaffordable: !affordable && !running }">
-        <Gold :amount="props.cost.gold ?? 0" />
+      <div class="cost" v-if="props.cost.gold > 0" :class="{ unaffordable: !affordable && !running }">
+        <Gold :amount="props.cost.gold" />
       </div>
-      <div class="cost" v-if="(props.cost.fruit ?? 0) > 0" :class="{ unaffordable: !affordable && !running }">
-        <Fruit :amount="props.cost.fruit ?? 0" />
+      <div class="cost" v-if="props.cost.fruit > 0" :class="{ unaffordable: !affordable && !running }">
+        <Fruit :amount="props.cost.fruit" />
       </div>
       <div class="title">{{ props.title }}</div>
       <div class="description" v-html="description"></div>
+      <div v-show="running" class="duration numbers">{{ duration }}</div>
     </div>
   </button>
 </template>
@@ -102,5 +135,13 @@ onUnmounted(() => {
 
 .cost.unaffordable {
   color: red;
+}
+
+.duration {
+  position: absolute;
+  bottom: 2px;
+  right: 8px;
+  font-size: 12px;
+  color: #486;
 }
 </style>

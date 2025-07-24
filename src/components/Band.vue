@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import SlowButton from "./SlowButton.vue";
-import { store, describeAbility, friendAt, nextTo, onboard } from "../store.ts";
+import { store, describeAbility, abilityCost, friendAt, nextTo, onboard } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import Fruit from "./Fruit.vue";
 import Packs from "./Packs.vue";
-import { costOfPacks, type Ability } from "../base.ts";
+import { costOfPacks } from "../base.ts";
 
 const selected = ref(undefined as string | undefined);
 
@@ -107,14 +107,14 @@ const bonds = computed(() => {
       const name = band[place];
       if (!name) continue;
       const friend = friendsByName[name];
+      const image = 'chain';
       for (const nn of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
         if (nn === 'Azrekta' && !friend.super) continue;
         if ((nn === 'Lord of Gears' || nn === 'The Silent Song') && !friend.abilities && !friend.super?.abilities) continue;
         const bond = nextTo(nn, row, col);
         if (bond) {
           bonds.push({
-            image: 'chain',
-            style: bond[0] === row ?
+            image, style: bond[0] === row ?
               `left: ${(col + bond[1] + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
               `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + bond[0] + 1) * 103 / 2 - 15}px;`,
           });
@@ -123,12 +123,19 @@ const bonds = computed(() => {
       if (name === 'Knight of Claws') {
         for (const p of store.emptySpacesAround(row, col)) {
           bonds.push({
-            image: 'chain',
-            style: p.row === row ?
+            image, style: p.row === row ?
               `left: ${(col + p.col + 1) * 103 / 2 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);` :
               `left: ${(col + 0.5) * 103 - 15}px; top: ${(row + p.row + 1) * 103 / 2 - 15}px;`,
           });
         }
+      } else if (name === 'Smiling Pilot') {
+        if (friend.abilities?.every(ab => ab.hidden?.(store))) continue;
+        bonds.push({
+          image, style: `left: ${(col + 1) * 103 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);`,
+        });
+        bonds.push({
+          image, style: `left: ${col * 103 - 15}px; top: ${(row + 0.5) * 103 - 15}px; transform: rotate(90deg);`,
+        });
       }
     }
   }
@@ -151,15 +158,6 @@ function buyPack() {
     store.team.fruit = nextCost;
   }
   store.team.packs += 1;
-}
-function abilityPrice(ab: Ability) {
-  if (ab.consumes) {
-    if (typeof ab.consumes === 'function') {
-      return ab.consumes(store);
-    }
-    return ab.consumes;
-  }
-  return {};
 }
 
 const enabled = computed(() => {
@@ -205,7 +203,7 @@ const enabled = computed(() => {
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
   </div>
   <p v-if="enabled" class="description" style="color: #edb; margin-bottom: 0;">
-    You can change your band now. Tap members to select or remove them. Tap empty spaces to move or add the selected
+    You can change your band here. Tap members to select or remove them. Tap empty spaces to move or add the selected
     member.
   </p>
   <p v-else class="description" style="color: #edb; margin-bottom: 0;">
@@ -231,7 +229,7 @@ const enabled = computed(() => {
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
         <SlowButton :title="ab.name"
           :description="describeAbility(ab, { hitChance: 1, damageMultiplier: 1, weaknessMultiplier: 1, rndHits: () => 1 })"
-          :image="`images/generated/${ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityPrice(ab)" />
+          :image="`images/generated/${ab.image ?? ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityCost(ab)" />
       </template>
     </div>
   </div>

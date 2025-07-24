@@ -5,6 +5,7 @@ function numberSpan(n: number, extra?: string): string {
   const e = extra ?? '';
   return `<span class="numbers">${numberFormat(n)}${e}</span>`;
 }
+const LOG_3_OVER_LOG_2 = Math.log(3) / Math.log(2);
 
 export const allFriends: Friend[] = [
   {
@@ -24,18 +25,6 @@ The starting weapon level is the square root of the highest level achieved.
         store.run.weaponLevelAdded += times;
       },
       peaceful: true,
-    }, {
-      name: "Unforge",
-      hidden: (store) => store.run.room.armorDamage === (store.currentEnemy()?.armor ?? 0),
-      duration: 5,
-      description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier)} damage`,
-      onCompleted(store, times, self) {
-        const e = store.abilityEffects(self);
-        const hits = e.rndHits(times);
-        store.run.room.armorDamage = Math.min(
-          store.currentEnemy()?.armor ?? 0,
-          store.run.room.armorDamage + e.damageMultiplier * hits);
-      },
     }],
     super: {
       name: 'Anvilominator',
@@ -46,9 +35,9 @@ The starting weapon level is the highest level achieved.
     `,
       abilities: [{
         name: "Forge",
-        duration: 5,
+        duration: 10,
         consumes: { gold: 5 },
-        description: (store) => `Increases the level of all weapons. (Currently ${numberSpan(store.weaponLevel())}.)`,
+        description: (store) => `Increases the level of all weapons by ${numberSpan(10)}. (Currently ${numberSpan(store.weaponLevel())}.)`,
         onCompleted(store, times) {
           store.run.weaponLevelAdded += 10 * times;
         },
@@ -228,14 +217,14 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
     description: `
 With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gets one piece.
     `,
-    passiveEffects: ["When you find fruit, every member of the party gets one piece. (Thanks to the Royal Fruitbearer.)"],
+    passiveEffects: ["When you find fruit, every member of the party gets ten pieces. (Thanks to the Royal Fruitbearer.)"],
     super: {
       name: 'Royal Fruitwearer',
       description: `
 With the Royal Fruitwearer in your band, whenever you find fruit in the dungeon,
 every member of the party gives one piece to every other member.
       `,
-      passiveEffects: ["When you find fruit, every member of the party gives one piece to every other member. (Thanks to the Royal Fruitwearer.)"],
+      passiveEffects: ["When you find fruit, every member of the party gives a hundred pieces to every other member. (Thanks to the Royal Fruitwearer.)"],
     },
   },
   {
@@ -302,8 +291,11 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       name: 'Sir Pur Lion',
       abilities: [{
         name: "Snatch",
-        duration: 2.5,
-        description: (store) => `Steals ${store.weaponLevel() > 1 ? `${numberSpan(store.weaponLevel())} pieces` : 'a piece'} of gold.`,
+        duration: (store) => 2.5 * store.weaponLevel(),
+        preventRepeat: true,
+        description: (store) => store.weaponLevel() > 1
+          ? `Steals ${numberSpan(store.weaponLevel())} pieces of gold.\n\nLarger amounts take longer to steal.`
+          : 'Steals a piece of gold.',
         onCompleted(store, times) {
           store.run.gold += store.weaponLevel() * times;
         },
@@ -318,7 +310,7 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       name: "Running Start",
       duration: 10,
       consumes: { gold: 1 },
-      description: (store) => `Speed up all abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
+      description: (store) => `Speed up all combat abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
       onCompleted(store, times) {
         store.run.speedLevel += times;
       },
@@ -329,9 +321,9 @@ The Gear of Lords is the ultimate master of automation. All abilities will be ac
       description: "A wizard of speed, Kit Storming can speed up the abilities of every member of the band.",
       abilities: [{
         name: "Running Start",
-        duration: 1,
-        consumes: (store) => ({ gold: store.run.speedLevel }),
-        description: (store) => `Speed up all abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
+        duration: 10,
+        consumes: (store) => ({ gold: Math.round(store.run.speedLevel ** LOG_3_OVER_LOG_2) }),
+        description: (store) => `Speed up all combat abilities. (Currently ${numberSpan(store.run.speedLevel, '×')}.)`,
         onCompleted(store) {
           store.run.speedLevel *= 2;
         },
@@ -831,10 +823,12 @@ const ATTACKS = ['Battle Rhythm', 'Claws & Thorns', 'Flood', 'Glacial Strike', '
 friendsByName['Smiling Pilot'].abilities = [];
 for (const an1 of ATTACKS) {
   const a1 = abilitiesByName[an1];
+  if (typeof a1.duration !== 'number') continue;
   const dmg1 = getDamageForSmilingPilot(a1);
   for (const an2 of ATTACKS) {
     if (an1 >= an2) continue;
     const a2 = abilitiesByName[an2];
+    if (typeof a2.duration !== 'number') continue;
     const dmg2 = getDamageForSmilingPilot(a2);
     const combined: Ability = {
       name: `Combined ${a1.name} and ${a2.name}`,
@@ -869,7 +863,7 @@ const NICENAMES: Record<string, string> = {
   'Combined Illuminate and Wooden Stick': 'Illuminated Stick',
   'Combined Illuminate and Steel Jab': 'Illuminated Jab',
   'Combined Battle Rhythm and Wooden Stick': 'Wooden Rhythm',
-  'Combined Battle Rhythm and Glacial Strike': 'Glacier Rhythm',
+  'Combined Battle Rhythm and Glacial Strike': 'Glacial Rhythm',
   'Combined Battle Rhythm and Steel Jab': 'Steel Rhythm',
   'Combined Battle Rhythm and Illuminate': 'Illuminated Rhythm',
   'Combined Battle Rhythm and Flood': 'Flooded Rhythm',
@@ -894,11 +888,11 @@ const NICENAMES: Record<string, string> = {
 for (const ab of friendsByName['Smiling Pilot'].abilities) {
   ab.image = ab.name;
   ab.name = NICENAMES[ab.name];
+  abilitiesByName[ab.name] = ab;
 }
-for (const an of ATTACKS) {
-  const ab = abilitiesByName[an];
-  const dmg = getDamageForSmilingPilot(ab);
+for (const ab of Object.values(abilitiesByName)) {
+  if (typeof ab.duration !== 'number' || typeof ab.damage !== 'number') continue;
   console.log(
-    `Ability: ${ab.name}, Damage per second: ${dmg / ab.duration}, Tags: ${ab.tags?.join(', ')}`
+    `Ability: ${ab.name}, Damage per second: ${ab.damage / ab.duration}, duration: ${ab.duration}, Tags: ${ab.tags?.join(', ')}`
   );
 }

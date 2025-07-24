@@ -1,8 +1,9 @@
 export type Timer = {
   time?: number;
   duration: number;
-  cost?: { gold?: number; fruit?: number };
+  cost: { gold: number; fruit: number };
   automatic?: boolean;
+  attack?: boolean; // Effects like speed level only apply to attacks.
 };
 
 export type Band = {
@@ -117,7 +118,7 @@ export type Ability = {
   image?: string;
   hidden?: ((store: Store) => boolean);
   description: string | ((store: Store, self: Ability) => string);
-  duration: number;
+  duration: number | ((store: Store) => number);
   damage?: number | ((store: Store) => number);
   consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
   onCompleted?: (store: Store, times: number, self: Ability) => void;

@@ -166,10 +166,10 @@ export const store: base.Store = {
     const bandSize = Object.keys(bandByName.value).length;
     let m = 1;
     if (onboard("Royal Fruitbearer")) {
-      m *= bandSize;
+      m *= bandSize * 10;
     }
     if (onboard("Royal Fruitwearer")) {
-      m *= bandSize - 1;
+      m *= (bandSize - 1) * 10;
     }
     return m;
   },
@@ -248,7 +248,7 @@ function addDamage(x: number, times: number) {
     } else {
       // Victory!
       if (!window.location.search.includes('test')) {
-        store.run.timers.celebrating = { duration: 1000 };
+        store.run.timers.celebrating = { duration: 1000, cost: { gold: 0, fruit: 0 } };
       }
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
@@ -303,12 +303,30 @@ export const ethereal = computed(() => {
   return onboard("Azrekta") || store.currentEnemy()?.ethereal;
 });
 
+export function abilityDuration(ab: base.Ability) {
+  if (typeof ab.duration === 'function') {
+    return ab.duration(store);
+  }
+  return ab.duration;
+}
+
+export function abilityCost(ab: base.Ability): { gold: number; fruit: number } {
+  const defaultCost = { gold: 0, fruit: 0 };
+  if (ab.consumes) {
+    if (typeof ab.consumes === 'function') {
+      return { ...defaultCost, ...ab.consumes(store) };
+    }
+    return { ...defaultCost, ...ab.consumes };
+  }
+  return defaultCost;
+}
+
 export function abilityEffects(ab: base.Ability): base.AbilityEffects {
   const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
   let hitChance = 1;
   const enemy = store.currentEnemy();
   if (!undodgeable && enemy?.dodge) {
-    const duration = ab.duration / store.run.speedLevel;
+    const duration = abilityDuration(ab) / store.run.speedLevel;
     const dodgeChance = Math.min(1, duration / enemy.dodge);
     hitChance *= 1 - dodgeChance;
   }
@@ -408,7 +426,9 @@ function timerFinished(key: string, timer: base.Timer, times: number) {
   if (key === 'rescue-unlock') {
     return unlockRescue();
   } else if (key === 'wayfinder-turn' && plannedTurn.value?.title) {
-    return takePlannedTurn(plannedTurn.value.title);
+    takePlannedTurn(plannedTurn.value.title);
+    store.startTimer(key, timer);
+    return;
   }
   const ab = findAbility(key);
   if (!ab) return;
@@ -417,15 +437,20 @@ function timerFinished(key: string, timer: base.Timer, times: number) {
   if (ab.preventRepeat) {
     _times = 1;
   } else {
-    if (timer.cost?.gold) _times = Math.min(_times, store.run.gold / (timer.cost?.gold ?? 1));
-    if (timer.cost?.fruit) _times = Math.min(_times, store.run.fruit / (timer.cost?.fruit ?? 1));
-    if (timer.cost?.gold) store.run.gold -= timer.cost?.gold * _times;
-    if (timer.cost?.fruit) store.run.fruit -= timer.cost?.fruit * _times;
+    if (timer.cost?.gold) _times = Math.min(_times, store.run.gold / (timer.cost.gold ?? 1));
+    if (timer.cost?.fruit) _times = Math.min(_times, store.run.fruit / (timer.cost.fruit ?? 1));
+    if (timer.cost?.gold) store.run.gold -= timer.cost.gold * _times;
+    if (timer.cost?.fruit) store.run.fruit -= timer.cost.fruit * _times;
   }
   if (_times && ab) {
     executeAbility(ab, _times);
   }
-  if (timer.automatic) store.startTimer(key, timer);
+  if (timer.automatic) {
+    // The circumstances may have changed.
+    timer.duration = abilityDuration(ab) * 1000;
+    timer.cost = abilityCost(ab);
+    store.startTimer(key, timer);
+  }
 }
 
 export const KEEP_GOING: base.Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
