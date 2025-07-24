@@ -196,6 +196,7 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
         return 100 * 2 ** empty;
       },
       description: "A whirlwind of sharp blades ravages the battlefield.",
+      tags: ['sharp'],
     }],
   },
   {
@@ -621,7 +622,7 @@ a Xaranthian person, and neither has anyone else in your band.
     abilities: [{
       name: "Construct Grower",
       consumes: { gold: 1000 },
-      duration: 5,
+      duration: 16,
       description: (store) =>
         `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
       onCompleted(store, times) {
@@ -631,7 +632,7 @@ a Xaranthian person, and neither has anyone else in your band.
       name: "Grow Gun",
       consumes: { gold: 100 },
       hidden: (store) => store.run.room.xaranthian.growers !== 1,
-      duration: 5,
+      duration: 16,
       description: (store) =>
         `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
       onCompleted(store, times) {
@@ -641,7 +642,7 @@ a Xaranthian person, and neither has anyone else in your band.
       name: "Grow Guns",
       consumes: { gold: 100 },
       hidden: (store) => store.run.room.xaranthian.growers < 2,
-      duration: 5,
+      duration: 16,
       description: (store) =>
         `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
       onCompleted(store, times) {
@@ -650,13 +651,13 @@ a Xaranthian person, and neither has anyone else in your band.
     }, {
       name: "Fire Xaranthian Gun",
       hidden: (store) => store.run.room.xaranthian.guns !== 1,
-      duration: 5,
+      duration: 16,
       description: "Fire the mechanical gun.",
       damage: 1,
     }, {
       name: "Fire Xaranthian Guns",
       hidden: (store) => store.run.room.xaranthian.guns < 2,
-      duration: 5,
+      duration: 16,
       description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
       damage: (store) => store.run.room.xaranthian.guns,
     }],
@@ -665,7 +666,7 @@ a Xaranthian person, and neither has anyone else in your band.
       abilities: [{
         name: "Construct Factory",
         consumes: { gold: 1000000 },
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${numberSpan(store.run.room.xaranthian.factories)} factories.)` : ''}`,
         onCompleted(store, times) {
@@ -675,7 +676,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Produce Turtle",
         consumes: { gold: 100000 },
         hidden: (store) => store.run.room.xaranthian.factories !== 1,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Build a mechanical turtle in the factory.${store.run.room.xaranthian.turtles ? ` (Currently ${numberSpan(store.run.room.xaranthian.turtles)} turtles.)` : ''}`,
         onCompleted(store, times) {
@@ -685,7 +686,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Produce Turtles",
         consumes: { gold: 100000 },
         hidden: (store) => store.run.room.xaranthian.factories < 2,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Build ${numberSpan(store.run.room.xaranthian.factories)} mechanical turtles in the factories.${store.run.room.xaranthian.turtles ? ` (Currently ${numberSpan(store.run.room.xaranthian.turtles)} turtles.)` : ''}`,
         onCompleted(store, times) {
@@ -695,7 +696,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Build Deployer",
         consumes: { gold: 10000 },
         hidden: (store) => store.run.room.xaranthian.turtles !== 1,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store, times) {
@@ -705,7 +706,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Build Deployers",
         consumes: { gold: 10000 },
         hidden: (store) => store.run.room.xaranthian.turtles < 2,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Build ${numberSpan(store.run.room.xaranthian.turtles)} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store, times) {
@@ -715,7 +716,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Deploy Grower",
         consumes: { gold: 1000 },
         hidden: (store) => store.run.room.xaranthian.deployers !== 1,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store, times) {
@@ -725,7 +726,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Deploy Growers",
         consumes: { gold: 1000 },
         hidden: (store) => store.run.room.xaranthian.deployers < 2,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Deploy ${numberSpan(store.run.room.xaranthian.deployers)} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store, times) {
@@ -735,7 +736,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Grow Gun",
         consumes: { gold: 100 },
         hidden: (store) => store.run.room.xaranthian.growers !== 1,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Grow a mechanical gun.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
         onCompleted(store, times) {
@@ -745,7 +746,7 @@ a Xaranthian person, and neither has anyone else in your band.
         name: "Grow Guns",
         consumes: { gold: 100 },
         hidden: (store) => store.run.room.xaranthian.growers < 2,
-        duration: 5,
+        duration: 16,
         description: (store) =>
           `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
         onCompleted(store, times) {
@@ -754,13 +755,13 @@ a Xaranthian person, and neither has anyone else in your band.
       }, {
         name: "Fire Xaranthian Gun",
         hidden: (store) => store.run.room.xaranthian.guns !== 1,
-        duration: 5,
+        duration: 16,
         description: "Fire the mechanical gun.",
         damage: 1,
       }, {
         name: "Fire Xaranthian Guns",
         hidden: (store) => store.run.room.xaranthian.guns < 2,
-        duration: 5,
+        duration: 16,
         description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
         damage: (store) => store.run.room.xaranthian.guns,
       }],

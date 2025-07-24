@@ -437,10 +437,10 @@ function timerFinished(key: string, timer: base.Timer, times: number) {
   if (ab.preventRepeat) {
     _times = 1;
   } else {
-    if (timer.cost?.gold) _times = Math.min(_times, store.run.gold / (timer.cost.gold ?? 1));
-    if (timer.cost?.fruit) _times = Math.min(_times, store.run.fruit / (timer.cost.fruit ?? 1));
-    if (timer.cost?.gold) store.run.gold -= timer.cost.gold * _times;
-    if (timer.cost?.fruit) store.run.fruit -= timer.cost.fruit * _times;
+    if (timer.cost?.gold) _times = Math.min(_times, 1 + Math.floor(store.run.gold / timer.cost.gold));
+    if (timer.cost?.fruit) _times = Math.min(_times, 1 + Math.floor(store.run.fruit / timer.cost.fruit));
+    if (timer.cost?.gold) store.run.gold -= timer.cost.gold * (_times - 1);
+    if (timer.cost?.fruit) store.run.fruit -= timer.cost.fruit * (_times - 1);
   }
   if (_times && ab) {
     executeAbility(ab, _times);

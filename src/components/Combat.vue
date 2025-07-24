@@ -2,7 +2,7 @@
 import * as st from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import { enemiesByName } from "../enemies.ts";
-import { numberFormat } from "../base.ts";
+import { numberFormat, durationFormat } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref } from "vue";
@@ -52,7 +52,7 @@ const passiveEffects = computed(() => {
   if (enemy.value.dodge) {
     effects.push(
       `${enemy.value.name} dodge${s} attacks that take longer
-      than ${numberFormat(enemy.value.dodge)} second${enemy.value.dodge === 1 ? "" : "s"}.
+      than <span class="numbers">${durationFormat(1000 * enemy.value.dodge)}</span>.
       Faster attacks have a chance to hit.`);
   }
   if (st.ethereal.value) {
@@ -115,7 +115,8 @@ for (const url of [
       </div>
     </template>
     <h1>{{ enemy.name }}</h1>
-    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :class="{ ethereal: st.ethereal }"
+    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :key="enemy.name"
+      :class="{ ethereal: st.ethereal }"
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"

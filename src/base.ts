@@ -155,16 +155,52 @@ export type Enemy = {
   slowTime?: number;
 };
 
-const _numberFormat = new Intl.NumberFormat("en-US", {
+const _numberFormatFrac = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 });
-export function numberFormat(x: number) {
+const _numberFormatInt = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+export function numberFormat(x: number): string {
   if (x > 9_999_999_999) {
-    return `${_numberFormat.format(x / 1_000_000_000)} B`;
+    return `${numberFormat(x / 1_000_000_000)} B`;
   }
-  return _numberFormat.format(x);
+  if (x < 10) {
+    return _numberFormatFrac.format(x);
+  }
+  return _numberFormatInt.format(x);
 }
 export function costOfPacks(packs: number): number {
   return Math.floor(0.00000001 * packs ** 7 + packs);
+}
+
+export function durationFormat(durationMs: number) {
+  if (!durationMs) return "0 seconds";
+  let duration = durationMs;
+  const units = ['year', 'day', 'hour', 'minute', 'second', 'ms', 'µs', 'ns'];
+  const divisors = [365, 24, 60, 60, 1000, 1000, 1000];
+  let level = units.indexOf('ms');
+  while (level > 0 && duration >= divisors[level - 1]) {
+    duration /= divisors[level - 1];
+    level--;
+  }
+  while (level < divisors.length - 1 && duration < 1) {
+    duration *= divisors[level];
+    level++;
+  }
+  if (duration < 2 && level < divisors.length - 1) {
+    const remainder = Math.round((duration - 1) * divisors[level]);
+    if (remainder === 0) {
+      return `1 ${units[level]}`;
+    }
+    if (remainder === 1) {
+      return `1 ${units[level]} 1 ${units[level + 1]}`;
+    }
+    const plural = units[level + 1].endsWith('s') ? '' : 's';
+    return `1 ${units[level]} ${numberFormat(remainder)} ${units[level + 1]}${plural}`;
+  }
+  const plural = units[level].endsWith('s') ? '' : 's';
+  return `${numberFormat(Math.round(duration))} ${units[level]}${plural}`;
 }

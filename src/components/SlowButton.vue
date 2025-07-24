@@ -4,6 +4,7 @@ import { computed, onUnmounted, ref, watch, type PropType } from 'vue';
 import { store } from '../store.ts';
 import Fruit from './Fruit.vue';
 import Gold from './Gold.vue';
+import { durationFormat } from '../base.ts';
 const props = defineProps({
   timerKey: { type: String, required: false },
   title: { type: String, required: true },
@@ -50,7 +51,7 @@ const affordable = computed(() => {
   return aff;
 });
 watch(affordable, (newVal) => {
-  if (newVal && props.autostart) {
+  if (newVal && (props.autostart || pointerDown.value)) {
     start();
   }
 });
@@ -76,31 +77,8 @@ onUnmounted(() => {
 
 const duration = computed(() => {
   if (!props.duration) return "";
-  let duration = props.attack ? props.duration / store.run.speedLevel : props.duration;
-  const units = ['year', 'day', 'hour', 'minute', 'second', 'ms', 'µs', 'ns'];
-  const divisors = [365, 24, 60, 60, 1000, 1000, 1000];
-  let level = units.indexOf('ms');
-  while (level > 0 && duration >= divisors[level - 1]) {
-    duration /= divisors[level - 1];
-    level--;
-  }
-  while (level < divisors.length - 1 && duration < 1) {
-    duration *= divisors[level];
-    level++;
-  }
-  if (duration < 2 && level < divisors.length - 1) {
-    const remainder = Math.round((duration - 1) * divisors[level]);
-    if (remainder === 0) {
-      return `1 ${units[level]}`;
-    }
-    if (remainder === 1) {
-      return `1 ${units[level]} 1 ${units[level + 1]}`;
-    }
-    const plural = units[level + 1].endsWith('s') ? '' : 's';
-    return `1 ${units[level]} ${remainder} ${units[level + 1]}${plural}`;
-  }
-  const plural = units[level].endsWith('s') ? '' : 's';
-  return `${Math.round(duration)} ${units[level]}${plural}`;
+  const d = props.attack ? props.duration / store.run.speedLevel : props.duration;
+  return durationFormat(d);
 });
 </script>
 
