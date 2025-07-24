@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Bellefair&family=Germania+One&family=Grenze+Gotisch:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bellefair&family=family=Grenze+Gotisch:wght@100..900&display=swap');
+
+@font-face {
+  font-family: "Germania One";
+  src: url("fonts/GermaniaOne-Regular-Tabular.woff") format('woff');
+}
 
 :root {
   -webkit-user-drag: none;
