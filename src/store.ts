@@ -183,10 +183,7 @@ export const store: base.Store = {
     if (onboard("Anvilominator")) {
       return store.team.bestWeaponLevel + store.run.weaponLevelAdded;
     }
-    if (onboard("Anvilomancer")) {
-      return Math.floor(Math.sqrt(store.team.bestWeaponLevel)) + store.run.weaponLevelAdded;
-    }
-    return 1;
+    return Math.floor(Math.sqrt(store.team.bestWeaponLevel)) + store.run.weaponLevelAdded;
   },
 }
 
