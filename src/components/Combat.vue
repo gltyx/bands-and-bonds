@@ -159,10 +159,18 @@ for (const enemy of Object.values(enemiesByName)) {
       label="Armor" title="Armor is subtracted from damage" />
   </div>
   <div class="rescue" v-if="st.justRescued.value">
-    <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name" />
+    <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name" class="main" />
     <h1>{{ st.justRescued.value?.name }}</h1>
-    <p class="description" style="margin-top: 0;">is now free!</p>
+    <p class="description" style="margin-top: 0; text-align: center; color: #edb;">is now free!</p>
     <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
+    <div v-if="st.justRescued.value?.name === 'Lamplighter'" class="callout">
+      <img src="/images/generated/pack.webp" />
+      <p class="description" v-if="st.justRescued.value?.name === 'Lamplighter'">
+        Lamplighter can now be added to your band. Collect
+        <Fruit :amount="3" />. Retreat. Open the Band page. Buy some packs. Remove Stick Master from
+        your band and add Lamplighter instead.
+      </p>
+    </div>
   </div>
   <div class="scene" v-else-if="st.rescueAvailable.value">
     <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
@@ -198,6 +206,8 @@ for (const enemy of Object.values(enemiesByName)) {
     <template v-if="fighting">
       <div class="section">Navigation</div>
     </template>
+    <SlowButton v-else-if="st.rescueAvailable.value" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
+      description="Release the poor creature." image="images/generated/rescue-unlock.webp" />
     <template v-else-if="st.plannedTurn.value">
       <div class="section">Navigation</div>
       <SlowButton v-if="!hideActions" timer-key="wayfinder-turn" :duration="1000" :title="st.plannedTurn.value?.title!"
@@ -205,8 +215,6 @@ for (const enemy of Object.values(enemiesByName)) {
         :autostart="true" />
     </template>
     <template v-else>
-      <SlowButton v-if="st.rescueAvailable.value" timer-key="rescue-unlock" :duration="8000" title="Rescue prisoner"
-        description="Take the poor creature with you." image="images/generated/rescue-unlock.webp" />
       <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="store.takeTurn(turn.title!)">
         <img :src="`images/generated/${turn.title}.webp`" />
@@ -280,7 +288,7 @@ for (const enemy of Object.values(enemiesByName)) {
   padding-top: 0;
   margin: 10px 0;
 
-  img {
+  img.main {
     width: 200px;
     mix-blend-mode: lighten;
     margin-top: -45px;
