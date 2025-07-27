@@ -152,7 +152,7 @@ for (const enemy of Object.values(enemiesByName)) {
     </template>
     <h1>{{ enemy.name }}</h1>
     <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :key="enemy.name"
-      :class="{ ethereal: st.ethereal }"
+      :class="{ ethereal: st.ethereal.value }"
       :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
     <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"

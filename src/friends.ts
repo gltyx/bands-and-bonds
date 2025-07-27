@@ -75,7 +75,7 @@ Her enemies become ethereal, making them challenging to hit.
       name: "Glacial Strike",
       description: "A very cold blade with a very sharp edge.",
       duration: 3600 * 24 * 365 * 1000,
-      damage: 1000000000000,
+      damage: 1_000_000_000_000,
       tags: ['sharp', 'ice'],
     }],
     super: {
@@ -85,7 +85,7 @@ Her enemies become ethereal, making them challenging to hit.
         name: "Glacial Flame Strike",
         description: "A very hot blade with a very sharp edge.",
         duration: 3600 * 24 * 365 * 1000,
-        damage: 1000000000000,
+        damage: 1_000_000_000_000,
         tags: ['sharp', 'fire'],
       }],
     },
@@ -129,14 +129,14 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
     name: 'Desert Rabbit',
     cost: 0,
     description: `
-The Desert Rabbit often fights gigantic enemies. He has developed a keen sense for their weaknesses.
+The Desert Rabbit grew up fighting gigantic enemies. He has developed a keen sense for their weaknesses.
 
 With the Desert Rabbit in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
     `,
     super: {
       name: 'Desert Armadillo',
       description: `
-The Desert Armadillo often fights gigantic enemies. He has developed a keen sense for their weaknesses.
+The Desert Armadillo grew up fighting gigantic enemies. He has developed a keen sense for their weaknesses.
 
 With the Desert Armadillo in your band, you will see the weaknesses of enemies and the right attacks will deal double damage.
 The damage bonus can be further increased with the Blessing of the Desert ability.
@@ -155,7 +155,7 @@ The damage bonus can be further increased with the Blessing of the Desert abilit
   },
   {
     name: 'Friend of Metal',
-    description: 'A warrior equipped with high-quality metal armor and weapons.',
+    description: 'A warrior equipped with metal armor and weapons expertly crafted in the forges of the Friendship Mountain.',
     cost: 0,
     abilities: [{
       name: "Steel Jab",
@@ -367,7 +367,7 @@ Now that Wayfinder is free, you can see more details on the map.
     name: 'Bayla',
     cost: 0,
     description: `
-Bayla is an unpredictable fighter. She can change her position in the middle of a fight to best target the weak spots
+Bayla is a master of movement. She can change her position in the middle of a fight to best target the weak spots
 of her enemies. She's great friends with the Desert Rabbit.
     `,
     abilities: [{
@@ -389,8 +389,8 @@ of her enemies. She's great friends with the Desert Rabbit and likes to stick cl
     name: 'Kin of Pump',
     cost: 0,
     description: `
-To become Kins of Pump, people must shed all their fears and worries. They still love others,
-but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
+People who shed all their fears and worries can become Kins of Pump. They still love others,
+but never worry or care about their wellbeing. They are free to pursue their desires without shame.
 
 The Kin you found in the dungeon came here to search for treasure. They do not help out with fighting
 or taking care of the band. They are great at finding gold, though. All gold finds are doubled.
@@ -399,8 +399,8 @@ or taking care of the band. They are great at finding gold, though. All gold fin
     super: {
       name: 'King of Pump',
       description: `
-To become Kins of Pump, people must shed all their fears and worries. They still love others,
-but never worry or care about their wellbeing. They are free to pursue their desires without guilt or shame.
+People who shed all their fears and worries can become Kins of Pump. They still love others,
+but never worry or care about their wellbeing. They are free to pursue their desires without shame.
 
 The Kin you found in the dungeon came here to search for treasure. They have now found a crown, and
 started to act like a king. They still do not help, but all gold finds are now squared.
@@ -493,7 +493,7 @@ They found refuge in this dungeon and now in your band.
     name: 'Pecquer',
     cost: 0,
     description: `
-Pecquer is veteran mercenary from the thirty kingdoms. The warriors he fought besides sing songs of his bravery.
+Pecquer is a veteran mercenary from the thirty kingdoms. The warriors he fought besides sing songs of his bravery.
     `,
     abilities: [{
       name: "Sneak Past",
@@ -519,7 +519,7 @@ Uses left: ${numberSpan(1 - store.run.skips)}`,
         duration: 6,
         hidden: (store) => store.run.skips >= 2,
         description: (store) => `
-Pecquer leads the band fearlessly past the enemy.
+Le Pecquer leads the band fearlessly past the enemy.
 
 Uses left: ${numberSpan(2 - store.run.skips)}`,
         onCompleted(store) {
