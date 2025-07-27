@@ -48,9 +48,9 @@ function runTo(currentTime: number) {
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
     if (t.attack) {
-      t.time += Math.floor(deltaTime * store.run.speedLevel);
+      t.time += deltaTime * store.run.speedLevel;
     } else {
-      t.time += Math.floor(deltaTime);
+      t.time += deltaTime;
     }
     const times = Math.floor(t.time / t.duration);
     if (times > 0) {

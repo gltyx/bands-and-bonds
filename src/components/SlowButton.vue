@@ -77,7 +77,11 @@ onUnmounted(() => {
 
 const duration = computed(() => {
   if (!props.duration) return "";
-  const d = props.attack ? props.duration / store.run.speedLevel : props.duration;
+  let d = props.attack ? props.duration / store.run.speedLevel : props.duration;
+  const enemy = store.currentEnemy();
+  if (enemy && store.run.room.damage < enemy.health) {
+    d *= enemy.slowTime ?? 1;
+  }
   return durationFormat(d);
 });
 </script>
