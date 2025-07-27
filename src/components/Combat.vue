@@ -75,6 +75,23 @@ const passiveEffects = computed(() => {
   }
   return effects;
 });
+const retreatConfirmation = ref(false);
+const retreatConfirmationTimeout = ref<number | null>(null);
+function retreat() {
+  if (retreatConfirmation.value) {
+    st.retreat();
+    retreatConfirmation.value = false;
+    if (retreatConfirmationTimeout.value) {
+      clearTimeout(retreatConfirmationTimeout.value);
+      retreatConfirmationTimeout.value = null;
+    }
+  } else {
+    retreatConfirmation.value = true;
+    retreatConfirmationTimeout.value = setTimeout(() => {
+      retreatConfirmation.value = false;
+    }, 2000);
+  }
+}
 
 function nth(n: number) {
   const suffixes = ['th', 'st', 'nd', 'rd'];
@@ -201,7 +218,7 @@ for (const enemy of Object.values(enemiesByName)) {
         </div>
       </button>
     </template>
-    <button @click="st.retreat()" v-if="store.run.steps > 0">
+    <button @click="retreat()" v-if="store.run.steps > 0">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">
         <div class="title">Retreat</div>
@@ -214,6 +231,7 @@ for (const enemy of Object.values(enemiesByName)) {
               Spend it on your band!
             </template>
           </p>
+          <p v-if="retreatConfirmation">Click again to confirm.</p>
         </div>
       </div>
     </button>
