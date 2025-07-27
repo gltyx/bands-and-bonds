@@ -29,6 +29,7 @@ const emit = defineEmits(['on-start', 'on-end']);
   align-items: center;
   perspective: 1000px;
   transform-style: preserve-3d;
+  pointer-events: none;
 
   img {
     position: absolute;
@@ -61,6 +62,7 @@ const emit = defineEmits(['on-start', 'on-end']);
     font-family: 'Grenze Gotisch', serif;
     font-size: 30px;
     color: #edb;
+    user-select: none;
   }
 
   .victory-text-backdrop {

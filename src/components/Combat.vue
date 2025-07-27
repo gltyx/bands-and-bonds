@@ -82,17 +82,36 @@ function nth(n: number) {
   return `${numberFormat(n)}<sup>${suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]}</sup>`;
 }
 
+function preloadImage(url: string) {
+  const img = new Image();
+  img.src = url;
+}
+
 const hideActions = ref(false);
 
-// Preload victory images.
+// Preload images.
 for (const url of [
   'images/generated/victory1.webp',
   'images/generated/victory2.webp',
   'images/generated/victory3.webp',
   'images/generated/victory4.webp',
 ]) {
-  const img = new Image();
-  img.src = url;
+  preloadImage(url);
+}
+for (const friend of Object.values(friendsByName)) {
+  preloadImage(`images/generated/${friend.name}.webp`);
+  for (const ability of friend.abilities ?? []) {
+    preloadImage(`images/generated/${ability.image ?? ability.name}.webp`);
+  }
+  if (friend.super?.name) {
+    preloadImage(`images/generated/${friend.super.name}.webp`);
+    for (const ability of friend.super.abilities ?? []) {
+      preloadImage(`images/generated/${ability.image ?? ability.name}.webp`);
+    }
+  }
+}
+for (const enemy of Object.values(enemiesByName)) {
+  preloadImage(`images/generated/${enemy.name}.webp`);
 }
 </script>
 
