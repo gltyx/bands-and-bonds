@@ -2,7 +2,7 @@
 import { onboard, store } from "../store.ts";
 import { enemiesByName } from "../enemies.ts";
 import { allRooms, destinationToPath, roomKey, turnsToPath } from "../rooms.ts";
-import type { Room } from "../base.ts";
+import { type Room, durationFormat } from "../base.ts";
 import curvedLine from "./curved-line.ts";
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
@@ -99,7 +99,7 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
           <Num :amount="hoveredEnemy.armor" /> armor
         </template>
         <template v-if="hoveredEnemy.dodge">
-          <Num :amount="hoveredEnemy.dodge">s</Num> dodge
+          <span class="numbers">{{ durationFormat(hoveredEnemy.dodge * 1000) }}</span> dodge
         </template>
         <template v-if="hoveredEnemy.regen">
           <Num :amount="hoveredEnemy.regen" /> regeneration/s

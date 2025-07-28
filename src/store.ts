@@ -154,11 +154,15 @@ export const store: base.Store = {
   },
   getRewards(enemy) {
     let gold = enemy.rewards?.gold ?? 0;
-    const fruit = (enemy.rewards?.fruit ?? 0) * store.fruitMultiplier();
+    let fruit = (enemy.rewards?.fruit ?? 0) * store.fruitMultiplier();
     if (onboard("King of Pump")) {
       gold *= gold;
     } else if (onboard("Kin of Pump")) {
       gold *= 2;
+    }
+    if (onboard("Royal Fruitwearer")) {
+      fruit += gold;
+      gold = 0;
     }
     return { gold, fruit };
   },
@@ -166,10 +170,7 @@ export const store: base.Store = {
     const bandSize = Object.keys(bandByName.value).length;
     let m = 1;
     if (onboard("Royal Fruitbearer")) {
-      m *= bandSize * 10;
-    }
-    if (onboard("Royal Fruitwearer")) {
-      m *= (bandSize - 1) * 10;
+      m *= bandSize * (bandSize - 1);
     }
     return m;
   },
