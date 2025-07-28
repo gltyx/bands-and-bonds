@@ -47,7 +47,7 @@ function runTo(currentTime: number) {
   }
   for (const [key, t] of Object.entries(store.run.timers)) {
     t.time ??= 0;
-    if (t.attack) {
+    if (t.affectedBySpeedLevel) {
       t.time += deltaTime * store.run.speedLevel;
     } else {
       t.time += deltaTime;

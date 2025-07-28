@@ -79,7 +79,7 @@ export const allEnemies: Enemy[] = [
   },
   {
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
-    rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "poison", "sharp", "blunt"],
+    rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "poison", "sharp", "blunt", "ranged"],
     passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
   },
 ];

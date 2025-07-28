@@ -197,7 +197,7 @@ for (const enemy of Object.values(enemiesByName)) {
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
         :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
         :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-        :autostart="ab.automatic" :attack="!ab.peaceful" />
+        :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful" />
     </template>
     <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
     <template v-for="monster in store.run.capturedMonsters" :key="monster">
@@ -206,7 +206,7 @@ for (const enemy of Object.values(enemiesByName)) {
           :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name"
           :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
           :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-          :autostart="ab.automatic" :attack="!ab.peaceful" />
+          :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful" />
       </template>
     </template>
     <template v-if="fighting">

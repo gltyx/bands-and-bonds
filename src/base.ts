@@ -3,7 +3,7 @@ export type Timer = {
   duration: number;
   cost: { gold: number; fruit: number };
   automatic?: boolean;
-  attack?: boolean; // Effects like speed level only apply to attacks.
+  affectedBySpeedLevel?: boolean;
 };
 
 export type Band = {
@@ -127,6 +127,7 @@ export type Ability = {
   automatic?: boolean;
   tags?: string[];
   peaceful?: boolean; // If true, can be used outside of combat.
+  affectedBySpeedLevel?: boolean; // Defaults to true for non-peaceful abilities.
   source?: { name: string; row: number; col: number }; // The friend this comes from.
 };
 

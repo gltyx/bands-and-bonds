@@ -12,7 +12,7 @@ const props = defineProps({
   duration: { type: Number, required: false },
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
-  attack: { type: Boolean, default: false },
+  affectedBySpeedLevel: { type: Boolean, default: false },
   cost: { type: Object as PropType<{ gold: number; fruit: number }>, default: () => ({ gold: 0, fruit: 0 }) },
 });
 function start() {
@@ -21,7 +21,7 @@ function start() {
     duration: props.duration,
     cost: props.cost,
     automatic: props.autostart || pointerDown.value,
-    attack: props.attack,
+    affectedBySpeedLevel: props.affectedBySpeedLevel,
   });
 }
 function style() {
@@ -77,7 +77,7 @@ onUnmounted(() => {
 
 const duration = computed(() => {
   if (!props.duration) return "";
-  let d = props.attack ? props.duration / store.run.speedLevel : props.duration;
+  let d = props.affectedBySpeedLevel ? props.duration / store.run.speedLevel : props.duration;
   const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
     d *= enemy.slowTime ?? 1;

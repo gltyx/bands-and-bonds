@@ -542,8 +542,8 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
     description: "Hedge Lost is the only trader in the Hedge Market who is not originally a shrew.",
     abilities: [{
       name: "Buy Fruit",
-      duration: 5,
-      consumes: { gold: 100 },
+      duration: 1,
+      consumes: { gold: 10 },
       description: 'Buy a piece of fruit at the Hedge Market.',
       onCompleted(store, times) {
         store.run.fruit += store.fruitMultiplier() * times;
@@ -555,17 +555,18 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
       description: "Hedge Found is the only trader admitted to the Inner Hedge Market who is not originally a shrew.",
       abilities: [{
         name: "Buy Fruit",
-        duration: 5,
-        consumes: { gold: 100 },
-        description: 'Buy a piece of fruit at the Hedge Market.',
+        duration: 1,
+        consumes: { gold: 10 },
+        description: 'Buy a piece of fruit at the Hedge Market. Affected by Running Start.',
+        affectedBySpeedLevel: true,
         onCompleted(store, times) {
           store.run.fruit += store.fruitMultiplier() * times;
         },
         peaceful: true,
       }, {
         name: "Buy Sapling",
-        duration: 5,
-        consumes: { gold: 100 },
+        duration: 10,
+        consumes: { gold: 1_000 },
         description: (store) => `
 Buy a fruit sapling at the Hedge Market.${store.run.saplings ? `
 (Currently ${numberSpan(store.run.saplings)} saplings producing
@@ -657,12 +658,14 @@ a Xaranthian person, and neither has anyone else in your band.
       hidden: (store) => store.run.room.xaranthian.guns !== 1,
       duration: 16,
       description: "Fire the mechanical gun.",
+      tags: ['ranged'],
       damage: 1,
     }, {
       name: "Fire Xaranthian Guns",
       hidden: (store) => store.run.room.xaranthian.guns < 2,
       duration: 16,
       description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
+      tags: ['ranged'],
       damage: (store) => store.run.room.xaranthian.guns,
     }],
     super: {
@@ -761,12 +764,14 @@ a Xaranthian person, and neither has anyone else in your band.
         hidden: (store) => store.run.room.xaranthian.guns !== 1,
         duration: 16,
         description: "Fire the mechanical gun.",
+        tags: ['ranged'],
         damage: 1,
       }, {
         name: "Fire Xaranthian Guns",
         hidden: (store) => store.run.room.xaranthian.guns < 2,
         duration: 16,
         description: (store) => `Fire ${numberSpan(store.run.room.xaranthian.guns)} mechanical guns.`,
+        tags: ['ranged'],
         damage: (store) => store.run.room.xaranthian.guns,
       }],
     },
