@@ -1,7 +1,13 @@
+export type Resources = {
+  gold: number;
+  fruit: number;
+  saplings: number;
+};
+
 export type Timer = {
   time?: number;
   duration: number;
-  cost: { gold: number; fruit: number };
+  cost: Resources;
   automatic?: boolean;
   affectedBySpeedLevel?: boolean;
 };
@@ -91,7 +97,7 @@ export type Store = {
   emptySpacesAround: (row: number, col: number) => { row: number; col: number }[];
   available: (row: number, col: number) => boolean;
   lightRadius: () => string;
-  getRewards: (enemy: Enemy) => { gold: number; fruit: number };
+  getRewards: (enemy: Enemy) => Resources;
   takeTurn: (turn: string) => void;
   fruitMultiplier: () => number;
   abilityEffects: (ab: Ability) => AbilityEffects;
@@ -150,7 +156,7 @@ export type Enemy = {
   count?: number;
   dodge?: number; // Attacks slower than this will miss. Chance to hit ramps to 100% as duration approaches 0.
   ethereal?: boolean;
-  rewards?: { gold?: number, fruit?: number };
+  rewards?: Partial<Resources>;
   abilities?: Ability[];
   passiveEffects?: string[];
   weaknesses?: string[];

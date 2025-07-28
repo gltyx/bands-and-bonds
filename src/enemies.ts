@@ -16,7 +16,7 @@ export const allEnemies: Enemy[] = [
 
   { name: "Glass Dragon", health: 100_000, rewards: { gold: 100, fruit: 10 }, weaknesses: ["blunt", "back"] },
   { name: "Xaranthian Construct", health: 650_000, rewards: { gold: 250 }, weaknesses: ["left"] },
-  { name: "Potato Golem", health: 1_000, armor: 1_000, rewards: { fruit: 70 }, weaknesses: ["sharp", "fire"] },
+  { name: "Potato Golem", health: 1_000, armor: 1_000, rewards: { fruit: 70, saplings: 1 }, weaknesses: ["sharp", "fire"] },
   { name: "Fortified Door", health: 100, armor: 1000, rewards: {} },
   { name: "Master of Doors", health: 1_250_000, armor: 10_000, rewards: { fruit: 30 } },
   { name: "Corrupted Bounty Hunter", health: 990_000, armor: 1000, dodge: 0.25, rewards: { gold: 200 }, weaknesses: ["fast"] },
@@ -54,8 +54,8 @@ export const allEnemies: Enemy[] = [
   { name: "Hopanoids", count: 10, health: 50_000, armor: 1_000, dodge: 1, rewards: { fruit: 100 }, weaknesses: ["fire"] },
   { name: "Tosyl Rose", health: 860_000, armor: 4_000, rewards: { gold: 100, fruit: 100 }, weaknesses: ["fire", "right"] },
   { name: "Sullen Bearer", health: 990_000, armor: 10_000, rewards: { gold: 200 }, weaknesses: ["back"] },
-  { name: "Unwelcoming Glade", health: 2_400_000, rewards: { gold: 100, fruit: 100 }, weaknesses: ["fire", "sharp"] },
-  { name: "Food Mimic", health: 3_100_000, armor: 10, rewards: { gold: 100, fruit: 120 }, weaknesses: ["blunt"] },
+  { name: "Unwelcoming Glade", health: 2_400_000, rewards: { gold: 100, fruit: 100, saplings: 1 }, weaknesses: ["fire", "sharp"] },
+  { name: "Food Mimic", health: 3_100_000, armor: 10, rewards: { gold: 100, fruit: 120 }, weaknesses: ["blunt", "bite"] },
   { name: "Frog Assassin", health: 1_050_000, dodge: 0.1, rewards: { gold: 1, fruit: 1 } },
   { name: "Enantiomers", count: 2, health: 1_000_000, armor: 9_100, dodge: 0.1, rewards: { fruit: 150 }, weaknesses: ["fire"] },
   { name: "Gnollish Ambassador", health: 750_000, armor: 10, dodge: 0.05, rewards: { gold: 200, fruit: 75 }, weaknesses: ["fire", "right"] },
@@ -79,7 +79,7 @@ export const allEnemies: Enemy[] = [
   },
   {
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
-    rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "poison", "sharp", "blunt", "ranged"],
+    rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "dark", "poison", "sharp", "blunt", "ranged"],
     passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
   },
 ];
@@ -88,19 +88,20 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Wild Slime": [{ name: "Slobber", duration: 5, damage: 1, description: "Cover the enemy in slime." }],
   "Poison Crow": [{
     name: "Crow Blast", duration: 5, description: "An explosion of feathers and poison.",
+    tags: ['poison'],
     onCompleted(store, times, self) {
       const e = store.abilityEffects(self);
       const hits = e.rndHits(times);
       store.addPoison(10 * e.damageMultiplier * hits);
     },
   }],
-  "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes." }],
-  "Thick Door": [{ name: "Creaking", duration: 10, damage: 0, description: "The door creaks ominously." }],
-  "Bandlings": [{ name: "Swarm of Bandlings", duration: 5, damage: 1, description: "A swarm of fierce little warriors." }],
-  "Dead Gladiator": [{ name: "Blades of Revenge", duration: 1, damage: 100, description: "A vengeful gladiator attacks." }],
-  "Lobster Daddy": [{ name: "Claw Smash", duration: 100, damage: 1000, description: "A powerful claw attack." }],
-  "Will-o-Wasp": [{ name: "Sting", duration: 0.05, damage: 1, description: "The quick and painful sting of a wasp." }],
-  "The Shroud": [{ name: "Shroud of Darkness", duration: 1, damage: 1000, description: "Envelops the enemy in darkness." }],
+  "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes.", tags: ['blunt'] }],
+  "Thick Door": [{ name: "Creaking", duration: 10, damage: 0, description: "The door creaks ominously.", tags: ['sound'] }],
+  "Bandlings": [{ name: "Swarm of Bandlings", duration: 5, damage: 1, description: "A swarm of fierce little warriors.", tags: ['blunt'] }],
+  "Dead Gladiator": [{ name: "Blades of Revenge", duration: 1, damage: 100, description: "A vengeful gladiator attacks.", tags: ['sharp'] }],
+  "Lobster Daddy": [{ name: "Claw Smash", duration: 100, damage: 1000, description: "A powerful claw attack.", tags: ['sharp'] }],
+  "Will-o-Wasp": [{ name: "Sting", duration: 0.05, damage: 1, description: "The quick and painful sting of a wasp.", tags: ['poison'] }],
+  "The Shroud": [{ name: "Shroud of Darkness", duration: 1, damage: 1000, description: "Envelops the enemy in darkness.", tags: ['dark'] }],
   "Dark Lord": [{ name: "Shadow Strike", duration: 1, damage: 10, description: "The Dark Lord never misses.", tags: ['dark', 'undodgeable'] }],
   "Clockomancer": [{
     name: "Time Wrap", duration: 1, description: "Slows down time.",
@@ -124,7 +125,7 @@ const enemyAbilities: Record<string, Ability[]> = {
     onCompleted(store) {
       const enemy = store.currentEnemy();
       if (enemy?.name?.includes("Door")) {
-        store.run.room.damage = enemy.health ?? 0;
+        store.addDamage(Infinity, 1);
       }
     },
   }],
@@ -137,6 +138,7 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Chago's Chamber": [{ name: "Spring Trap", duration: 1, damage: 1, description: "" }],
   "Chago": [{
     name: "Create Cheese Demon", duration: 300, description: "Chago releases a demon to chew on the enemy.",
+    tags: ['bite'],
     onCompleted(store) {
       store.addPoison(160000);
     },
@@ -161,10 +163,13 @@ This negates the defenses of ethereal enemies.`,
     description: "Skyrmion pairing of opposite charges from opposite valleys is favored by both Coulomb and effective Zeeman terms."
   }],
   "Defensive Installation": [{
-    name: "Set Up Defenses", duration: 1200, damage: 800_000_000,
+    name: "Set Up Defenses", duration: 1200, damage: 800_000_000, tags: ['ranged'],
     description: "The best defense is a slow but devastating attack."
   }],
-  "Tenebra": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Tenebra": [
+    { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 11_000, description: "The black stripes connect to the darkness of the underworld." },
+    { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 11_000, description: "The white stripes connect to the light of the heavens." },
+  ],
   "Landas Wizard": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Crystal Man": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Power Crystal": [{ name: "", duration: 1, damage: 1, description: "" }],
@@ -197,7 +202,7 @@ This negates the defenses of ethereal enemies.`,
   "The King's Armor": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Corridor of Illusions": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Hiber Conduit": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Core Diver": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Core Diver": [{ name: "Magma Vortex", duration: 60, damage: 1_200_000, description: "The Core Diver floods the area with magma that pulls down your enemies.", tags: ['fire'] }],
   "Smother Mother": [{ name: "", duration: 1, damage: 1, description: "" }],
   "The Final Warden": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Skelemasterion": [{ name: "", duration: 1, damage: 1, description: "" }],

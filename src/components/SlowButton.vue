@@ -4,7 +4,8 @@ import { computed, onUnmounted, ref, watch, type PropType } from 'vue';
 import { store } from '../store.ts';
 import Fruit from './Fruit.vue';
 import Gold from './Gold.vue';
-import { durationFormat } from '../base.ts';
+import Saplings from './Saplings.vue';
+import { durationFormat, type Resources } from '../base.ts';
 const props = defineProps({
   timerKey: { type: String, required: false },
   title: { type: String, required: true },
@@ -13,7 +14,7 @@ const props = defineProps({
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
   affectedBySpeedLevel: { type: Boolean, default: false },
-  cost: { type: Object as PropType<{ gold: number; fruit: number }>, default: () => ({ gold: 0, fruit: 0 }) },
+  cost: { type: Object as PropType<Resources>, default: () => ({ gold: 0, fruit: 0, saplings: 0 }) },
 });
 function start() {
   if (!props.timerKey || !props.duration) return;
@@ -47,7 +48,7 @@ const description = computed(() => {
   return props.description ? marked(props.description) : "";
 });
 const affordable = computed(() => {
-  const aff = store.run.gold >= props.cost.gold && store.run.fruit >= props.cost.fruit;
+  const aff = store.run.gold >= props.cost.gold && store.run.fruit >= props.cost.fruit && store.run.saplings >= props.cost.saplings;
   return aff;
 });
 watch(affordable, (newVal) => {
@@ -72,6 +73,7 @@ onUnmounted(() => {
     // Refund cost.
     store.run.gold += props.cost.gold;
     store.run.fruit += props.cost.fruit;
+    store.run.saplings += props.cost.saplings;
   }
 });
 
@@ -97,6 +99,9 @@ const duration = computed(() => {
       </div>
       <div class="cost" v-if="props.cost.fruit > 0" :class="{ unaffordable: !affordable && !running }">
         <Fruit :amount="props.cost.fruit" />
+      </div>
+      <div class="cost" v-if="props.cost.saplings > 0" :class="{ unaffordable: !affordable && !running }">
+        <Saplings :amount="props.cost.saplings" />
       </div>
       <div class="title">{{ props.title }}</div>
       <div class="description" v-html="description"></div>

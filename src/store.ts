@@ -103,9 +103,11 @@ export const store: base.Store = {
     const cost = t.cost ?? {};
     cost.gold ??= 0;
     cost.fruit ??= 0;
-    if (store.run.gold < cost.gold || store.run.fruit < cost.fruit) return; // Not enough resources.
+    cost.saplings ??= 0;
+    if (store.run.gold < cost.gold || store.run.fruit < cost.fruit || store.run.saplings < cost.saplings) return; // Not enough resources.
     store.run.gold -= cost.gold || 0;
     store.run.fruit -= cost.fruit || 0;
+    store.run.saplings -= cost.saplings || 0;
     store.run.timers[key] = t;
   },
   timerFinished(key: string, t: base.Timer, times: number) {
@@ -153,6 +155,7 @@ export const store: base.Store = {
     return lightRadius.value;
   },
   getRewards(enemy) {
+    const saplings = enemy.rewards?.saplings ?? 0;
     let gold = enemy.rewards?.gold ?? 0;
     let fruit = (enemy.rewards?.fruit ?? 0) * store.fruitMultiplier();
     if (onboard("King of Pump")) {
@@ -164,7 +167,7 @@ export const store: base.Store = {
       fruit += gold;
       gold = 0;
     }
-    return { gold, fruit };
+    return { gold, fruit, saplings };
   },
   fruitMultiplier() {
     const bandSize = Object.keys(bandByName.value).length;
@@ -246,7 +249,7 @@ function addDamage(x: number, times: number) {
     } else {
       // Victory!
       if (!window.location.search.includes('test')) {
-        store.run.timers.celebrating = { duration: 1000, cost: { gold: 0, fruit: 0 } };
+        store.run.timers.celebrating = { duration: 1000, cost: { gold: 0, fruit: 0, saplings: 0 } };
       }
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;
@@ -308,8 +311,8 @@ export function abilityDuration(ab: base.Ability) {
   return ab.duration;
 }
 
-export function abilityCost(ab: base.Ability): { gold: number; fruit: number } {
-  const defaultCost = { gold: 0, fruit: 0 };
+export function abilityCost(ab: base.Ability): base.Resources {
+  const defaultCost = { gold: 0, fruit: 0, saplings: 0 };
   if (ab.consumes) {
     if (typeof ab.consumes === 'function') {
       return { ...defaultCost, ...ab.consumes(store) };
@@ -440,8 +443,10 @@ function timerFinished(key: string, timer: base.Timer, times: number) {
   } else {
     if (timer.cost?.gold) _times = Math.min(_times, 1 + Math.floor(store.run.gold / timer.cost.gold));
     if (timer.cost?.fruit) _times = Math.min(_times, 1 + Math.floor(store.run.fruit / timer.cost.fruit));
+    if (timer.cost?.saplings) _times = Math.min(_times, 1 + Math.floor(store.run.saplings / timer.cost.saplings));
     if (timer.cost?.gold) store.run.gold -= timer.cost.gold * (_times - 1);
     if (timer.cost?.fruit) store.run.fruit -= timer.cost.fruit * (_times - 1);
+    if (timer.cost?.saplings) store.run.saplings -= timer.cost.saplings * (_times - 1);
   }
   if (_times && ab) {
     executeAbility(ab, _times);

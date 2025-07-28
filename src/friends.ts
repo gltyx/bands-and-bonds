@@ -549,6 +549,19 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
         store.run.fruit += store.fruitMultiplier() * times;
       },
       peaceful: true,
+    }, {
+      name: "Buy Sapling",
+      duration: 10,
+      consumes: { gold: 1_000 },
+      description: (store) => `
+Buy a fruit sapling at the Hedge Market.${store.run.saplings ? `
+(Currently ${numberSpan(store.run.saplings)} saplings producing
+${numberSpan(store.run.saplings * store.fruitMultiplier(),
+        ' <img src="images/generated/fruit.webp" class="resource-icon" />')} per second.)` : ''}`,
+      onCompleted(store, times) {
+        store.run.saplings += times;
+      },
+      peaceful: true,
     }],
     super: {
       name: 'Hedge Found',
@@ -557,8 +570,7 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
         name: "Buy Fruit",
         duration: 1,
         consumes: { gold: 10 },
-        description: 'Buy a piece of fruit at the Hedge Market. Affected by Running Start.',
-        affectedBySpeedLevel: true,
+        description: 'Buy a piece of fruit at the Hedge Market.',
         onCompleted(store, times) {
           store.run.fruit += store.fruitMultiplier() * times;
         },
@@ -576,6 +588,14 @@ ${numberSpan(store.run.saplings * store.fruitMultiplier(),
           store.run.saplings += times;
         },
         peaceful: true,
+      }, {
+        name: "Crash the Market",
+        duration: 0.1,
+        consumes: (store) => ({ saplings: Math.max(1, store.run.saplings) }),
+        preventRepeat: true,
+        damage: (store) => 1000 * Math.max(1, store.run.saplings),
+        description: 'Destroy all saplings to set the Hedge Market on fire.',
+        tags: ['fire'],
       }],
     },
   },
