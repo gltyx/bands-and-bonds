@@ -232,7 +232,7 @@ for (const enemy of Object.values(enemiesByName)) {
         </div>
       </button>
     </template>
-    <button @click="retreat()" v-if="store.run.steps > 0">
+    <button @click="retreat()" accesskey="r" v-if="store.run.steps > 0">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">
         <div class="title">Retreat</div>
@@ -293,6 +293,7 @@ for (const enemy of Object.values(enemiesByName)) {
   padding: 10px 30px;
   padding-top: 0;
   margin: 10px 0;
+  max-width: 600px;
 
   img.main {
     width: 200px;

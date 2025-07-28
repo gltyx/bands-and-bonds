@@ -31,8 +31,10 @@ function set(row: number, col: number, name: string) {
   const onb = onboard(name);
   const cost = friendsByName[name]?.cost ?? 0;
   if (onb) {
-    delete store.local.band[onb.col + onb.row * store.local.band.width];
-    store.local.band[col + row * store.local.band.width] = name;
+    clear(onb.row, onb.col);
+    if (store.available(row, col)) {
+      store.local.band[col + row * store.local.band.width] = name;
+    }
   } else if (store.team.packs >= packsSpent.value + cost && store.available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
   }

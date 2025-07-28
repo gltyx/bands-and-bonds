@@ -53,7 +53,7 @@ The starting weapon level is the highest level achieved.
           const hits = e.rndHits(times);
           store.run.room.armorDamage = Math.min(
             store.currentEnemy()?.armor ?? 0,
-            store.run.room.armorDamage + e.damageMultiplier * 100 * hits);
+            store.run.room.armorDamage + e.damageMultiplier * hits);
         },
       }],
     },
@@ -406,7 +406,7 @@ People who shed all their fears and worries can become Kins of Pump. They still 
 but never worry or care about their wellbeing. They are free to pursue their desires without shame.
 
 The Kin you found in the dungeon came here to search for treasure. They have now found a crown, and
-started to act like a king. They still do not help, but all gold finds are now squared.
+started to act like a king. They still do not help, but all gold finds are now multiplied a hundredfold.
     `,
       passiveEffects: ["King of Pump squares the gold found after battles."],
     },

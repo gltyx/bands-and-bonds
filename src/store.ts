@@ -156,7 +156,7 @@ export const store: base.Store = {
     let gold = enemy.rewards?.gold ?? 0;
     let fruit = (enemy.rewards?.fruit ?? 0) * store.fruitMultiplier();
     if (onboard("King of Pump")) {
-      gold *= gold;
+      gold *= 100;
     } else if (onboard("Kin of Pump")) {
       gold *= 2;
     }
@@ -265,7 +265,7 @@ function addDamage(x: number, times: number) {
 function takeTurn(turn: string) {
   store.run.room = startingRoomData();
   store.run.steps += 1;
-  if (turn !== 'Keep going') {
+  if (turn !== KEEP_GOING.title) {
     store.run.turns.push(turn);
   }
   let path = turnsToPath(store.run.steps, store.run.turns);
@@ -454,7 +454,7 @@ function timerFinished(key: string, timer: base.Timer, times: number) {
   }
 }
 
-export const KEEP_GOING: base.Turn = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
+export const KEEP_GOING: base.Turn & { title: string } = { title: 'Keep going', description: 'Continue exploring the dungeon.' };
 export const plannedTurn = computed(() => {
   const wf = onboard("Wayfinder");
   if (store.run.steps === 0 || !wf || !store.local.destination) return;
@@ -476,7 +476,7 @@ export const plannedTurn = computed(() => {
 function takePlannedTurn(turn: string) {
   if (turn === 'Retreat') {
     retreat();
-    store.run.steps += 1; // Get started on the next run immediately.
+    store.takeTurn("Enter the dungeon"); // Get started on the next run immediately.
   } else {
     store.takeTurn(turn);
   }
@@ -540,8 +540,8 @@ export const bandByName = computed(() => {
       }
     }
   }
-  const az = byName.Azrekta;
-  if (az) {
+  function upgradeEveryoneNextTo(az: { row: number, col: number } | undefined) {
+    if (!az) return;
     for (const [row, col] of [[az.row - 1, az.col], [az.row + 1, az.col], [az.row, az.col - 1], [az.row, az.col + 1]] as [number, number][]) {
       const place = col + row * store.local.band.width;
       const n = store.local.band[place];
@@ -553,6 +553,8 @@ export const bandByName = computed(() => {
       }
     }
   }
+  upgradeEveryoneNextTo(byName.Azrekta);
+  upgradeEveryoneNextTo(byName['Smiling Wizard']);
   return byName;
 });
 

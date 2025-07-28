@@ -266,7 +266,11 @@ export function turnsToPath(numSteps: number, turns: string[]): Room[] {
     if (room.end || rooms.length === numSteps + 1) return rooms;
     if (room.next) {
       const step = _turns.shift() ?? '';
-      target = room.next[step]?.label;
+      const next = room.next[step];
+      if (!next) {
+        console.error(`"${step}" not  a valid step: ${JSON.stringify(room.next)}`);
+      }
+      target = next?.label;
     }
   }
   return rooms;
