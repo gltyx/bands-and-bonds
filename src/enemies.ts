@@ -67,7 +67,8 @@ export const allEnemies: Enemy[] = [
   { name: "The Final Warden", dodge: 0.001, health: 999_000_000, regen: 600_000, rewards: { gold: 15_000, fruit: 2500 }, immune: ["fire"], weaknesses: ["light", "ice"] },
   {
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
-    rewards: { gold: 1_000_000_000, fruit: 1_000_000 }, passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."]
+    rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "poison", "sharp", "blunt"],
+    passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
   },
 ];
 

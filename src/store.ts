@@ -286,9 +286,9 @@ export function describeAbility(ab: base.Ability, e: base.AbilityEffects): strin
     d = d(store, ab);
   }
   if (ab.damage) {
-    const dmg = Math.floor(getAbilityBaseDamage(ab) * e.damageMultiplier / e.weaknessMultiplier);
-    const text = e.weaknessMultiplier > 1 ?
-      `${base.numberFormat(e.weaknessMultiplier)} × ${base.numberFormat(dmg)}` : base.numberFormat(dmg);
+    const dmg = Math.floor(getAbilityBaseDamage(ab) * e.baseMultiplier);
+    const text = e.enemyMultiplier !== 1 ?
+      `${base.numberFormat(e.enemyMultiplier)} × ${base.numberFormat(dmg)}` : base.numberFormat(dmg);
     d += `\n\n<span class="numbers">${text}</span> damage`;
   }
   return d;
@@ -330,38 +330,41 @@ export function abilityEffects(ab: base.Ability): base.AbilityEffects {
   if (!undodgeable && ethereal.value) {
     hitChance *= 0.1;
   }
-  let mult = 1;
-  mult *= store.weaponLevel();
+  let baseMultiplier = 1;
+  baseMultiplier *= store.weaponLevel();
   if (onboard("The Silent Quartet") || ab.source && nextTo("The Silent Song", ab.source.row, ab.source.col)) {
-    mult *= 2;
+    baseMultiplier *= 2;
   }
-  let weaknessMultiplier = 1;
-  for (const immunity of enemy?.immune ?? []) {
-    if (ab.tags?.includes(immunity)) {
-      mult *= 0;
-    }
-  }
-  if (enemy && onboard("Desert Rabbit")) {
-    for (const weakness of getWeaknesses(enemy)) {
-      if (ab.tags?.includes(weakness)) {
-        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+  let enemyMultiplier = 1;
+  if (enemy && store.run.room.damage < enemy.health) {
+    const weaknesses = getWeaknesses(enemy);
+    for (const immunity of enemy.immune ?? []) {
+      if (ab.tags?.includes(immunity) && !weaknesses.includes(immunity)) {
+        enemyMultiplier *= 0;
       }
-      const center = onboard("Lamplighter");
-      if (!center || !ab.source) continue;
-      if (weakness === 'left' && ab.source.col < center.col) {
-        weaknessMultiplier *= store.run.desertBlessingMultiplier;
-      } else if (weakness === 'right' && ab.source.col > center.col) {
-        weaknessMultiplier *= store.run.desertBlessingMultiplier;
-      } else if (weakness === 'front' && ab.source.row < center.row) {
-        weaknessMultiplier *= store.run.desertBlessingMultiplier;
-      } else if (weakness === 'back' && ab.source.row > center.row) {
-        weaknessMultiplier *= store.run.desertBlessingMultiplier;
+    }
+    if (onboard("Desert Rabbit")) {
+      for (const weakness of weaknesses) {
+        if (ab.tags?.includes(weakness)) {
+          enemyMultiplier *= store.run.desertBlessingMultiplier;
+        }
+        const center = onboard("Lamplighter");
+        if (!center || !ab.source) continue;
+        if (weakness === 'left' && ab.source.col < center.col) {
+          enemyMultiplier *= store.run.desertBlessingMultiplier;
+        } else if (weakness === 'right' && ab.source.col > center.col) {
+          enemyMultiplier *= store.run.desertBlessingMultiplier;
+        } else if (weakness === 'front' && ab.source.row < center.row) {
+          enemyMultiplier *= store.run.desertBlessingMultiplier;
+        } else if (weakness === 'back' && ab.source.row > center.row) {
+          enemyMultiplier *= store.run.desertBlessingMultiplier;
+        }
       }
     }
   }
   return {
-    damageMultiplier: mult * weaknessMultiplier,
-    weaknessMultiplier,
+    damageMultiplier: baseMultiplier * enemyMultiplier,
+    baseMultiplier, enemyMultiplier,
     hitChance,
     rndHits: (numAttacks: number) => rndHits(numAttacks, hitChance),
   };

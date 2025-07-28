@@ -38,16 +38,22 @@ const passiveEffects = computed(() => {
   }
   if (!enemy.value) return effects;
   const count = enemy.value.count ?? 1;
+  const alive = store.run.room.damage < enemy.value.health;
   const s = count > 1 ? '' : 's';
-  const is = count > 1 ? 'are' : 'is';
+  const is = count > 1 ? (alive ? 'are' : 'were') : (alive ? 'is' : 'was');
   effects.push(...enemy.value.passiveEffects ?? []);
+  const weaknesses = st.getWeaknesses(enemy.value);
   if (enemy.value.immune) {
     const attacks = [];
     for (const i of enemy.value.immune) {
-      attacks.push(`<u>${i} attacks</u>`);
+      if (!weaknesses.includes(i)) {
+        attacks.push(`<u>${i} attacks</u>`);
+      }
     }
-    effects.push(
-      `${enemy.value.name} ${is} immune to ${attacks.join(' and ')}.`);
+    if (attacks.length > 0) {
+      effects.push(
+        `${enemy.value.name} ${is} immune to ${attacks.join(' and ')}.`);
+    }
   }
   if (enemy.value.dodge) {
     effects.push(
@@ -60,17 +66,17 @@ const passiveEffects = computed(() => {
       `Enemy is ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}. Attacks will often miss.`);
   }
   if (st.onboard("Desert Rabbit")) {
-    const weaknesses = [];
-    for (const weakness of st.getWeaknesses(enemy.value)) {
+    const weak = [];
+    for (const weakness of weaknesses) {
       if (['left', 'right', 'front', 'back'].includes(weakness)) {
-        weaknesses.push(`<u>attacks from the ${weakness}</u>`);
+        weak.push(`<u>attacks from the ${weakness}</u>`);
       } else {
-        weaknesses.push(`<u>${weakness} attacks</u>`);
+        weak.push(`<u>${weakness} attacks</u>`);
       }
     }
-    if (weaknesses.length > 0) {
+    if (weak.length > 0) {
       const animal = st.onboard("Desert Armadillo") ? 'Desert Armadillo' : 'Desert Rabbit';
-      effects.push(`${animal} tells you that ${enemy.value.name} ${is} weak to ${weaknesses.join(' and ')}.`);
+      effects.push(`${animal} tells you that ${enemy.value.name} ${is} weak to ${weak.join(' and ')}.`);
     }
   }
   return effects;

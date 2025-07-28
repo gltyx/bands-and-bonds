@@ -69,7 +69,8 @@ export type TeamData = {
 
 export type AbilityEffects = {
   damageMultiplier: number; // Total multiplier.
-  weaknessMultiplier: number; // For information.
+  baseMultiplier: number; // For information: multipliers independent of the enemy.
+  enemyMultiplier: number; // For information: multipliers due to the enemy.
   hitChance: number;
   rndHits(numAttacks: number): number; // Returns the random number of hits based on the hit chance.
 };
