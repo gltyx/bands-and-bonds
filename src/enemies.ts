@@ -74,8 +74,9 @@ export const allEnemies: Enemy[] = [
     passiveEffects: ["The Smother Mother is encased in an armor that must have a melting point beyond anything in our world."],
   },
   {
-    name: "The Final Warden", dodge: 0.001, health: 999_000_000, regen: 600_000, rewards: { gold: 15_000, fruit: 2500 }, immune: ["fire"], weaknesses: ["light", "ice"],
-    passiveEffects: ["The air itself is strained and torn as the colossal form of the Final Warden moves faster than your eyes can track it."],
+    name: "The Final Warden", dodge: 0.001, health: 999_000_000, regen: 600_000, rewards: { gold: 15_000, fruit: 2500 },
+    immune: ["fire"], weaknesses: ["light", "ice"],
+    passiveEffects: ["The air itself is strained and torn as the colossal form of the Final Warden moves, too fast to track."],
   },
   {
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
@@ -238,7 +239,7 @@ This negates the defenses of ethereal enemies.`,
     },
     {
       name: "Reveal Skelemasterion's Stairway", duration: 20,
-      description: "Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.",
+      description: "Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.\n\nNOT IMPLEMENTED YET.",
       hidden: (store) => store.currentRoom()?.name !== 'Skelemasterion',
       onCompleted() {
         // TODO: Implement second level.

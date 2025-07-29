@@ -39,6 +39,9 @@ const passiveEffects = computed(() => {
   if (!enemy.value) return effects;
   const count = enemy.value.count ?? 1;
   const alive = store.run.room.damage < enemy.value.health;
+  if (enemy.value.name === 'Skelemasterion' && !alive && !store.run.capturedMonsters.includes('Skelemasterion')) {
+    return ['Skelemasterion is defeated. You search its lair and collect its treasure. You fail to find a way to progress further.'];
+  }
   const s = count > 1 ? '' : 's';
   const is = count > 1 ? (alive ? 'are' : 'were') : (alive ? 'is' : 'was');
   effects.push(...enemy.value.passiveEffects ?? []);
@@ -63,7 +66,8 @@ const passiveEffects = computed(() => {
   }
   if (st.ethereal.value) {
     effects.push(
-      `Enemy is ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}. Attacks will often miss.`);
+      `Enem${count > 1 ? 'ies' : 'y'} ${is} ethereal${enemy.value.ethereal ? "" : " due to Azrekta's presence"}.
+      Attacks ${alive ? 'will often miss.' : 'have often missed.'}`);
   }
   if (st.onboard("Desert Rabbit")) {
     const weak = [];
