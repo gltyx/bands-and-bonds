@@ -47,7 +47,7 @@ const passiveEffects = computed(() => {
     const attacks = [];
     for (const i of enemy.value.immune) {
       if (!weaknesses.includes(i)) {
-        attacks.push(`<u>${i} attacks</u>`);
+        attacks.push(`<span class="tag ${i}"></span><u>${i} attacks</u>`);
       }
     }
     if (attacks.length > 0) {
@@ -71,7 +71,7 @@ const passiveEffects = computed(() => {
       if (['left', 'right', 'front', 'back'].includes(weakness)) {
         weak.push(`<u>attacks from the ${weakness}</u>`);
       } else {
-        weak.push(`<u>${weakness} attacks</u>`);
+        weak.push(`<span class="tag ${weakness}"></span><u>${weakness} attacks</u>`);
       }
     }
     if (weak.length > 0) {
@@ -197,7 +197,8 @@ for (const enemy of Object.values(enemiesByName)) {
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
         :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
         :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-        :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful" />
+        :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful"
+        :tags="st.onboard('Desert Rabbit') && ab.tags" />
     </template>
     <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
     <template v-for="monster in store.run.capturedMonsters" :key="monster">
@@ -206,7 +207,8 @@ for (const enemy of Object.values(enemiesByName)) {
           :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name"
           :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
           :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-          :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful" />
+          :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful"
+          :tags="st.onboard('Desert Rabbit') && ab.tags" />
       </template>
     </template>
     <template v-if="fighting">

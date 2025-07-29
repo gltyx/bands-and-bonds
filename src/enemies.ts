@@ -19,7 +19,7 @@ export const allEnemies: Enemy[] = [
   { name: "Potato Golem", health: 1_000, armor: 1_000, rewards: { fruit: 70, saplings: 1 }, weaknesses: ["sharp", "fire"] },
   { name: "Fortified Door", health: 100, armor: 1000, rewards: {} },
   { name: "Master of Doors", health: 1_250_000, armor: 10_000, rewards: { fruit: 30 } },
-  { name: "Corrupted Bounty Hunter", health: 990_000, armor: 1000, dodge: 0.25, rewards: { gold: 200 }, weaknesses: ["fast"] },
+  { name: "Corrupted Bounty Hunter", health: 990_000, armor: 1000, dodge: 0.25, rewards: { gold: 200 }, weaknesses: ["front"] },
   { name: "Lior the Weaver", health: 160_000, armor: 1, dodge: 0.1, rewards: { gold: 200, fruit: 80 }, weaknesses: ["sharp", "fire"] },
   { name: "Skeletron", health: 100_000, armor: 200, rewards: { gold: 100 }, weaknesses: ["blunt", "back"], },
   { name: "Chago's Chamber", health: 600_000, armor: 1000, rewards: { gold: 200 }, weaknesses: ["blunt", "water"] },
@@ -155,7 +155,7 @@ This negates the defenses of ethereal enemies.`,
   }],
   "Wands from the Depths": [
     { name: "Sapphire Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['water'] },
-    { name: "Emerald Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['acid'] },
+    { name: "Emerald Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['poison'] },
     { name: "Ruby Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['fire'] },
   ],
   "Skyrmions": [{

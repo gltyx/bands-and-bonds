@@ -9,6 +9,7 @@ import { durationFormat, type Resources } from '../base.ts';
 const props = defineProps({
   timerKey: { type: String, required: false },
   title: { type: String, required: true },
+  tags: { type: Array, required: false },
   image: { type: String, required: true },
   duration: { type: Number, required: false },
   description: { type: String, required: false },
@@ -92,7 +93,10 @@ const duration = computed(() => {
   <button @click="start()" @pointerdown="pointerDown = true; start();" @pointerup="pointerDown = false"
     @pointercancel="pointerDown = false" @pointerleave="pointerDown = false" :style="style()"
     :class="{ disabled: !affordable || running }" class="slow">
-    <img v-bind:src="props.image" />
+    <div>
+      <img v-bind:src="props.image" />
+      <div class="tags"><span v-for="tag in props.tags" class="tag" :class="tag"></span></div>
+    </div>
     <div class="text">
       <div class="cost" v-if="props.cost.gold > 0" :class="{ unaffordable: !affordable && !running }">
         <Gold :amount="props.cost.gold" />
@@ -130,5 +134,9 @@ const duration = computed(() => {
   right: 8px;
   font-size: 12px;
   color: #486;
+}
+
+.tags {
+  text-align: center;
 }
 </style>

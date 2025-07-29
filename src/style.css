@@ -171,3 +171,89 @@ u {
   filter: blur(7px) !important;
   transition: filter 0.3s ease-in-out;
 }
+
+.tag {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  margin: 2px;
+  border: 1px dotted oklch(0.6 0 0);
+  box-sizing: border-box;
+}
+
+.tag.fire {
+  border: none;
+  border-radius: 50% 50% 1px 1px;
+  background-color: oklch(0.6 0.15 30);
+}
+
+.tag.ice {
+  border: none;
+  background-color: oklch(0.8 0.15 240);
+}
+
+.tag.water {
+  border: none;
+  border-radius: 1px 1px 50% 50%;
+  background-color: oklch(0.6 0.15 240);
+}
+
+.tag.ranged {
+  border: 1px solid oklch(0.9 0 0);
+  border-radius: 50%;
+  background-color: oklch(0.6 0.15 50);
+}
+
+.tag.sharp {
+  border: none;
+  transform: rotate(-45deg);
+  border-radius: 50% 1px 50% 1px;
+  background-color: oklch(0.7 0.05 240);
+}
+
+.tag.blunt {
+  border: none;
+  border-radius: 1px 50% 50% 1px;
+  background-color: oklch(0.6 0.1 50);
+}
+
+.tag.poison {
+  border: none;
+  border-radius: 1px 1px 50% 50%;
+  background-color: oklch(0.6 0.15 150);
+}
+
+.tag.dark {
+  border: 1px solid oklch(0.3 0.15 100);
+  border-radius: 50%;
+  background-color: oklch(0 0.15 100);
+}
+
+.tag.light {
+  border: 1px solid oklch(0.9 0.15 50);
+  border-radius: 50%;
+  background-color: oklch(1 0.15 100);
+}
+
+.tag.bite {
+  border: none;
+  border-top: 1px dotted oklch(0.9 0 0);
+  border-bottom: 1px dotted oklch(0.9 0 0);
+  background-color: oklch(0.6 0.15 30);
+}
+
+.tag.sound {
+  border: 1px solid oklch(0.6 0.15 190);
+  border-right: none;
+  border-radius: 50% 1px 1px 50%;
+}
+
+.tag.undodgeable {
+  border: none;
+  width: 3px;
+  height: 3px;
+  margin: 3px;
+  border-radius: 50%;
+  background-color: oklch(0.6 0 0);
+}
