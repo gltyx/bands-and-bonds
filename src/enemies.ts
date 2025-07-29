@@ -167,45 +167,84 @@ This negates the defenses of ethereal enemies.`,
     description: "The best defense is a slow but devastating attack."
   }],
   "Tenebra": [
-    { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 11_000, description: "The black stripes connect to the darkness of the underworld." },
-    { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 11_000, description: "The white stripes connect to the light of the heavens." },
+    { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 1_100_000, description: "The black stripes connect to the darkness of the underworld." },
+    { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 1_100_000, description: "The white stripes connect to the light of the heavens." },
   ],
-  "Landas Wizard": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Crystal Man": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Power Crystal": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Landas Wizard": [{ name: "Send Sand", tags: ['sharp'], duration: 100, damage: 200_000, description: "A sandstorm passes through the battlefield." }],
+  "Crystal Man": [{ name: "Resonate Crystals", tags: ['sound'], duration: 8, damage: 80_000, description: "The Crystal Man emits a mighty vibration when wet." }],
+  "Power Crystal": [],
 
   "Frozen Centurion": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Trollish Maiden": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Dryfin Carp": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Scaffold Sorcery": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Lost Swimmer": [{ name: "", duration: 1, damage: 1, description: "" }],
-
+  "Lost Swimmer": [{
+    name: "Flood", duration: 100, damage: 1_000_000, tags: ['water', 'undodgeable'],
+    description: "A deceptively slow attack that fills up the battlefield. No attacks can be dodged while the flood is in progress.",
+  }],
   "Geckalog": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Jaw Maw Maw": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Decay Manifest": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Striped Horror": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Dragonfly Agaric": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Artifact Seeker": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Golden Chest": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Golden Chest": [],
   "King of Tadpoles": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Hopanoids": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Tosyl Rose": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Sullen Bearer": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Unwelcoming Glade": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Unwelcoming Glade": [],
   "Food Mimic": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Frog Assassin": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Enantiomers": [{ name: "", duration: 1, damage: 1, description: "" }],
   "Gnollish Ambassador": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Web of Power": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Tombstone of the Forgotten": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Hippogryph": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "The King's Armor": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Corridor of Illusions": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Hiber Conduit": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Core Diver": [{ name: "Magma Vortex", duration: 60, damage: 1_200_000, description: "The Core Diver floods the area with magma that pulls down your enemies.", tags: ['fire'] }],
-  "Smother Mother": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "The Final Warden": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Skelemasterion": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Web of Power": [{
+    name: "Spider Power", tags: ['poison'], duration: 0.2, damage: 100, description: "A quick, sharp stab is all that is felt."
+  }],
+  "Tombstone of the Forgotten": [{
+    name: "The Forgotten Siege", duration: 10_000, damage: 800_000_000, tags: ['dark'],
+    description: "Knights from beyond the tomb lay waste to your enemies.",
+  }],
+  "Hippogryph": [{
+    name: "Hippograb", tags: ['blunt'], duration: 25, damage: 200_000,
+    description: "The beast lifts its prey into the air, then smashes them to the ground.",
+  }],
+  "The King's Armor": [],
+  "Corridor of Illusions": [],
+  "Hiber Conduit": [{
+    name: "Hibernate", tags: ['ice'], duration: 240, damage: 2_400_000,
+    description: "Pipes filled with sub-zero liquid coil around the target.",
+  }],
+  "Core Diver": [{
+    name: "Magma Vortex", duration: 60, damage: 1_200_000, tags: ['fire'],
+    description: "The Core Diver floods the area with magma that pulls down your enemies.",
+  }],
+  "Smother Mother": [{
+    name: "Smother", tags: ['poison', 'fire', 'dark', 'undodgeable'], duration: 15, damage: 300_000,
+    description: "Fumes from the underworld cover the battlefield. All life and light is extinguished.",
+  }],
+  "The Final Warden": [{
+    name: "The Final Warning", duration: 120, damage: 2_400_000, tags: ['ranged', 'sound'],
+    description: "A deadly weapon rings out immediately after the duration of the warning.",
+  }],
+  "Skelemasterion": [
+    {
+      name: "Cancelion", duration: 10, description: "Skelemasterion defeats the opponent. Skelemasterion is lost in the process.",
+      preventRepeat: true,
+      onCompleted(store) {
+        store.addDamage(Infinity, 1);
+        store.run.capturedMonsters = store.run.capturedMonsters.filter(m => m !== 'Skelemasterion');
+      },
+    },
+    {
+      name: "Reveal Skelemasterion's Stairway", duration: 20,
+      description: "Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.",
+      hidden: (store) => store.currentRoom()?.name !== 'Skelemasterion',
+      onCompleted() {
+        // TODO: Implement second level.
+      },
+    },
+  ],
 };
 
 export const enemiesByName = {} as Record<string, Enemy>;

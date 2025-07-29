@@ -323,7 +323,9 @@ export function abilityCost(ab: base.Ability): base.Resources {
 }
 
 export function abilityEffects(ab: base.Ability): base.AbilityEffects {
-  const undodgeable = ab.tags?.includes('undodgeable') || onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
+  const sw7 = onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
+  const swl = store.run.timers["monster-Lost Swimmer-ability-Flood"];
+  const undodgeable = ab.tags?.includes('undodgeable') || sw7 || swl;
   let hitChance = 1;
   const enemy = store.currentEnemy();
   if (!undodgeable && enemy?.dodge) {
