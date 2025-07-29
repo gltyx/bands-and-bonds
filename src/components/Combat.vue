@@ -2,7 +2,7 @@
 import * as st from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import { enemiesByName } from "../enemies.ts";
-import { numberFormat, durationFormat } from "../base.ts";
+import { numberFormat, durationFormat, type Ability } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
 import { computed, ref } from "vue";
@@ -97,6 +97,19 @@ function retreat() {
       retreatConfirmation.value = false;
     }, 2000);
   }
+}
+
+function slowButtonProps(ab: Ability) {
+  return {
+    title: ab.name,
+    description: st.describeAbility(ab, st.abilityEffects(ab)),
+    cost: st.abilityCost(ab),
+    image: `images/generated/${ab.image ?? ab.name}.webp`,
+    duration: st.abilityDuration(ab) * 1000,
+    autostart: ab.automatic,
+    affectedBySpeedLevel: ab.affectedBySpeedLevel ?? !ab.peaceful,
+    tags: st.onboard('Desert Rabbit') && ab.tags,
+  };
 }
 
 function nth(n: number) {
@@ -195,20 +208,13 @@ for (const enemy of Object.values(enemiesByName)) {
   <div class="actions" v-show="!hideActions">
     <template v-for="ab in st.abilities.value" :key="ab.name">
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"
-        :title="ab.name" :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
-        :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-        :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful"
-        :tags="st.onboard('Desert Rabbit') && ab.tags" />
+        v-bind="slowButtonProps(ab)" />
     </template>
     <div v-if="store.run.capturedMonsters.length > 0" class="section">Captured Monsters</div>
     <template v-for="monster in store.run.capturedMonsters" :key="monster">
       <template v-for="ab in enemiesByName[monster].abilities" :key="ab.name">
         <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)"
-          :timer-key="`monster-${monster}-ability-${ab.name}`" :title="ab.name"
-          :description="st.describeAbility(ab, st.abilityEffects(ab))" :cost="st.abilityCost(ab)"
-          :image="`images/generated/${ab.image ?? ab.name}.webp`" :duration="st.abilityDuration(ab) * 1000"
-          :autostart="ab.automatic" :affectedBySpeedLevel="ab.affectedBySpeedLevel ?? !ab.peaceful"
-          :tags="st.onboard('Desert Rabbit') && ab.tags" />
+          :timer-key="`monster-${monster}-ability-${ab.name}`" v-bind="slowButtonProps(ab)" />
       </template>
     </template>
     <template v-if="fighting">
