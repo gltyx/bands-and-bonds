@@ -12,6 +12,7 @@ const props = defineProps({
   tags: { type: Array, required: false },
   image: { type: String, required: true },
   duration: { type: Number, required: false },
+  displayDuration: { type: Number, required: false },
   description: { type: String, required: false },
   autostart: { type: Boolean, default: false },
   affectedBySpeedLevel: { type: Boolean, default: false },
@@ -110,6 +111,7 @@ const duration = computed(() => {
       <div class="title">{{ props.title }}</div>
       <div class="description" v-html="description"></div>
       <div v-show="running" class="duration numbers">{{ duration }}</div>
+      <div v-if="displayDuration" class="duration numbers">{{ durationFormat(props.displayDuration ?? 0) }}</div>
     </div>
   </button>
 </template>

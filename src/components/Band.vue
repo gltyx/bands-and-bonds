@@ -229,7 +229,7 @@ const enabled = computed(() => {
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
-        <SlowButton :title="ab.name"
+        <SlowButton :title="ab.name" :display-duration="typeof ab.duration === 'number' ? 1000 * ab.duration : undefined"
           :description="describeAbility(ab, { hitChance: 1, damageMultiplier: 1, baseMultiplier: 1, enemyMultiplier: 1, rndHits: () => 1 })"
           :image="`images/generated/${ab.image ?? ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityCost(ab)"
           :tags="onboard('Desert Rabbit') && ab.tags" />
