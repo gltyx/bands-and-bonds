@@ -408,7 +408,7 @@ but never worry or care about their wellbeing. They are free to pursue their des
 The Kin you found in the dungeon came here to search for treasure. They have now found a crown, and
 started to act like a king. They still do not help, but all gold finds are now multiplied a hundredfold.
     `,
-      passiveEffects: ["King of Pump squares the gold found after battles."],
+      passiveEffects: ["King of Pump multiplies the gold found after battles a hundredfold."],
     },
   },
   {
