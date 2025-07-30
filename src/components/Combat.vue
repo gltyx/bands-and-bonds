@@ -112,7 +112,7 @@ function slowButtonProps(ab: Ability) {
     duration: st.abilityDuration(ab) * 1000,
     autostart: ab.automatic,
     affectedBySpeedLevel: ab.affectedBySpeedLevel ?? !ab.peaceful,
-    tags: st.onboard('Desert Rabbit') && ab.tags,
+    tags: st.onboard('Desert Rabbit') && st.abilityTags(ab),
   };
 }
 

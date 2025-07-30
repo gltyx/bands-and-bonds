@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import SlowButton from "./SlowButton.vue";
-import { store, describeAbility, abilityCost, friendAt, nextTo, onboard } from "../store.ts";
+import { store, describeAbility, abilityCost, abilityTags, friendAt, nextTo, onboard } from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import Fruit from "./Fruit.vue";
 import Packs from "./Packs.vue";
@@ -110,7 +110,7 @@ const bonds = computed(() => {
       if (!name) continue;
       const friend = friendsByName[name];
       const image = 'chain';
-      for (const nn of ['Azrekta', 'Lord of Gears', 'The Silent Song']) {
+      for (const nn of ['Azrekta', 'Lord of Gears', 'The Silent Song', 'Campfinder']) {
         if (nn === 'Azrekta' && !friend.super) continue;
         if ((nn === 'Lord of Gears' || nn === 'The Silent Song') && !friend.abilities && !friend.super?.abilities) continue;
         const bond = nextTo(nn, row, col);
@@ -229,10 +229,11 @@ const enabled = computed(() => {
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
-        <SlowButton :title="ab.name" :display-duration="typeof ab.duration === 'number' ? 1000 * ab.duration : undefined"
+        <SlowButton :title="ab.name"
+          :display-duration="typeof ab.duration === 'number' ? 1000 * ab.duration : undefined"
           :description="describeAbility(ab, { hitChance: 1, damageMultiplier: 1, baseMultiplier: 1, enemyMultiplier: 1, rndHits: () => 1 })"
           :image="`images/generated/${ab.image ?? ab.name}.webp`" v-if="!ab.hidden?.(store)" :cost="abilityCost(ab)"
-          :tags="onboard('Desert Rabbit') && ab.tags" />
+          :tags="onboard('Desert Rabbit') && abilityTags({ ...ab, source: onboard(selected) })" />
       </template>
     </div>
   </div>

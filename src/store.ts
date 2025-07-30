@@ -322,10 +322,20 @@ export function abilityCost(ab: base.Ability): base.Resources {
   return defaultCost;
 }
 
+export function abilityTags(ab: base.Ability): string[] {
+  if (!ab.tags) return [];
+  console.log(ab.source, ab.source && nextTo("Campfinder", ab.source.row, ab.source.col), ab.source?.row, ab.source?.col);
+  if (ab.source && nextTo("Campfinder", ab.source.row, ab.source.col)) {
+    return ["fire"];
+  }
+  return ab.tags;
+}
+
 export function abilityEffects(ab: base.Ability): base.AbilityEffects {
+  const tags = abilityTags(ab);
   const sw7 = onboard("Seventh Swimmer") && store.run.timers["ability-Flood"];
   const swl = store.run.timers["monster-Lost Swimmer-ability-Flood"];
-  const undodgeable = ab.tags?.includes('undodgeable') || sw7 || swl;
+  const undodgeable = tags.includes('undodgeable') || sw7 || swl;
   let hitChance = 1;
   const enemy = store.currentEnemy();
   if (!undodgeable && enemy?.dodge) {
@@ -345,13 +355,13 @@ export function abilityEffects(ab: base.Ability): base.AbilityEffects {
   if (enemy && store.run.room.damage < enemy.health) {
     const weaknesses = getWeaknesses(enemy);
     for (const immunity of enemy.immune ?? []) {
-      if (ab.tags?.includes(immunity) && !weaknesses.includes(immunity)) {
+      if (tags.includes(immunity) && !weaknesses.includes(immunity)) {
         enemyMultiplier *= 0;
       }
     }
     if (onboard("Desert Rabbit")) {
       for (const weakness of weaknesses) {
-        if (ab.tags?.includes(weakness)) {
+        if (tags.includes(weakness)) {
           enemyMultiplier *= store.run.desertBlessingMultiplier;
         }
         const center = onboard("Lamplighter");
@@ -537,13 +547,13 @@ function executeAbility(ab: base.Ability, times: number) {
 }
 
 export const bandByName = computed(() => {
-  const byName = {} as Record<string, { row: number, col: number }>;
+  const byName = {} as Record<string, { name: string, row: number, col: number }>;
   for (let row = 0; row < store.local.band.height; row++) {
     for (let col = 0; col < store.local.band.width; col++) {
       const place = col + row * store.local.band.width;
-      const n = store.local.band[place];
-      if (n) {
-        byName[n] = { row, col };
+      const name = store.local.band[place];
+      if (name) {
+        byName[name] = { name, row, col };
       }
     }
   }
@@ -556,7 +566,7 @@ export const bandByName = computed(() => {
       const friend = friendsByName[n];
       if (friend?.super?.name) {
         delete byName[friend.name];
-        byName[friend.super.name] = { row, col };
+        byName[friend.super.name] = { name: friend.super.name, row, col };
       }
     }
   }
@@ -574,7 +584,7 @@ export function nextTo(name: string, row: number, col: number): [number, number]
   const b = bandByName.value[name];
   return b && Math.abs(b.row - row) + Math.abs(b.col - col) === 1 ? [b.row, b.col] : null;
 }
-export function onboard(name: string): { row: number, col: number } | undefined {
+export function onboard(name: string): { name: string, row: number, col: number } | undefined {
   const sup = friendsByName[name].super?.name;
   return bandByName.value[name] || sup && bandByName.value[sup];
 }

@@ -348,7 +348,17 @@ With Wayfinder in your band, you can replace members of your band at campfires.
 Now that Wayfinder is free, you can see more details on the map.
     `,
     super: {
-      name: 'Wayfindest',
+      name: 'Campfinder',
+      description: `
+A master of navigation, Campfinder will guide your band through the dark corridors of the dungeon.
+Just point to your destination on the map to get started.
+To repeat the run after reaching the destination, place Campfinder at the front of your band.
+
+With Campfinder in your band, you can replace members of your band at campfires.
+Now that Campfinder is free, you can see more details on the map.
+
+Campfinder sets the weapons of nearby explorers on fire.
+    `,
       abilities: [{
         name: "Fall Back to Camp",
         duration: 20,

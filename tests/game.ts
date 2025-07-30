@@ -258,7 +258,7 @@ const FRIEND_MATCHERS = {
   "Lord of Gears": /Lord of Gears|Gear of Lords/,
   "Pur Lion": /Pur Lion|Sir Pur Lion/,
   "Kit Flash": /Kit Flash|Kit Storming/,
-  "Wayfinder": /Wayfinder|Wayfindest/,
+  "Wayfinder": /Wayfinder|Campfinder/,
   "Bayla": /Bayla|Baylanda/,
   "Kin of Pump": /Kin of Pump|King of Pump/,
   "Kevin": /Kevin|Kevout/,
