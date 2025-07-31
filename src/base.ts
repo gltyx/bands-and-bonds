@@ -81,6 +81,10 @@ export type AbilityEffects = {
   rndHits(numAttacks: number): number; // Returns the random number of hits based on the hit chance.
 };
 
+export type DamageOptions = {
+  ignoreArmor?: boolean;
+};
+
 export type Store = {
   run: RunData;
   local: LocalData;
@@ -90,7 +94,7 @@ export type Store = {
   currentEnemy: () => Enemy | undefined;
   currentRoom: () => Room;
   currentPath: () => Room[];
-  addDamage: (amount: number, times: number) => void;
+  addDamage: (amount: number, times: number, opts?: DamageOptions) => void;
   addPoison: (amount: number) => void;
   bandByName: () => Record<string, { row: number; col: number }>;
   onboard: (name: string) => { row: number; col: number } | undefined;

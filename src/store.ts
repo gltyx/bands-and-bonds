@@ -122,8 +122,8 @@ export const store: base.Store = {
   currentPath() {
     return current.value.path ?? allRooms[0];
   },
-  addDamage(x: number, times: number) {
-    return addDamage(x, times);
+  addDamage(x: number, times: number, opts?: base.DamageOptions) {
+    return addDamage(x, times, opts);
   },
   addPoison(x: number) {
     const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
@@ -226,7 +226,7 @@ const current = computed(() => {
   return { path, room, enemy };
 });
 
-function addDamage(x: number, times: number) {
+function addDamage(x: number, times: number, opts?: base.DamageOptions) {
   const enemy = store.currentEnemy();
   if (!enemy) return;
   if (store.run.room.damage >= enemy.health) return; // Already defeated.
@@ -235,7 +235,9 @@ function addDamage(x: number, times: number) {
   if (capturing) {
     dmg = Math.floor(dmg / 100);
   }
-  dmg -= (enemy.armor ?? 0) - store.run.room.armorDamage;
+  if (!opts?.ignoreArmor) {
+    dmg -= (enemy.armor ?? 0) - store.run.room.armorDamage;
+  }
   if (dmg < 0) return;
   store.run.room.damage += dmg * times;
   // TODO: Implement multi-kill.
@@ -542,7 +544,7 @@ function executeAbility(ab: base.Ability, times: number) {
     const e = abilityEffects(ab);
     const hits = e.rndHits(times);
     const dmg = getAbilityBaseDamage(ab);
-    store.addDamage(Math.floor(dmg * e.damageMultiplier), hits);
+    store.addDamage(Math.floor(dmg * e.damageMultiplier), hits, { ignoreArmor: ab.tags?.includes('dark') });
   }
 }
 
