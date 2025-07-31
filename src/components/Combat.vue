@@ -2,6 +2,7 @@
 import * as st from "../store.ts";
 import { friendsByName } from "../friends.ts";
 import { enemiesByName } from "../enemies.ts";
+import { roomsByKey } from "../rooms.ts";
 import { numberFormat, durationFormat, type Ability } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
@@ -25,7 +26,7 @@ const possibleTurns = computed(() => {
   if (room.end) {
     return [];
   }
-  return [st.KEEP_GOING];
+  return [{ ...st.KEEP_GOING, leadsTo: room.leadsTo }];
 });
 
 const passiveEffects = computed(() => {
@@ -235,7 +236,9 @@ for (const enemy of Object.values(enemiesByName)) {
     <template v-else>
       <div class="section">Navigation</div>
       <button v-for="turn in possibleTurns" :key="turn.title" @click="store.takeTurn(turn.title!)">
-        <img :src="`images/generated/${turn.title}.webp`" />
+        <img
+          :src="`images/generated/${(turn.leadsTo && store.team.discovered.includes(turn.leadsTo)) ? roomsByKey[turn.leadsTo].name : turn.title}.webp`"
+          :class="{ 'turn': true, 'leads-to': turn.leadsTo && store.team.discovered.includes(turn.leadsTo) }" />
         <div class="text">
           <div class="title">{{ turn.title }}</div>
           <div class="description">
@@ -356,5 +359,9 @@ for (const enemy of Object.values(enemiesByName)) {
 .passive-effect {
   color: #edb;
   margin-top: 10px;
+}
+
+.leads-to {
+  filter: brightness(90%) sepia(90%) hue-rotate(80deg) saturate(200%);
 }
 </style>

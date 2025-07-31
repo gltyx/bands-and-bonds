@@ -930,9 +930,9 @@ for (const ab of friendsByName['Smiling Pilot'].abilities) {
   ab.name = NICENAMES[ab.name];
   abilitiesByName[ab.name] = ab;
 }
-for (const ab of Object.values(abilitiesByName)) {
-  if (typeof ab.duration !== 'number' || typeof ab.damage !== 'number') continue;
-  console.log(
-    `Ability: ${ab.name}, Damage per second: ${ab.damage / ab.duration}, duration: ${ab.duration}, Tags: ${ab.tags?.join(', ')}`
-  );
-}
+// for (const ab of Object.values(abilitiesByName)) {
+//   if (typeof ab.duration !== 'number' || typeof ab.damage !== 'number') continue;
+//   console.log(
+//     `Ability: ${ab.name}, Damage per second: ${ab.damage / ab.duration}, duration: ${ab.duration}, Tags: ${ab.tags?.join(', ')}`
+//   );
+// }

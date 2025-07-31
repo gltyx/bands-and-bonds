@@ -1,4 +1,4 @@
-import type { Room } from './base';
+import type { Room, Turn } from './base';
 
 export const allRooms: Room[] = [
   {
@@ -300,4 +300,46 @@ export function destinationToPath(destination: string): Room[] {
   }
   rooms.unshift(allRooms[0]);
   return rooms;
+}
+
+// Fill in "leadsTo" values for all rooms.
+const roomByLabel = {} as Record<string, number>;
+export const roomsByKey = {} as Record<string, Room>;
+for (let i = 0; i < allRooms.length; i++) {
+  const room = allRooms[i];
+  const key = roomKey(room);
+  roomsByKey[key] = room;
+  if (room.label) {
+    roomByLabel[room.label] = i;
+  }
+}
+const prevRoom = {} as Record<number, { room: number, turn?: string }>;
+for (let i = 0; i < allRooms.length - 1; i++) {
+  const room = allRooms[i];
+  if (room.next) {
+    for (const turnKey of Object.keys(room.next)) {
+      const turn: Turn = room.next[turnKey];
+      if (!turn.label) continue;
+      const nextRoom = roomByLabel[turn.label];
+      if (nextRoom === undefined) continue;
+      prevRoom[nextRoom] = { room: i, turn: turnKey };
+    }
+  } else if (!allRooms[i + 1].label) {
+    prevRoom[i + 1] = { room: i };
+  }
+}
+for (let i = 0; i < allRooms.length - 1; i++) {
+  const room = allRooms[i];
+  if (room.type === 'none' || room.type === 'rescue') continue;
+  const key = roomKey(room);
+  for (let p = prevRoom[i]; p !== undefined && p.room > 0; p = prevRoom[p.room]) {
+    const prev = allRooms[p.room];
+    if (p.turn && prev.next) {
+      const t = prev.next[p.turn];
+      t.leadsTo = t.leadsTo ? 'multiple' : key;
+    } else {
+      prev.leadsTo = prev.leadsTo ? 'multiple' : key;
+    }
+    if (prev.type !== 'none' && prev.type !== 'rescue') break;
+  }
 }
