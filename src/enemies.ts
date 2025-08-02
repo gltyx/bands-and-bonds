@@ -135,8 +135,8 @@ const enemyAbilities: Record<string, Ability[]> = {
     name: "Fabric of Reality", duration: 5, damage: 120_000, tags: ['left', 'right', 'front', 'back'],
     description: "An attack that comes from all directions at once."
   }],
-  "Skeletron": [{ name: "Bonetron", duration: 1, damage: 1, description: "" }],
-  "Chago's Chamber": [{ name: "Spring Trap", duration: 1, damage: 1, description: "" }],
+  "Skeletron": [{ name: "Bonetron", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Chago's Chamber": [{ name: "Spring Trap", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
   "Chago": [{
     name: "Create Cheese Demon", duration: 300, description: "Chago releases a demon to chew on the enemy.",
     tags: ['bite'],
@@ -145,7 +145,7 @@ const enemyAbilities: Record<string, Ability[]> = {
     },
   }],
   "Door of Loathing": [{
-    name: "Look of Loathing", duration: 60, damage: 1,
+    name: "Look of Loathing", duration: 60, damage: 1, tags: ['dark'],
     description: "The Door of Loathing taunts the enemy and draws its attacks onto itself."
   }],
   "Zakatrixos": [{
@@ -160,7 +160,7 @@ This negates the defenses of ethereal enemies.`,
     { name: "Ruby Wand", duration: 10, damage: 120_000, description: "One of the Wands from the Depths.", tags: ['fire'] },
   ],
   "Skyrmions": [{
-    name: "Release Excitation Energy", duration: 107, damage: 107,
+    name: "Release Excitation Energy", duration: 107, damage: 107, tags: ['light'],
     description: "Skyrmion pairing of opposite charges from opposite valleys is favored by both Coulomb and effective Zeeman terms."
   }],
   "Defensive Installation": [{
@@ -171,34 +171,43 @@ This negates the defenses of ethereal enemies.`,
     { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 1_100_000, description: "The black stripes connect to the darkness of the underworld." },
     { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 1_100_000, description: "The white stripes connect to the light of the heavens." },
   ],
-  "Landas Wizard": [{ name: "Send Sand", tags: ['sharp'], duration: 100, damage: 200_000, description: "A sandstorm passes through the battlefield." }],
+  "Landas Wizard": [{ name: "Send Sand", tags: ['sand'], duration: 100, damage: 200_000, description: "A sandstorm passes through the battlefield." }],
   "Crystal Man": [{ name: "Resonate Crystals", tags: ['sound'], duration: 8, damage: 80_000, description: "The Crystal Man emits a mighty vibration when wet." }],
   "Power Crystal": [],
 
-  "Frozen Centurion": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Trollish Maiden": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Dryfin Carp": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Scaffold Sorcery": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Frozen Centurion": [{
+    name: "Frozen Century", duration: 100 * 365 * 24 * 60 * 60, damage: 5_000_000_000_000, tags: ['ice'],
+    description: "An attack of patience and determination.",
+  }],
+  "Trollish Maiden": [{
+    name: "Maiden's Smash", duration: 1, damage: 1000, tags: ['blunt'],
+    description: "The narrow corridors of the dungeon limit the athleticism of trolls, but they are still a force to fear.",
+  }],
+  "Dryfin Carp": [{
+    name: "Sand Bubbles", duration: 20, damage: 1_000, tags: ['sand'],
+    description: "Dryfin Carps are feared across the Landas Desert for their ferocious bubble attacks.",
+  }],
+  "Scaffold Sorcery": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
   "Lost Swimmer": [{
     name: "Flood", duration: 100, damage: 1_000_000, tags: ['water', 'undodgeable'],
     description: "A deceptively slow attack that fills up the battlefield. No attacks can be dodged while the flood is in progress.",
   }],
-  "Geckalog": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Jaw Maw Maw": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Decay Manifest": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Striped Horror": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Dragonfly Agaric": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Artifact Seeker": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Geckalog": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Jaw Maw Maw": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Decay Manifest": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Striped Horror": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Dragonfly Agaric": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Artifact Seeker": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
   "Golden Chest": [],
-  "King of Tadpoles": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Hopanoids": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Tosyl Rose": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Sullen Bearer": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "King of Tadpoles": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Hopanoids": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Tosyl Rose": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Sullen Bearer": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
   "Unwelcoming Glade": [],
-  "Food Mimic": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Frog Assassin": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Enantiomers": [{ name: "", duration: 1, damage: 1, description: "" }],
-  "Gnollish Ambassador": [{ name: "", duration: 1, damage: 1, description: "" }],
+  "Food Mimic": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Frog Assassin": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Enantiomers": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
+  "Gnollish Ambassador": [{ name: "", duration: 1, damage: 1, description: "NOT IMPLEMENTED YET" }],
   "Web of Power": [{
     name: "Spider Power", tags: ['poison'], duration: 0.2, damage: 100, description: "A quick, sharp stab is all that is felt."
   }],
@@ -239,7 +248,12 @@ This negates the defenses of ethereal enemies.`,
     },
     {
       name: "Reveal Skelemasterion's Stairway", duration: 20,
-      description: "Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.\n\nNOT IMPLEMENTED YET.",
+      description: `
+Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.
+
+NOT IMPLEMENTED YET
+
+This is the end of the current content. Congratulations and thanks for playing!`,
       hidden: (store) => store.currentRoom()?.name !== 'Skelemasterion',
       onCompleted() {
         // TODO: Implement second level.

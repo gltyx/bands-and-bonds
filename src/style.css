@@ -249,6 +249,13 @@ u {
   border-radius: 50% 1px 1px 50%;
 }
 
+.tag.sand {
+  border: 0;
+  background-color: oklch(0.9 0.15 50);
+  border-radius: 50% 50% 1px 1px;
+  height: 4px;
+}
+
 .tag.undodgeable {
   border: none;
   width: 3px;

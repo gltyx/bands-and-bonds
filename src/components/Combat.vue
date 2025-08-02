@@ -41,7 +41,7 @@ const passiveEffects = computed(() => {
   const count = enemy.value.count ?? 1;
   const alive = store.run.room.damage < enemy.value.health;
   if (enemy.value.name === 'Skelemasterion' && !alive && !store.run.capturedMonsters.includes('Skelemasterion')) {
-    return ['Skelemasterion is defeated. You search its lair and collect its treasure. You fail to find a way to progress further.'];
+    return ['Skelemasterion is defeated. You search its lair and collect its treasure. Yet you miss something that only Skelemasterion could reveal.'];
   }
   const s = count > 1 ? '' : 's';
   const is = count > 1 ? (alive ? 'are' : 'were') : (alive ? 'is' : 'was');
