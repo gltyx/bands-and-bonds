@@ -216,17 +216,17 @@ Trained as an assassin, the Knight of Claws works best on his own. His power dou
     name: 'Royal Fruitbearer',
     cost: 0,
     description: `
-With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the party gives a piece to every other member.
+With the Royal Fruitbearer in your band, whenever you find fruit in the dungeon, every member of the band gives a piece to every other member.
     `,
-    passiveEffects: ["When you find fruit, every member of the party gives a piece to every other member. (Thanks to the Royal Fruitbearer.)"],
+    passiveEffects: ["When you find fruit, every member of the band gives a piece to every other member. (Thanks to the Royal Fruitbearer.)"],
     super: {
       name: 'Royal Fruitwearer',
       description: `
-With the Royal Fruitwearer in your band, whenever you find fruit in the dungeon, every member of the party gives a piece to every other member.
+With the Royal Fruitwearer in your band, whenever you find fruit in the dungeon, every member of the band gives a piece to every other member.
 In addition, any gold found is converted to fruit as well.
       `,
       passiveEffects: [
-        "When you find fruit, every member of the party gives a piece to every other member. (Thanks to the Royal Fruitwearer.)",
+        "When you find fruit, every member of the band gives a piece to every other member. (Thanks to the Royal Fruitwearer.)",
         "Any gold found is converted to fruit. (Thanks to the Royal Fruitwearer.)",
       ],
     },

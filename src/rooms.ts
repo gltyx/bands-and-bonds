@@ -50,10 +50,10 @@ export const allRooms: Room[] = [
     x: 288, y: 236, type: "combat", name: 'Will-o-Wasp',
     next: {
       'Turn left': { label: 'left2', description: 'Leave this twisting corridor through the alcove to the left.' },
-      'Go straight': { label: 'straight2', description: 'Continue down the corridor.' },
+      'Turn right': { label: 'right2', description: 'Continue down the corridor.' },
     },
   },
-  { x: 288, y: 219, type: "none", label: 'straight2' },
+  { x: 288, y: 219, type: "none", label: 'right2' },
   { x: 351, y: 219, type: "combat", name: 'The Shroud' },
   { x: 351, y: 244, type: "none" },
   { x: 332, y: 244, type: "none" },
@@ -80,7 +80,7 @@ export const allRooms: Room[] = [
   {
     x: 277, y: 459, type: "none", label: 'straight3',
     next: {
-      'Open door': { label: 'door4', description: 'A heavy door to the west. You smell iron and blood.' },
+      'Open door': { label: 'door4', description: 'A heavy door to the west. You smell iron.' },
       'Go straight': { label: 'straight4', description: 'Continue down the corridor.' },
     },
   },
@@ -89,7 +89,7 @@ export const allRooms: Room[] = [
   {
     x: 196, y: 498, type: "none",
     next: {
-      'Open door': { label: 'door5', description: 'A heavy door to the north. You listen and sniff, but hear and smell nothing other than the door itself.' },
+      'Open door': { label: 'door5', description: 'A heavy door to the north. You listen and sniff the air, but hear and smell nothing other than the door itself.' },
       'Go straight': { label: 'straight5', description: 'Continue down the corridor.' },
     },
   },
