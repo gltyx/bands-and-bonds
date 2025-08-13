@@ -372,6 +372,8 @@ Campfinder sets the weapons of nearby explorers on fire.
           store.run.steps = steps;
         },
         preventRepeat: true,
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
         peaceful: true,
       }],
     }
@@ -524,6 +526,8 @@ Uses left: ${numberSpan(1 - store.run.skips)}`,
         store.takeTurn(choice);
       },
       preventRepeat: true,
+      preventAutomation: true,
+      affectedBySpeedLevel: false,
     }],
     super: {
       name: 'Le Pecquer',
@@ -543,6 +547,8 @@ Uses left: ${numberSpan(2 - store.run.skips)}`,
           store.takeTurn(choice);
         },
         preventRepeat: true,
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }],
     },
   },
@@ -603,6 +609,7 @@ ${numberSpan(store.run.saplings * store.fruitMultiplier(),
         duration: 0.1,
         consumes: (store) => ({ saplings: Math.max(1, store.run.saplings) }),
         preventRepeat: true,
+        preventAutomation: true,
         damage: (store) => 1000 * Math.max(1, store.run.saplings),
         description: 'Destroy all saplings to set the Hedge Market on fire.',
         tags: ['fire'],
@@ -662,7 +669,9 @@ a Xaranthian person, and neither has anyone else in your band.
         `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
       onCompleted(store, times) {
         store.run.room.xaranthian.growers += times;
-      }
+      },
+      preventAutomation: true,
+      affectedBySpeedLevel: false,
     }, {
       name: "Grow Gun",
       consumes: { gold: 100 },
@@ -673,6 +682,8 @@ a Xaranthian person, and neither has anyone else in your band.
       onCompleted(store, times) {
         store.run.room.xaranthian.guns += store.run.room.xaranthian.growers * times;
       },
+      preventAutomation: true,
+      affectedBySpeedLevel: false,
     }, {
       name: "Grow Guns",
       consumes: { gold: 100 },
@@ -682,7 +693,9 @@ a Xaranthian person, and neither has anyone else in your band.
         `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
       onCompleted(store, times) {
         store.run.room.xaranthian.guns += store.run.room.xaranthian.growers * times;
-      }
+      },
+      preventAutomation: true,
+      affectedBySpeedLevel: false,
     }, {
       name: "Fire Xaranthian Gun",
       hidden: (store) => store.run.room.xaranthian.guns !== 1,
@@ -709,6 +722,8 @@ a Xaranthian person, and neither has anyone else in your band.
         onCompleted(store, times) {
           store.run.room.xaranthian.factories += times;
         },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Produce Turtle",
         consumes: { gold: 100000 },
@@ -719,6 +734,8 @@ a Xaranthian person, and neither has anyone else in your band.
         onCompleted(store, times) {
           store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories * times;
         },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Produce Turtles",
         consumes: { gold: 100000 },
@@ -729,6 +746,8 @@ a Xaranthian person, and neither has anyone else in your band.
         onCompleted(store, times) {
           store.run.room.xaranthian.turtles += store.run.room.xaranthian.factories * times;
         },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Build Deployer",
         consumes: { gold: 10000 },
@@ -738,7 +757,9 @@ a Xaranthian person, and neither has anyone else in your band.
           `Build a deployer from the mechanical turtle.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store, times) {
           store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles * times;
-        }
+        },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Build Deployers",
         consumes: { gold: 10000 },
@@ -748,7 +769,9 @@ a Xaranthian person, and neither has anyone else in your band.
           `Build ${numberSpan(store.run.room.xaranthian.turtles)} deployers from the mechanical turtles.${store.run.room.xaranthian.deployers ? ` (Currently ${numberSpan(store.run.room.xaranthian.deployers)} deployers.)` : ''}`,
         onCompleted(store, times) {
           store.run.room.xaranthian.deployers += store.run.room.xaranthian.turtles * times;
-        }
+        },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Deploy Grower",
         consumes: { gold: 1000 },
@@ -758,7 +781,9 @@ a Xaranthian person, and neither has anyone else in your band.
           `Deploy a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store, times) {
           store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers * times;
-        }
+        },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Deploy Growers",
         consumes: { gold: 1000 },
@@ -768,7 +793,9 @@ a Xaranthian person, and neither has anyone else in your band.
           `Deploy ${numberSpan(store.run.room.xaranthian.deployers)} mechanical growers.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
         onCompleted(store, times) {
           store.run.room.xaranthian.growers += store.run.room.xaranthian.deployers * times;
-        }
+        },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Grow Gun",
         consumes: { gold: 100 },
@@ -779,6 +806,8 @@ a Xaranthian person, and neither has anyone else in your band.
         onCompleted(store, times) {
           store.run.room.xaranthian.guns += store.run.room.xaranthian.growers * times;
         },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Grow Guns",
         consumes: { gold: 100 },
@@ -788,7 +817,9 @@ a Xaranthian person, and neither has anyone else in your band.
           `Grow ${numberSpan(store.run.room.xaranthian.growers)} mechanical guns.${store.run.room.xaranthian.guns ? ` (Currently ${numberSpan(store.run.room.xaranthian.guns)} guns.)` : ''}`,
         onCompleted(store, times) {
           store.run.room.xaranthian.guns += store.run.room.xaranthian.growers * times;
-        }
+        },
+        preventAutomation: true,
+        affectedBySpeedLevel: false,
       }, {
         name: "Fire Xaranthian Gun",
         hidden: (store) => store.run.room.xaranthian.guns !== 1,

@@ -529,7 +529,7 @@ export const abilities = computed(() => {
       const abs = (az && friend.super?.abilities) || friend.abilities || [];
       for (const ab of abs) {
         if (ab.hidden?.(store)) continue;
-        abilities.push({ ...ab, automatic, source: { name: friend.name, row, col } });
+        abilities.push({ ...ab, automatic: automatic && !ab.preventAutomation, source: { name: friend.name, row, col } });
       }
     }
   }

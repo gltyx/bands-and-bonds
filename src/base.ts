@@ -136,6 +136,7 @@ export type Ability = {
   consumes?: { [x: string]: number } | ((store: Store) => { [x: string]: number });
   onCompleted?: (store: Store, times: number, self: Ability) => void;
   preventRepeat?: boolean; // If true, fire at most once per tick. Use it if "consumes" is not fixed!
+  preventAutomation?: boolean;
   automatic?: boolean;
   tags?: string[];
   peaceful?: boolean; // If true, can be used outside of combat.
