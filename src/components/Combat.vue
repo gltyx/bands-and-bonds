@@ -182,32 +182,35 @@ for (const enemy of Object.values(enemiesByName)) {
     <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
       label="Armor" title="Armor is subtracted from damage" />
   </div>
-  <div class="rescue" v-if="st.justRescued.value">
-    <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name" class="main" />
-    <h1>{{ st.justRescued.value?.name }}</h1>
-    <p class="description" style="margin-top: 0; text-align: center; color: #edb;">is now free!</p>
-    <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
-    <div v-if="st.justRescued.value?.name === 'Lamplighter'" class="callout">
-      <img src="/images/generated/pack.webp" />
-      <p class="description" v-if="st.justRescued.value?.name === 'Lamplighter'">
-        Lamplighter can now be added to your band. Collect
-        <Fruit :amount="3" />. Retreat. Open the Band page. Buy some packs. Remove Stick Master from
-        your band and add Lamplighter instead.
+  <Transition mode="out-in">
+    <div key="just-rescued" class="just-rescued" v-if="st.justRescued.value">
+      <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name"
+        class="main" />
+      <h1>{{ st.justRescued.value?.name }}</h1>
+      <p class="description is-rescued" style="margin-top: 0; text-align: center; color: #edb;">is rescued!</p>
+      <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
+      <div v-if="st.justRescued.value?.name === 'Lamplighter'" class="callout">
+        <img src="/images/generated/pack.webp" />
+        <p class="description" v-if="st.justRescued.value?.name === 'Lamplighter'">
+          Lamplighter can now be added to your band. Collect
+          <Fruit :amount="3" />. Retreat. Open the Band page. Buy some packs. Remove Stick Master from
+          your band and add Lamplighter instead.
+        </p>
+      </div>
+    </div>
+    <div key="rescue-available" class="rescue-available scene" v-else-if="st.rescueAvailable.value">
+      <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
+      <h1>Prisoner found</h1>
+      <p class="description">You see a hooded figure in a cage. Will you let them out?</p>
+    </div>
+    <div key="rescued-earlier" class="scene" v-else-if="st.rescuedFriend.value">
+      <img src="/images/generated/camp.webp" alt="Adventurers around a campfire" />
+      <h1>Camping</h1>
+      <p class="description">You rescued {{ st.rescuedFriend.value?.name }} here earlier. You stop to recover your
+        strength.
       </p>
     </div>
-  </div>
-  <div class="scene" v-else-if="st.rescueAvailable.value">
-    <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
-    <h1>Prisoner found</h1>
-    <p class="description">You see a hooded figure in a cage. Will you let them out?</p>
-  </div>
-  <div class="scene" v-else-if="st.rescuedFriend.value">
-    <img src="/images/generated/camp.webp" alt="Adventurers around a campfire" />
-    <h1>Camping</h1>
-    <p class="description">You rescued {{ st.rescuedFriend.value?.name }} here earlier. You stop to recover your
-      strength.
-    </p>
-  </div>
+  </Transition>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
   <Victory :show="!!store.run.timers.celebrating" @on-start="hideActions = true;" @on-end="hideActions = false;" />
   <div class="actions" v-show="!hideActions">
@@ -299,7 +302,114 @@ for (const enemy of Object.values(enemiesByName)) {
   border-right-color: #8af;
 }
 
-.rescue {
+.rescue-available {
+  transition: opacity 1s linear;
+  opacity: 1;
+
+  img {
+    transition: filter 1s linear;
+    filter: invert(0) brightness(1);
+  }
+}
+
+.rescue-available.v-leave-to {
+  opacity: 1;
+
+  img {
+    filter: invert(0.5) brightness(2);
+  }
+}
+
+.just-rescued.v-enter-active img.main {
+  animation: rescue-reveal 3s;
+}
+
+.just-rescued.v-enter-active h1,
+.just-rescued.v-enter-active .description.is-rescued {
+  animation: rescue-reveal-text-1 3s;
+}
+
+.just-rescued.v-enter-active .description {
+  animation: rescue-reveal-text-2 3s;
+}
+
+.just-rescued.v-enter-active {
+  animation: rescue-reveal-background 3s;
+}
+
+@keyframes rescue-reveal-background {
+  0% {
+    background-color: #fff;
+  }
+
+  5% {
+    background-color: #fff;
+  }
+
+  60% {
+    background-color: #000;
+  }
+
+  100% {
+    background-color: #000;
+  }
+}
+
+@keyframes rescue-reveal {
+  0% {
+    filter: saturate(0) sepia(0) hue-rotate(720deg) brightness(2);
+  }
+
+  20% {
+    filter: saturate(0) sepia(0) hue-rotate(720deg) brightness(2);
+  }
+
+  30% {
+    filter: saturate(1) sepia(1) hue-rotate(720deg) brightness(2);
+  }
+
+  45% {
+    filter: saturate(1) sepia(1) hue-rotate(360deg) brightness(1);
+  }
+
+  60% {
+    filter: none;
+  }
+
+  100% {
+    filter: none;
+  }
+}
+
+@keyframes rescue-reveal-text-1 {
+  0% {
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 1;
+  }
+}
+
+@keyframes rescue-reveal-text-2 {
+  0% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.just-rescued {
   display: flex;
   flex-direction: column;
   align-items: center;
