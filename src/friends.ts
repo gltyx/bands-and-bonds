@@ -663,7 +663,7 @@ a Xaranthian person, and neither has anyone else in your band.
     `,
     abilities: [{
       name: "Construct Grower",
-      consumes: { gold: 1000 },
+      consumes: { gold: 1_000 },
       duration: 16,
       description: (store) =>
         `Construct a mechanical grower.${store.run.room.xaranthian.growers ? ` (Currently ${numberSpan(store.run.room.xaranthian.growers)} growers.)` : ''}`,
@@ -715,7 +715,7 @@ a Xaranthian person, and neither has anyone else in your band.
       name: 'Xaranthian Power Constructor',
       abilities: [{
         name: "Construct Factory",
-        consumes: { gold: 1000000 },
+        consumes: { gold: 1_000_000 },
         duration: 16,
         description: (store) =>
           `Build a factory for producing mechanical turtles.${store.run.room.xaranthian.factories ? ` (Currently ${numberSpan(store.run.room.xaranthian.factories)} factories.)` : ''}`,
@@ -726,7 +726,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Produce Turtle",
-        consumes: { gold: 100000 },
+        consumes: { gold: 100_000 },
         hidden: (store) => store.run.room.xaranthian.factories !== 1,
         duration: 16,
         description: (store) =>
@@ -738,7 +738,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Produce Turtles",
-        consumes: { gold: 100000 },
+        consumes: { gold: 100_000 },
         hidden: (store) => store.run.room.xaranthian.factories < 2,
         duration: 16,
         description: (store) =>
@@ -750,7 +750,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Build Deployer",
-        consumes: { gold: 10000 },
+        consumes: { gold: 10_000 },
         hidden: (store) => store.run.room.xaranthian.turtles !== 1,
         duration: 16,
         description: (store) =>
@@ -762,7 +762,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Build Deployers",
-        consumes: { gold: 10000 },
+        consumes: { gold: 10_000 },
         hidden: (store) => store.run.room.xaranthian.turtles < 2,
         duration: 16,
         description: (store) =>
@@ -774,7 +774,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Deploy Grower",
-        consumes: { gold: 1000 },
+        consumes: { gold: 1_000 },
         hidden: (store) => store.run.room.xaranthian.deployers !== 1,
         duration: 16,
         description: (store) =>
@@ -786,7 +786,7 @@ a Xaranthian person, and neither has anyone else in your band.
         affectedBySpeedLevel: false,
       }, {
         name: "Deploy Growers",
-        consumes: { gold: 1000 },
+        consumes: { gold: 1_000 },
         hidden: (store) => store.run.room.xaranthian.deployers < 2,
         duration: 16,
         description: (store) =>

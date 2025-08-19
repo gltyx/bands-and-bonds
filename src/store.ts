@@ -326,7 +326,6 @@ export function abilityCost(ab: base.Ability): base.Resources {
 
 export function abilityTags(ab: base.Ability): string[] {
   if (!ab.tags) return [];
-  console.log(ab.source, ab.source && nextTo("Campfinder", ab.source.row, ab.source.col), ab.source?.row, ab.source?.col);
   if (ab.source && nextTo("Campfinder", ab.source.row, ab.source.col)) {
     return ["fire"];
   }
