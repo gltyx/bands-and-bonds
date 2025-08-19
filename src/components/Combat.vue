@@ -11,6 +11,7 @@ import EnemyRewards from "./EnemyRewards.vue";
 import Fruit from "./Fruit.vue";
 import Num from "./Num.vue";
 import Victory from "./Victory.vue";
+import { allTips } from "../tips.ts";
 
 const store = st.store;
 const enemy = computed(() => store.currentEnemy());
@@ -85,6 +86,15 @@ const passiveEffects = computed(() => {
     }
   }
   return effects;
+});
+
+const tip = computed(() => {
+  if (!st.rescuedFriend.value) return;
+  const possibleTips = allTips.filter(t => store.onboard(t.friend) && (t.enabled === undefined || t.enabled(store)));
+  const i = Math.floor(Math.random() * possibleTips.length);
+  const t = possibleTips[i];
+  // Use the super name, if that's who we have in the band.
+  return { ...t, friend: store.onboard(t.friend)?.name };
 });
 const retreatConfirmation = ref(false);
 function retreat() {
@@ -177,18 +187,10 @@ for (const enemy of Object.values(enemiesByName)) {
   <Transition mode="out-in">
     <div key="just-rescued" class="just-rescued" v-if="st.justRescued.value">
       <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name"
-        class="main" />
+        class="friend" />
       <h1>{{ st.justRescued.value?.name }}</h1>
       <p class="description is-rescued" style="margin-top: 0; text-align: center; color: #edb;">is rescued!</p>
       <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
-      <div v-if="st.justRescued.value?.name === 'Lamplighter'" class="callout">
-        <img src="/images/generated/pack.webp" />
-        <p class="description" v-if="st.justRescued.value?.name === 'Lamplighter'">
-          Lamplighter can now be added to your band. Collect
-          <Fruit :amount="3" />. Retreat. Open the Band page. Buy some packs. Remove Stick Master from
-          your band and add Lamplighter instead.
-        </p>
-      </div>
     </div>
     <div key="rescue-available" class="rescue-available scene" v-else-if="st.rescueAvailable.value">
       <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
@@ -201,6 +203,10 @@ for (const enemy of Object.values(enemiesByName)) {
       <p class="description">You rescued {{ st.rescuedFriend.value?.name }} here earlier. You stop to recover your
         strength.
       </p>
+      <div class="callout">
+        <p class="description" v-html="tip.text" />
+        <img class="friend" :src="`images/generated/${tip.friend}.webp`" />
+      </div>
     </div>
   </Transition>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
@@ -278,8 +284,8 @@ for (const enemy of Object.values(enemiesByName)) {
   }
 }
 
-.enemy img,
-.scene img {
+.enemy>img,
+.scene>img {
   width: 100px;
   height: 100px;
   border-radius: 40%;
@@ -312,7 +318,7 @@ for (const enemy of Object.values(enemiesByName)) {
   }
 }
 
-.just-rescued.v-enter-active img.main {
+.just-rescued.v-enter-active img.friend {
   animation: rescue-reveal 3s;
 }
 
@@ -411,12 +417,6 @@ for (const enemy of Object.values(enemiesByName)) {
   padding-top: 0;
   margin: 10px 0;
   max-width: 600px;
-
-  img.main {
-    width: 200px;
-    mix-blend-mode: lighten;
-    margin-top: -45px;
-  }
 
   h1 {
     margin-top: -15px;

@@ -277,7 +277,7 @@ export function turnsToPath(numSteps: number, turns: string[]): Room[] {
 }
 
 export function roomKey(room: Room): string {
-  return `${room.x},${room.y}`;
+  return room.name ?? room.label ?? `${room.x},${room.y}`;
 }
 
 export function destinationToPath(destination: string): Room[] {

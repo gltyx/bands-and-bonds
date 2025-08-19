@@ -87,17 +87,35 @@ button.disabled {
   font-weight: 400;
   text-align: left;
   line-height: normal;
+
+  i {
+    color: #edb;
+  }
 }
 
 .callout {
+  background: black;
   display: flex;
   align-items: center;
+  max-width: 500px;
+  margin-top: 20px;
+  border-radius: 8px;
 
-  >img {
-    width: 60px;
-    margin: 10px;
-    margin-left: 0;
+  .description {
+    padding: 10px 20px;
   }
+
+  img.friend {
+    width: 100px;
+    margin-top: -20px;
+    align-self: flex-start;
+  }
+}
+
+img.friend {
+  width: 200px;
+  mix-blend-mode: lighten;
+  margin-top: -45px;
 }
 
 button img {

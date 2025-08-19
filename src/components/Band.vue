@@ -225,7 +225,7 @@ const enabled = computed(() => {
         :class="{ unaffordable: store.team.packs < selectedFriend.cost + packsSpent && !onboard(selected) }">
         {{ selectedFriend?.cost ?? 0 }} <img src="/images/generated/pack.webp" class="resource-icon" />
       </div>
-      <img :src="`images/generated/${selectedFriend.name}.webp`" />
+      <img class="friend" :src="`images/generated/${selectedFriend.name}.webp`" />
       <h1>{{ selectedFriend.name }}</h1>
       <div class="description" v-html="selectedFriend.descriptionHtml"></div>
       <template v-for="ab in selectedFriend.abilities" :key="ab.name">
@@ -337,11 +337,9 @@ u {
   position: relative;
 
   >img {
-    width: 200px;
     /* to make room for the cost */
-    margin: 0 30px;
-    mix-blend-mode: lighten;
-    margin-top: -45px;
+    margin-left: 30px;
+    margin-right: 30px;
   }
 
   h1 {
