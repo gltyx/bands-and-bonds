@@ -203,7 +203,7 @@ for (const enemy of Object.values(enemiesByName)) {
       <p class="description">You rescued {{ st.rescuedFriend.value?.name }} here earlier. You stop to recover your
         strength.
       </p>
-      <div class="callout">
+      <div class="callout" v-if="tip">
         <p class="description" v-html="tip.text" />
         <img class="friend" :src="`images/generated/${tip.friend}.webp`" />
       </div>
