@@ -87,20 +87,12 @@ const passiveEffects = computed(() => {
   return effects;
 });
 const retreatConfirmation = ref(false);
-const retreatConfirmationTimeout = ref<number | null>(null);
 function retreat() {
   if (retreatConfirmation.value) {
     st.retreat();
     retreatConfirmation.value = false;
-    if (retreatConfirmationTimeout.value) {
-      clearTimeout(retreatConfirmationTimeout.value);
-      retreatConfirmationTimeout.value = null;
-    }
   } else {
     retreatConfirmation.value = true;
-    retreatConfirmationTimeout.value = setTimeout(() => {
-      retreatConfirmation.value = false;
-    }, 2000);
   }
 }
 
@@ -250,7 +242,7 @@ for (const enemy of Object.values(enemiesByName)) {
         </div>
       </button>
     </template>
-    <button @click="retreat()" accesskey="r" v-if="store.run.steps > 0">
+    <button @click="retreat()" @blur="retreatConfirmation = false" accesskey="r" v-if="store.run.steps > 0">
       <img src="/images/generated/Retreat.webp" />
       <div class="text">
         <div class="title">Retreat</div>
