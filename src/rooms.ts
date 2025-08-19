@@ -190,7 +190,7 @@ export const allRooms: Room[] = [
 
   { x: 547, y: 322, type: "combat", name: 'Geckalog', label: 'right10' },
   { x: 547, y: 277, type: "combat", name: 'Jaw Maw Maw' },
-  { x: 547, y: 230, type: "combat", name: 'Decay Manifest' },
+  { x: 547, y: 230, type: "combat", name: 'Gnollish Ambassador' },
   { x: 601, y: 230, type: "rescue", name: 'Wayfinder' },
   { x: 601, y: 245, type: "none" },
   { x: 584, y: 245, type: "none" },
@@ -223,7 +223,7 @@ export const allRooms: Room[] = [
   { x: 698, y: 252, type: "combat", name: 'Enantiomers' },
   { x: 698, y: 309, type: "none" },
   { x: 733, y: 309, type: "rescue", name: "Smiling Pilot" },
-  { x: 733, y: 252, type: "combat", name: 'Gnollish Ambassador' },
+  { x: 733, y: 252, type: "combat", name: 'Decay Manifest' },
   { x: 733, y: 205, type: "none" },
   { x: 687, y: 205, type: "rescue", name: "Hedge Lost" },
   { x: 697, y: 205, type: "none" },
