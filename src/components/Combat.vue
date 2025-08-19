@@ -156,7 +156,7 @@ for (const enemy of Object.values(enemiesByName)) {
         <Num :amount="enemy.count" />
       </div>
       <div class="description" v-else>Defeated
-        <Num :amount="enemy.count" /> enemies! You gained
+        <Num :amount="enemy.count" />enemies! You gained
         <EnemyRewards :enemy="enemy" />.
       </div>
     </template>

@@ -92,17 +92,17 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
       <h1>{{ hoveredRoom.name }}</h1>
       <p v-if="hoveredEnemy && store.team.unlocked.includes('Wayfinder')">
         <template v-if="hoveredEnemy.count">
-          <Num :amount="hoveredEnemy.count">×</Num>&nbsp;
+          <Num :amount="hoveredEnemy.count">×</Num>&nbsp;<!-- no space other than the nbsp -->
         </template>
-        <Num :amount="hoveredEnemy.health" /> HP
+        <Num :amount="hoveredEnemy.health" />HP
         <template v-if="hoveredEnemy.armor">
-          <Num :amount="hoveredEnemy.armor" /> armor
+          <Num :amount="hoveredEnemy.armor" />armor
         </template>
         <template v-if="hoveredEnemy.dodge">
           <span class="numbers">{{ durationFormat(hoveredEnemy.dodge * 1000) }}</span> dodge
         </template>
         <template v-if="hoveredEnemy.regen">
-          <Num :amount="hoveredEnemy.regen" /> regeneration/s
+          <Num :amount="hoveredEnemy.regen" />regeneration/s
         </template>
       </p>
       <p v-if="hoveredEnemy?.rewards">Rewards when defeated:
