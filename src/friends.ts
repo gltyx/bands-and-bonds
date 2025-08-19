@@ -513,7 +513,7 @@ Pecquer is a veteran mercenary from the thirty kingdoms. The warriors he fought 
     abilities: [{
       name: "Sneak Past",
       duration: 6,
-      hidden: (store) => store.run.skips >= 1,
+      hidden: (store) => store.run.skips >= 1 || !!store.currentRoom().end,
       description: (store) => `
 Pecquer leads the band fearlessly past the enemy.
 
@@ -534,7 +534,7 @@ Uses left: ${numberSpan(1 - store.run.skips)}`,
       abilities: [{
         name: "Sneak Past",
         duration: 6,
-        hidden: (store) => store.run.skips >= 2,
+        hidden: (store) => store.run.skips >= 2 || !!store.currentRoom().end,
         description: (store) => `
 Le Pecquer leads the band fearlessly past the enemy.
 
