@@ -640,7 +640,7 @@ He is particularly interested in the fruit you're holding.
       abilities: [{
         name: "Eat Fruit",
         duration: 1,
-        consumes: (store) => ({ fruit: store.weaponLevel() }),
+        consumes: (store) => ({ fruit: Math.round(store.weaponLevel() ** LOG_3_OVER_LOG_2) }),
         description: 'Do you have too much fruit? Zaktar Kadoque Karr can eat the leftovers.\n\nOnly works with fruit acquired on this run.',
         onCompleted(store) {
           store.run.weaponLevelAdded += store.weaponLevel();
