@@ -39,7 +39,7 @@ export const allRooms: Room[] = [
     x: 407, y: 359, type: "boss", label: 'straight1', name: 'Dead Gladiator',
     next: {
       'Turn left': { label: 'main-left', description: 'Exit the arena to the left. Wails of prisoners echo from the corridor.' },
-      'Turn right': { label: 'main-right', description: 'Exit the arena to the right. A smell of rotten fruit wafts from the corridor.' },
+      'Turn right': { label: 'main-right', description: 'Exit the arena to the right. The air from the corridor carries the aroma of growth and decay.' },
     },
   },
   { x: 342, y: 359, type: "rescue", name: 'Dark Chef', label: 'main-left' },

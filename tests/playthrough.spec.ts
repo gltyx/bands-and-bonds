@@ -117,9 +117,29 @@ test('playthrough', async ({ page }) => {
     await game.defeatEnemy('Lobster Daddy');
     await game.clickButton('Keep going');
     await game.rescue('Royal Fruitbearer');
+  });
+  await game.run(7, async () => {
+    await game.defeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.defeatEnemy('Dead Gladiator');
+  });
+
+  await game.manageBand(async () => {
+    await game.addToBand('Kin of Pump');
+  });
+  await game.run(async () => {
+    await game.defeatEnemy('Wild Slime');
+    await game.clickButton('Keep going');
+    await game.clickButton('Go straight');
+    await game.defeatEnemy('Dead Gladiator');
+    await game.clickButton('Turn left');
+    await game.clickButton('Keep going');
+    await game.defeatEnemy('Lobster Daddy');
+    await game.clickButton('Keep going');
     await game.clickButton('Keep going');
     await game.defeatEnemy('Will-o-Wasp');
-    await game.clickButton('Go straight');
+    await game.clickButton('Turn right');
     await game.defeatEnemy('The Shroud');
     await game.clickButton('Keep going');
     await game.defeatEnemy('Dark Lord');

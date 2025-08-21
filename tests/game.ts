@@ -179,6 +179,7 @@ export default class Game {
         console.log(`Retreated after ${this.clicks} clicks with no fruit.`);
       }
       await retreat.click();
+      await retreat.click();
       await expect(this.button('Enter the Dungeon')).toBeVisible();
     });
     this.totalClicks += this.clicks;
