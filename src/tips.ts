@@ -18,14 +18,20 @@ const tipsByFriend: { [friend: string]: Partial<Tip>[] } = {
     { text: "My staff is <i>blunt</i>. And I think sometimes that's for the best." },
   ],
   "Lamplighter": [
-    { text: "Good thing I brought a lamp." },
+    { text: "Good thing I brought a lamp. This must be one of the darkest dungeons I've seen." },
     { text: "You can <i>hold</i> a button to keep repeating an attack." },
-    { text: "Did you know you can <i>move</i> band members without removing and re-adding them?", enabled: (store) => !store.team.unlocked.includes("Bayla") },
+    {
+      text: "Did you know you can <i>move</i> band members without removing and re-adding them? One click to select, another click to move. Like my grandma always said.",
+      enabled: (store) => !store.team.unlocked.includes("Bayla")
+    },
     {
       text: "Did you know you can <i>move</i> band members without removing and re-adding them? Bayla can do it even inside the dungeon.",
       enabled: (store) => store.team.unlocked.includes("Bayla")
     },
-    { text: "This game has an online co-op mode. Check the <i>Settings</i> page.", enabled: (store) => !store.local.settings.online },
+    {
+      text: "This game can be played with friends online. You go on adventures individually and share the persistent progress. Check the <i>Settings</i> page. You can also use this to share progress between multiple devices.",
+      enabled: (store) => !store.local.settings.online
+    },
     { text: "This game is not meant to be slow. If it feels slow, try a different band composition or go in a different direction." },
     { text: "We can't take advantage of enemy weaknesses when Desert Rabbit is not with us.", enabled: (store) => resting(store, "Desert Rabbit") },
     { text: "Azrekta is truly magical. Time to experiment!", enabled: (store) => resting(store, "Azrekta") },
@@ -91,8 +97,14 @@ const tipsByFriend: { [friend: string]: Partial<Tip>[] } = {
     { text: "If Desert Rabbit sees an opening on the left, move me to the left so I can strike!", enabled: (store) => !!store.onboard("Desert Rabbit") },
   ],
   "Smiling Pilot": [
-    { text: "I bet I would make a great wizard. <i>~eats a fly~</i>", enabled: (store) => !store.onboard("Smiling Wizard") && store.team.unlocked.includes("Azrekta") },
-    { text: "I mimic abilities left and right. How about combining a <i>strong attack</i> and a <i>fast attack</i>?", enabled: (store) => !store.onboard("Coldblade") },
+    {
+      text: "I bet I would make a great wizard. <i>~eats a fly~</i>",
+      enabled: (store) => !store.onboard("Smiling Wizard") && store.team.unlocked.includes("Azrekta")
+    },
+    {
+      text: "I mimic abilities left and right. How about combining a <i>strong attack</i> and a <i>fast attack</i>?",
+      enabled: (store) => !store.onboard("Coldblade")
+    },
   ],
   "Seventh Swimmer": [
     { text: "Could you please drink something else?" },

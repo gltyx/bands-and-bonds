@@ -51,7 +51,7 @@ export const allEnemies: Enemy[] = [
   { name: "Artifact Seeker", health: 70_000, dodge: 2, rewards: { gold: 1_000, fruit: 20 }, weaknesses: ["ice", "fire", "water"] },
   { name: "Golden Chest", health: 1, armor: 10_000, rewards: { gold: 7_500 }, weaknesses: ["blunt"] },
   { name: "King of Tadpoles", health: 1_250_000, rewards: { gold: 100, fruit: 60 }, immune: ["water"] },
-  { name: "Hopanoids", count: 10, health: 50_000, armor: 1_000, dodge: 1, rewards: { fruit: 100 }, weaknesses: ["fire"] },
+  { name: "Hopanoids", count: 12, health: 50_000, armor: 1_000, dodge: 1, rewards: { fruit: 100 }, weaknesses: ["fire"] },
   { name: "Tosyl Rose", health: 860_000, armor: 4_000, rewards: { gold: 100, fruit: 100 }, weaknesses: ["fire", "right"] },
   { name: "Sullen Bearer", health: 990_000, armor: 10_000, rewards: { gold: 200 }, weaknesses: ["back"] },
   { name: "Unwelcoming Glade", health: 2_400_000, rewards: { gold: 100, fruit: 100, saplings: 1 }, weaknesses: ["fire", "sharp"] },
