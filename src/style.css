@@ -285,3 +285,8 @@ u {
   border-radius: 50%;
   background-color: oklch(0.6 0 0);
 }
+
+.test-mode * {
+  transition: none !important;
+  animation: none !important;
+}

@@ -302,7 +302,6 @@ for (const enemy of Object.values(enemiesByName)) {
 
 .rescue-available {
   transition: opacity 1s linear;
-  opacity: 1;
 
   img {
     transition: filter 1s linear;
@@ -311,8 +310,6 @@ for (const enemy of Object.values(enemiesByName)) {
 }
 
 .rescue-available.v-leave-to {
-  opacity: 1;
-
   img {
     filter: invert(0.5) brightness(2);
   }
