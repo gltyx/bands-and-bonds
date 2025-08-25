@@ -67,7 +67,7 @@ function runTo(currentTime: number) {
       store.run.room.damage = Math.max(0, store.run.room.damage - Math.floor(regen));
       lastRegenTime.value += Math.floor(regen) / regenPerSecond * 1000;
     } else if (regen < -1) {
-      store.addDamage(Math.floor(-regen), 1);
+      store.addDamage(Math.floor(-regen), 1, { ignoreArmor: true });
       lastRegenTime.value -= Math.floor(-regen) / regenPerSecond * 1000;
     } else if (regen === 0) {
       lastRegenTime.value = currentTime;
