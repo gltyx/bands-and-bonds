@@ -37,8 +37,12 @@ const tipsByFriend: { [friend: string]: Partial<Tip>[] } = {
     { text: "Azrekta is truly magical. Time to experiment!", enabled: (store) => resting(store, "Azrekta") },
     { text: "At least we have enough fruit to buy more packs now.", enabled: (store) => store.team.fruit + store.run.fruit >= costOfPacks(store.team.packs + 1) },
     {
+      text: "I'm hungry. A band with the <i>Royal Fruitbearer</i> could collect some fruit.",
+      enabled: (store) => resting(store, ["Royal Fruitbearer"]) && store.team.packs < 40
+    },
+    {
       text: "I'm hungry. A band with the <i>Royal Fruitbearer</i> and the <i>Lord of Gears</i> led by the <i>Wayfinder</i> could collect some fruit without our help.",
-      enabled: (store) => resting(store, ["Royal Fruitbearer", "Lord of Gears", "Wayfinder"]) && store.team.fruit < 100
+      enabled: (store) => resting(store, ["Royal Fruitbearer", "Lord of Gears", "Wayfinder"]) && store.team.packs < 60
     },
   ],
   "The Silent Song": [

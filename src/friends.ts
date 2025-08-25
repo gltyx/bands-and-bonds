@@ -47,13 +47,13 @@ The starting weapon level is the highest level achieved.
         name: "Unforge",
         hidden: (store) => store.run.room.armorDamage === (store.currentEnemy()?.armor ?? 0),
         duration: 5,
-        description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier * 100)} damage`,
+        description: (store, self) => `Damages the armor of the enemy.\n\n${numberSpan(store.abilityEffects(self).damageMultiplier * 10)} damage`,
         onCompleted(store, times, self) {
           const e = store.abilityEffects(self);
           const hits = e.rndHits(times);
           store.run.room.armorDamage = Math.min(
             store.currentEnemy()?.armor ?? 0,
-            store.run.room.armorDamage + e.damageMultiplier * hits);
+            store.run.room.armorDamage + e.damageMultiplier * hits * 10);
         },
       }],
     },

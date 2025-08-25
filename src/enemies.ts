@@ -45,7 +45,7 @@ export const allEnemies: Enemy[] = [
   { name: "Gnollish Ambassador", health: 120_000, armor: 10, rewards: { gold: 20, fruit: 19 }, weaknesses: ["fire", "right"] },
   { name: "Striped Horror", health: 200_000, dodge: 10, rewards: { gold: 10, fruit: 20 } },
   {
-    name: "Dragonfly Agaric", health: 600_000, rewards: { gold: 20, fruit: 30 }, immune: ["poison"], regen: 1_000, weaknesses: ["fire", "left"],
+    name: "Dragonfly Agaric", health: 600_000, rewards: { gold: 20, fruit: 30 }, immune: ["poison"], regen: 3_000, weaknesses: ["fire", "left"],
     passiveEffects: ["The spores of the Dragonfly Agaric are toxic to everything but itself."],
   },
   { name: "Artifact Seeker", health: 70_000, dodge: 2, rewards: { gold: 1_000, fruit: 20 }, weaknesses: ["ice", "fire", "water"] },

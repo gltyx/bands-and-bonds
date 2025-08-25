@@ -32,6 +32,8 @@ function mainLoop() {
   if (k > 1) console.log(`Caught up ${k} frames.`);
   animationFrameId.value = requestAnimationFrame(mainLoop);
 }
+
+const testMode = window.location.search.includes("test");
 function runTo(currentTime: number) {
   let baseTime = currentTime;
   if (store.run.skipTime) {
@@ -39,7 +41,7 @@ function runTo(currentTime: number) {
     store.run.skipTime = 0;
   }
   let deltaTime = baseTime - lastFrameTime.value;
-  const multiplier = window.location.search.includes("test") ? 100 : 1;
+  const multiplier = testMode ? 100 : 1;
   deltaTime *= multiplier;
   const enemy = store.currentEnemy();
   if (enemy && store.run.room.damage < enemy.health) {
@@ -65,7 +67,7 @@ function runTo(currentTime: number) {
       store.run.room.damage = Math.max(0, store.run.room.damage - Math.floor(regen));
       lastRegenTime.value += Math.floor(regen) / regenPerSecond * 1000;
     } else if (regen < -1) {
-      store.addDamage(Math.floor(-regen), 1);
+      store.addDamage(Math.floor(-regen), 1, { ignoreArmor: true });
       lastRegenTime.value -= Math.floor(-regen) / regenPerSecond * 1000;
     } else if (regen === 0) {
       lastRegenTime.value = currentTime;
@@ -98,7 +100,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div style="display: contents;" :class="{ 'blur-images': store.local.settings.blurImages }" class="app">
+  <div style="display: contents;" :class="{ 'blur-images': store.local.settings.blurImages, 'test-mode': testMode }"
+    class="app">
     <div class="header">
       <div class="header-header">
         <div id="header-gold" class="numbers">
