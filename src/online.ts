@@ -1,5 +1,5 @@
 import { Client, Databases, ID } from "appwrite";
-import type { TeamData, Store } from "./base";
+import { startingTeamData, type TeamData, type Store } from "./base";
 
 const PROJECT_ID = '6840583c0004412239f1';
 const DATABASE_ID = '6861bd350007aa692f7c';
@@ -61,7 +61,7 @@ export async function newTeam(): Promise<string> {
     DATABASE_ID,
     COLLECTION_ID,
     ID.unique(),
-    { name: 'Unnamed Team', fruit: 1, packs: 1, unlocked: ['Stick Master'], discovered: [] },
+    startingTeamData(),
   );
   return doc.$id;
 }

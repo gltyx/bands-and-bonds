@@ -72,6 +72,17 @@ export type TeamData = {
   discovered: string[]; // Room keys.
   name: string;
 }
+export function startingTeamData(): TeamData {
+  return {
+    fruit: 1,
+    packs: 1,
+    bestWeaponLevel: 1,
+    unlocked: ['Stick Master'],
+    discovered: [],
+    name: 'Unnamed Guild',
+  };
+}
+
 
 export type AbilityEffects = {
   damageMultiplier: number; // Total multiplier.

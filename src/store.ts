@@ -47,12 +47,6 @@ function startingBand(): base.Band {
     12: 'Stick Master',
   };
 }
-function startingUnlocked(): string[] {
-  return ['Stick Master'];
-}
-function startingDiscovered(): string[] {
-  return [];
-}
 function startingSettings(): base.Settings {
   return {
     blurImages: false,
@@ -64,16 +58,6 @@ export function startingLocalData(): base.LocalData {
   return {
     band: startingBand(),
     settings: startingSettings(),
-  };
-}
-function startingTeamData(): base.TeamData {
-  return {
-    fruit: 1,
-    packs: 1,
-    bestWeaponLevel: 1,
-    unlocked: startingUnlocked(),
-    discovered: startingDiscovered(),
-    name: 'Unnamed Guild',
   };
 }
 
@@ -93,7 +77,7 @@ if (!runData.capturedMonsters) {
 const loadedLocal = localStorage.getItem('bnb-local');
 export const localData = reactive<base.LocalData>(loadedLocal ? JSON.parse(loadedLocal) : startingLocalData());
 const loadedTeam = localStorage.getItem('bnb-team');
-export const teamData = reactive<base.TeamData>(loadedTeam ? JSON.parse(loadedTeam) : startingTeamData());
+export const teamData = reactive<base.TeamData>(loadedTeam ? JSON.parse(loadedTeam) : base.startingTeamData());
 export const store: base.Store = {
   run: runData,
   local: localData,
