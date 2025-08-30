@@ -200,7 +200,7 @@ const enabled = computed(() => {
         </button>
         <button v-else class="band-cell unavailable">
         </button>
-        <template v-if="row === 2 && col === 2">
+        <template v-if="row === 2 && col === 2 && store.team.unlocked.includes('Lamplighter')">
           <div v-if="friendAt(row, col)?.name === 'Stick Master' && !enabled" class="band-tutorial">
             Retreat to make changes to the band
           </div>
