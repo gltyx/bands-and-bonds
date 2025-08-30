@@ -200,6 +200,31 @@ const enabled = computed(() => {
         </button>
         <button v-else class="band-cell unavailable">
         </button>
+        <template v-if="row === 2 && col === 2">
+          <div v-if="friendAt(row, col)?.name === 'Stick Master' && !enabled" class="band-tutorial">
+            Retreat to make changes to the band
+          </div>
+          <div v-else-if="friendAt(row, col)?.name === 'Stick Master' && selected !== 'Stick Master'"
+            class="band-tutorial">
+            Click me to select me
+          </div>
+          <div v-else-if="friendAt(row, col)?.name === 'Stick Master' && selected === 'Stick Master'"
+            class="band-tutorial">
+            Click me again to remove me from the band
+          </div>
+          <div v-else-if="!friendAt(row, col) && (selected === 'Stick Master' || !selected)" class="band-tutorial">
+            Select someone below to add them to the band
+          </div>
+          <div
+            v-else-if="!friendAt(row, col) && store.team.packs >= packsSpent + (friendsByName[selected ?? '']?.cost ?? 0) && store.available(row, col)"
+            class="band-tutorial">
+            Click here to add {{ selected }} to the band
+          </div>
+          <div v-else-if="!friendAt(row, col)" class="band-tutorial">
+            Buy more <img src="/images/generated/pack.webp" class="resource-icon" />
+            to afford adding {{ selected }} to the band
+          </div>
+        </template>
       </template>
     </div>
     <img v-for="bond in bonds" class="chain" :src="`images/generated/${bond.image}.webp`" :style="bond.style" />
@@ -274,6 +299,17 @@ const enabled = computed(() => {
     height: 100%;
     border: 0;
   }
+}
+
+.band-tutorial {
+  position: absolute;
+  bottom: 55%;
+  left: 63%;
+  background-color: #000;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 15px;
+  border-bottom-left-radius: 0;
 }
 
 u {
