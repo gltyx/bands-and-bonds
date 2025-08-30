@@ -138,6 +138,10 @@ for (const url of [
   'images/generated/victory2.webp',
   'images/generated/victory3.webp',
   'images/generated/victory4.webp',
+  'images/generated/victory-skelemasterion1.webp',
+  'images/generated/victory-skelemasterion2.webp',
+  'images/generated/victory-skelemasterion3.webp',
+  'images/generated/victory-skelemasterion4.webp',
 ]) {
   preloadImage(url);
 }
@@ -210,7 +214,8 @@ for (const enemy of Object.values(enemiesByName)) {
     </div>
   </Transition>
   <div class="passive-effect" v-for="effect in passiveEffects" v-html="effect" />
-  <Victory :show="!!store.run.timers.celebrating" @on-start="hideActions = true;" @on-end="hideActions = false;" />
+  <Victory :show="!!store.run.timers.celebrating" @on-start="hideActions = true;" @on-end="hideActions = false;"
+    :skelemasterion="enemy?.name === 'Skelemasterion'" />
   <div class="actions" v-show="!hideActions">
     <template v-for="ab in st.abilities.value" :key="ab.name">
       <SlowButton v-if="store.run.steps > 0 && (fighting || ab.peaceful)" :timer-key="`ability-${ab.name}`"

@@ -235,7 +235,8 @@ function addDamage(x: number, times: number, opts?: base.DamageOptions) {
     } else {
       // Victory!
       if (!window.location.search.includes('test')) {
-        store.run.timers.celebrating = { duration: 1000, cost: { gold: 0, fruit: 0, saplings: 0 } };
+        const duration = enemy.name === 'Skelemasterion' ? 2000 : 1000;
+        store.run.timers.celebrating = { duration, cost: { gold: 0, fruit: 0, saplings: 0 } };
       }
       store.run.room.damage = enemy.health;
       store.run.room.poison = 0;

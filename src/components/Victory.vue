@@ -2,15 +2,19 @@
 import { defineProps } from 'vue';
 const props = defineProps<{
   show: boolean;
+  skelemasterion?: boolean;
 }>();
 const emit = defineEmits(['on-start', 'on-end']);
+function image(n: number) {
+  return `images/generated/victory${props.skelemasterion ? "-skelemasterion" : ""}${n}.webp`;
+}
 </script><template>
   <Transition @before-enter="emit('on-start')" @after-leave="emit('on-end')">
-    <div class="celebrating" v-if="props.show">
-      <img class="layer1" src="/images/generated/victory1.webp" alt="A circle of golden swords" />
-      <img class="layer2" src="/images/generated/victory2.webp" alt="A golden shield" />
-      <img class="layer3" src="/images/generated/victory3.webp" alt="A sword with red gems" />
-      <img class="layer4" src="/images/generated/victory4.webp" alt="A sword with blue gems" />
+    <div class="celebrating" :style="{ height: `${props.skelemasterion ? 300 : 200}px` }" v-if="props.show">
+      <img class="layer1" :src="image(1)" alt="A circle of golden swords" />
+      <img class="layer2" :src="image(2)" alt="A golden shield" />
+      <img class="layer3" :src="image(3)" alt="A sword with red gems" />
+      <img class="layer4" :src="image(4)" alt="A sword with blue gems" />
       <div class="victory-text-backdrop">
         Victory!
       </div>
@@ -23,7 +27,6 @@ const emit = defineEmits(['on-start', 'on-end']);
 
 <style scoped>
 .celebrating {
-  height: 200px;
   position: relative;
   justify-content: center;
   align-items: center;
@@ -35,7 +38,8 @@ const emit = defineEmits(['on-start', 'on-end']);
     position: absolute;
     top: 0;
     left: 50%;
-    width: 200px;
+    max-height: 100%;
+    width: auto;
   }
 
   .layer1 {
@@ -47,11 +51,11 @@ const emit = defineEmits(['on-start', 'on-end']);
   }
 
   .layer3 {
-    transform: translateX(-50%) rotateZ(45deg) translateZ(-20px);
+    transform: translateX(-50%) rotateZ(45deg) translateZ(-20px) scale(0.9, 1);
   }
 
   .layer4 {
-    transform: translateX(-50%) rotateZ(-45deg) translateZ(-10px);
+    transform: translateX(-50%) rotateZ(-45deg) translateZ(-10px) scale(0.9, 1);
   }
 
   .victory-text-backdrop,
