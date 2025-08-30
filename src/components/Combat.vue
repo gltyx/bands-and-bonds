@@ -41,8 +41,8 @@ const passiveEffects = computed(() => {
   if (!enemy.value) return effects;
   const count = enemy.value.count ?? 1;
   const alive = store.run.room.damage < enemy.value.health;
-  if (enemy.value.name === 'Skelemasterion' && !alive && !store.run.capturedMonsters.includes('Skelemasterion')) {
-    return ['Skelemasterion is defeated. You search its lair and collect its treasure. Yet you miss something that only Skelemasterion could reveal.'];
+  if (enemy.value.eulogy && !alive) {
+    return [];
   }
   const s = count > 1 ? '' : 's';
   const is = count > 1 ? (alive ? 'are' : 'were') : (alive ? 'is' : 'was');
@@ -180,23 +180,29 @@ for (const enemy of Object.values(enemiesByName)) {
         <EnemyRewards :enemy="enemy" />.
       </div>
     </template>
-    <h1>{{ enemy.name }}</h1>
-    <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :key="enemy.name"
-      :class="{ ethereal: st.ethereal.value }"
-      :style="enemy.health <= store.run.room.damage && { filter: 'saturate(0.3) contrast(1.5)' }" />
-    <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
-    <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
-      label="Armor" title="Armor is subtracted from damage" />
+    <Transition mode="out-in">
+      <div key="enemy-normal"
+        v-if="!enemy.eulogy || enemy.health > store.run.room.damage || store.run.timers.celebrating"
+        :class="{ 'fade-to-white': !!enemy.eulogy }">
+        <h1>{{ enemy.name }}</h1>
+        <img :src="`images/generated/${enemy.name}.webp`" :alt="enemy.name" :key="enemy.name" class="enemy-portrait"
+          :class="{ ethereal: st.ethereal.value, dead: enemy.health <= store.run.room.damage && !enemy.eulogy }" />
+        <Progress :value="enemy.health - store.run.room.damage" :max="enemy.health" color="#c00" label="HP" />
+        <Progress v-if="enemy.armor" :value="enemy.armor - store.run.room.armorDamage" :max="enemy.armor" color="#666"
+          label="Armor" title="Armor is subtracted from damage" />
+      </div>
+      <div key="enemy-eulogy" class="revealed-info eulogy" v-else v-html="enemy.eulogy(store)" />
+    </Transition>
   </div>
   <Transition mode="out-in">
-    <div key="just-rescued" class="just-rescued" v-if="st.justRescued.value">
+    <div key="just-rescued" class="revealed-info" v-if="st.justRescued.value">
       <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name"
         class="friend" />
       <h1>{{ st.justRescued.value?.name }}</h1>
       <p class="description is-rescued" style="margin-top: 0; text-align: center; color: #edb;">is rescued!</p>
       <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
     </div>
-    <div key="rescue-available" class="rescue-available scene" v-else-if="st.rescueAvailable.value">
+    <div key="rescue-available" class="fade-to-white scene" v-else-if="st.rescueAvailable.value">
       <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
       <h1>Prisoner found</h1>
       <p class="description">You see a hooded figure in a cage. Will you let them out?</p>
@@ -287,9 +293,13 @@ for (const enemy of Object.values(enemiesByName)) {
   img {
     transition: filter 2s;
   }
+
+  img.dead {
+    filter: saturate(0.3) contrast(1.5);
+  }
 }
 
-.enemy>img,
+.enemy img.enemy-portrait,
 .scene>img {
   width: 100px;
   height: 100px;
@@ -305,8 +315,8 @@ for (const enemy of Object.values(enemiesByName)) {
   border-right-color: #8af;
 }
 
-.rescue-available {
-  transition: opacity 1s linear;
+.fade-to-white {
+  transition: opacity 1s linear !important;
 
   img {
     transition: filter 1s linear;
@@ -314,26 +324,26 @@ for (const enemy of Object.values(enemiesByName)) {
   }
 }
 
-.rescue-available.v-leave-to {
+.fade-to-white.v-leave-to {
   img {
     filter: invert(0.5) brightness(2);
   }
 }
 
-.just-rescued.v-enter-active img.friend {
+:global(.revealed-info.v-enter-active img.friend) {
   animation: rescue-reveal 3s;
 }
 
-.just-rescued.v-enter-active h1,
-.just-rescued.v-enter-active .description.is-rescued {
+.revealed-info.v-enter-active h1,
+.revealed-info.v-enter-active .description.is-rescued {
   animation: rescue-reveal-text-1 3s;
 }
 
-.just-rescued.v-enter-active .description {
+.revealed-info.v-enter-active .description {
   animation: rescue-reveal-text-2 3s;
 }
 
-.just-rescued.v-enter-active {
+.revealed-info.v-enter-active {
   animation: rescue-reveal-background 3s;
 }
 
@@ -409,7 +419,7 @@ for (const enemy of Object.values(enemiesByName)) {
   }
 }
 
-.just-rescued {
+.revealed-info {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -467,5 +477,9 @@ for (const enemy of Object.values(enemiesByName)) {
 
 .leads-to {
   filter: brightness(90%) sepia(90%) hue-rotate(80deg) saturate(200%);
+}
+
+.eulogy {
+  margin-top: 30px;
 }
 </style>

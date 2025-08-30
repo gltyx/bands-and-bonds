@@ -91,6 +91,15 @@ export const allEnemies: Enemy[] = [
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
     rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "dark", "poison", "sharp", "blunt", "ranged"],
     passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
+    eulogy: (store) =>
+      `
+    <img src="images/generated/Skelemasterion-dead.webp" class="friend">
+    <h1 style="margin-top: 0">Skelemasterion is ${store.run.capturedMonsters.includes('Skelemasterion') ? 'captured' : 'defeated'}!</h1>
+    <div class="description">
+    ${store.run.capturedMonsters.includes('Skelemasterion') ?
+        "<p>Your victory is complete. Your band organizes a feast. <p> You search Skelemasterion's lair and collect its treasures. You can force the beast to reveal its secrets now. Finally you have what you came for."
+        : "<p>Victory is yours. A great evil has been vanquished. Time to celebrate! <p> You search its lair and collect its treasures. Yet you miss something that only Skelemasterion could reveal..."}
+    </div>`,
   },
 ];
 

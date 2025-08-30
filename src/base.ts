@@ -179,6 +179,7 @@ export type Enemy = {
   passiveEffects?: string[];
   weaknesses?: string[];
   slowTime?: number;
+  eulogy?: (store: Store) => string;
 };
 
 const _numberFormatFrac = new Intl.NumberFormat("en-US", {
