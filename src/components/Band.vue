@@ -15,9 +15,6 @@ function imageFor(row: number, col: number): string | undefined {
   const imageName = nextTo('Azrekta', row, col) && friend.super?.name || friend.name;
   return `images/generated/${imageName}.webp`;
 }
-function remove(key: number) {
-  delete store.local.band[key];
-}
 function canSet(name: string): boolean {
   const onb = onboard(name);
   if (name === 'Lamplighter') return enabled.value && !onb;
@@ -39,8 +36,10 @@ function set(row: number, col: number, name: string) {
     store.local.band[col + row * store.local.band.width] = name;
   }
 }
+function remove(key: number) {
+  delete store.local.band[key];
+}
 function clear(row: number, col: number) {
-  if (!enabled.value) return;
   const band = store.local.band;
   remove(col + row * band.width);
   // Drop anyone who is now on unlit tiles.
@@ -77,10 +76,10 @@ const selectedFriend = computed(() => {
 
 function friendClicked(row: number, col: number) {
   const friend = friendAt(row, col);
-  if (selected.value === friend?.name) {
-    clear(row, col);
-  } else {
+  if (selected.value !== friend?.name) {
     selected.value = friend?.name;
+  } else if (enabled.value) {
+    clear(row, col);
   }
 }
 
