@@ -110,6 +110,15 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
       </p>
     </div>
   </div>
+  <button v-if="onboard('Wayfinder') && store.local.destination" @click="store.local.destination = undefined">
+    <img src="/images/generated/Wayfinder.webp" />
+    <div class="text">
+      <div class="title">Stop Traveling</div>
+      <div class="description">
+        <p>Ask Wayfinder to stop for now.</p>
+      </div>
+    </div>
+  </button>
 </template>
 
 <style scoped>

@@ -479,7 +479,7 @@ export const plannedTurn = computed(() => {
 function takePlannedTurn(turn: string) {
   if (turn === 'Retreat') {
     retreat();
-    store.takeTurn("Enter the dungeon"); // Get started on the next run immediately.
+    store.takeTurn("Enter the Dungeon"); // Get started on the next run immediately.
   } else {
     store.takeTurn(turn);
   }
