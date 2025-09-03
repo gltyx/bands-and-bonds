@@ -347,6 +347,9 @@ To repeat the run after reaching the destination, place Wayfinder at the front o
 With Wayfinder in your band, you can replace members of your band at campfires.
 Now that Wayfinder is free, you can see more details on the map.
     `,
+    passiveEffects: (store) => store.onboard("Wayfinder")!.row < 2
+      ? ["Wayfinder is placed in the front. Your band will retreat and start over after reaching the destination."]
+      : ["Wayfinder is placed in the back. Your band will not start over after reaching the destination."],
     super: {
       name: 'Campfinder',
       description: `
@@ -358,7 +361,10 @@ With Campfinder in your band, you can replace members of your band at campfires.
 Now that Campfinder is free, you can see more details on the map.
 
 Campfinder sets the weapons of nearby explorers on fire.
-    `,
+      `,
+      passiveEffects: (store) => store.onboard("Campfinder")!.row < 2
+        ? ["Campfinder is placed in the front. Your band will retreat and start over after reaching the destination."]
+        : ["Campfinder is placed in the back. Your band will not start over after reaching the destination."],
       abilities: [{
         name: "Fall Back to Camp",
         duration: 20,

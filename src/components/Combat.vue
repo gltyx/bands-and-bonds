@@ -35,7 +35,11 @@ const passiveEffects = computed(() => {
   for (const name in store.bandByName()) {
     const friend = friendsByName[name];
     if (friend?.passiveEffects) {
-      effects.push(...friend.passiveEffects);
+      if (typeof friend.passiveEffects === "function") {
+        effects.push(...friend.passiveEffects(store));
+      } else {
+        effects.push(...friend.passiveEffects);
+      }
     }
   }
   if (!enemy.value) return effects;

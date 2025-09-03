@@ -162,7 +162,7 @@ export type Friend = {
   abilities?: Ability[];
   super?: Partial<Friend>;
   descriptionHtml?: string | Promise<string>;
-  passiveEffects?: string[];
+  passiveEffects?: string[] | ((store: Store) => string[]);
 }
 
 export type Enemy = {
