@@ -6,12 +6,15 @@ import { roomsByKey } from "../rooms.ts";
 import { numberFormat, durationFormat, type Ability } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
-import { computed, ref } from "vue";
+import { computed, defineProps, ref } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
 import Fruit from "./Fruit.vue";
 import Num from "./Num.vue";
 import Victory from "./Victory.vue";
 import { allTips } from "../tips.ts";
+const props = defineProps<{
+  testMode: boolean;
+}>();
 
 const store = st.store;
 const enemy = computed(() => store.currentEnemy());
@@ -198,7 +201,7 @@ for (const enemy of Object.values(enemiesByName)) {
       <div key="enemy-eulogy" class="revealed-info eulogy" v-else v-html="enemy.eulogy(store)" />
     </Transition>
   </div>
-  <Transition mode="out-in">
+  <Transition mode="out-in" :duration="props.testMode ? 0 : undefined">
     <div key="just-rescued" class="revealed-info" v-if="st.justRescued.value">
       <img :src="`images/generated/${st.justRescued.value?.name}.webp`" :alt="st.justRescued.value?.name"
         class="friend" />

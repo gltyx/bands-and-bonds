@@ -136,7 +136,7 @@ onUnmounted(() => {
       </div>
     </div>
     <div class="page-container" v-show="page === 'combat'">
-      <Combat />
+      <Combat :testMode="testMode" />
     </div>
     <div class="page-container" v-show="page === 'map'">
       <MapPage />
