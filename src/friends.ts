@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import { numberFormat, type Ability, type Friend } from './base';
+import { turnsToPath } from './rooms';
 
 function numberSpan(n: number, extra?: string): string {
   const e = extra ?? '';
@@ -376,6 +377,8 @@ Campfinder sets the weapons of nearby explorers on fire.
             steps -= 1;
           }
           store.run.steps = steps;
+          store.run.turns = turnsToPath(steps, store.run.turns).turns;
+          store.local.destination = undefined;
         },
         preventRepeat: true,
         preventAutomation: true,

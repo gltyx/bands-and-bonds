@@ -253,19 +253,21 @@ export const allRooms: Room[] = [
   { x: 407, y: 127, type: "finalboss", name: 'Skelemasterion', end: true },
 ];
 
-export function turnsToPath(numSteps: number, turns: string[]): Room[] {
-  const rooms = [] as Room[];
-  const _turns = [...turns];
+export function turnsToPath(numSteps: number, turns: string[]): { path: Room[], turns: string[] } {
+  const path = [] as Room[];
+  const nextTurns = [...turns];
+  const usedTurns = [];
   let target = undefined as string | undefined;
   for (const room of allRooms) {
     if (target && room.label === target) {
       target = undefined;
     }
     if (target) continue;
-    rooms.push(room);
-    if (room.end || rooms.length === numSteps + 1) return rooms;
+    path.push(room);
+    if (room.end || path.length === numSteps + 1) return { path, turns: usedTurns };
     if (room.next) {
-      const step = _turns.shift() ?? '';
+      const step = nextTurns.shift() ?? '';
+      usedTurns.push(step);
       const next = room.next[step];
       if (!next) {
         console.error(`"${step}" not  a valid step: ${JSON.stringify(room.next)}`);
@@ -273,7 +275,7 @@ export function turnsToPath(numSteps: number, turns: string[]): Room[] {
       target = next?.label;
     }
   }
-  return rooms;
+  return { path, turns: usedTurns };
 }
 
 export function roomKey(room: Room): string {

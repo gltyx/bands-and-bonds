@@ -24,7 +24,7 @@ onUnmounted(() => {
   resizeObserver.disconnect();
 });
 
-const rooms = computed(() => turnsToPath(store.run.steps, store.run.turns));
+const rooms = computed(() => turnsToPath(store.run.steps, store.run.turns).path);
 
 function icon(room: Room) {
   return room.type.replace('rescue', 'pack');
@@ -110,7 +110,16 @@ const hoveredEnemy = computed(() => hoveredRoom.value?.name ? enemiesByName[hove
       </p>
     </div>
   </div>
-  <button v-if="onboard('Wayfinder') && store.local.destination" @click="store.local.destination = undefined">
+  <button v-if="onboard('Campfinder') && store.local.destination" @click="store.local.destination = undefined">
+    <img src="/images/generated/Campfinder.webp" />
+    <div class="text">
+      <div class="title">Stop traveling</div>
+      <div class="description">
+        <p>Ask Campfinder to stop for now.</p>
+      </div>
+    </div>
+  </button>
+  <button v-else-if="onboard('Wayfinder') && store.local.destination" @click="store.local.destination = undefined">
     <img src="/images/generated/Wayfinder.webp" />
     <div class="text">
       <div class="title">Stop traveling</div>

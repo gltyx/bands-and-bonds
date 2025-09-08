@@ -204,7 +204,7 @@ watch(store.team, (newValue) => {
 }, { deep: true });
 
 const current = computed(() => {
-  const path = turnsToPath(store.run.steps, store.run.turns);
+  const path = turnsToPath(store.run.steps, store.run.turns).path;
   const room = path[path.length - 1];
   const enemy = ['combat', 'boss', 'finalboss'].includes(room.type) ? allEnemies.find((e) => e.name === room.name) : undefined;
   return { path, room, enemy };
@@ -258,12 +258,12 @@ function takeTurn(turn: string) {
   if (turn !== KEEP_GOING.title) {
     store.run.turns.push(turn);
   }
-  let path = turnsToPath(store.run.steps, store.run.turns);
+  let path = turnsToPath(store.run.steps, store.run.turns).path;
   let room = path[path.length - 1];
   while (room.type === 'none' && !room.next) {
     // Skip rooms with nothing to do.
     store.run.steps += 1;
-    path = turnsToPath(store.run.steps, store.run.turns);
+    path = turnsToPath(store.run.steps, store.run.turns).path;
     room = path[path.length - 1];
   }
   if (!store.team.discovered.includes(roomKey(room))) {
