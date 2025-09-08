@@ -131,12 +131,12 @@ export const store: base.Store = {
   },
   available(row: number, col: number): boolean {
     const dist = Math.max(Math.abs(row - 2), Math.abs(col - 2));
-    if (lightRadius.value === 'radius3') return dist <= 2;
-    if (lightRadius.value === 'radius2') return dist <= 1;
+    if (lightRadius() === 'radius3') return dist <= 2;
+    if (lightRadius() === 'radius2') return dist <= 1;
     return dist === 0;
   },
   lightRadius() {
-    return lightRadius.value;
+    return lightRadius();
   },
   getRewards(enemy) {
     const saplings = enemy.rewards?.saplings ?? 0;
@@ -175,14 +175,14 @@ export const store: base.Store = {
   },
 }
 
-const lightRadius = computed(() => {
+function lightRadius() {
   const lamplighter = friendAt(2, 2)?.name === 'Lamplighter';
   if (!lamplighter) return 'radius1';
   if (nextTo('Azrekta', 2, 2)) {
     return 'radius3';
   }
   return 'radius2';
-});
+}
 
 watch(store.run, (newValue) => {
   localStorage.setItem('bnb-run', JSON.stringify(newValue))

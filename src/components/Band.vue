@@ -50,7 +50,7 @@ function removeUnlit() {
         const place = c + r * band.width;
         const friend = band[place];
         if (friend) {
-          remove(c, r);
+          remove(r, c);
         }
       }
     }

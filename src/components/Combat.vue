@@ -6,12 +6,12 @@ import { roomsByKey } from "../rooms.ts";
 import { numberFormat, durationFormat, type Ability } from "../base.ts";
 import SlowButton from "./SlowButton.vue";
 import Progress from "./Progress.vue";
-import { computed, defineProps, ref } from "vue";
+import { computed, defineProps, ref, watch } from "vue";
 import EnemyRewards from "./EnemyRewards.vue";
 import Fruit from "./Fruit.vue";
 import Num from "./Num.vue";
 import Victory from "./Victory.vue";
-import { allTips } from "../tips.ts";
+import { allTips, type Tip } from "../tips.ts";
 const props = defineProps<{
   testMode: boolean;
 }>();
@@ -95,14 +95,18 @@ const passiveEffects = computed(() => {
   return effects;
 });
 
-const tip = computed(() => {
-  if (!st.rescuedFriend.value) return;
+const tip = ref<Tip | undefined>(undefined);
+watch([store.local, () => store.run.steps], () => {
   const possibleTips = allTips.filter(t => store.onboard(t.friend) && (t.enabled === undefined || t.enabled(store)));
+  if (possibleTips.length === 0) {
+    tip.value = undefined;
+    return;
+  }
   const i = Math.floor(Math.random() * possibleTips.length);
   const t = possibleTips[i];
   // Use the super name, if that's who we have in the band.
-  return { ...t, friend: store.onboard(t.friend)?.name };
-});
+  tip.value = { ...t, friend: store.onboard(t.friend)!.name };
+}, { immediate: true });
 const retreatConfirmation = ref(false);
 function retreat() {
   if (retreatConfirmation.value) {
@@ -220,7 +224,7 @@ for (const enemy of Object.values(enemiesByName)) {
       <p class="description">You rescued {{ st.rescuedFriend.value?.name }} here earlier. You stop to recover your
         strength.
       </p>
-      <div class="callout" v-if="tip">
+      <div class="callout" v-if="tip && !st.justRescued.value">
         <p class="description" v-html="tip.text" />
         <img class="friend" :src="`images/generated/${tip.friend}.webp`" />
       </div>
