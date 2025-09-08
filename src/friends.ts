@@ -104,7 +104,7 @@ The only way to defend against his attacks is to dodge them or wear layers of he
       onCompleted(store, times, self) {
         const e = store.abilityEffects(self);
         const hits = e.rndHits(times);
-        store.addPoison(e.damageMultiplier * hits);
+        store.addPoison(e.damageMultiplier, hits);
       },
     }],
     super: {
@@ -120,7 +120,7 @@ The only way to defend against his attacks is to wear layers of heavy armor.`,
         onCompleted(store, times, self) {
           const e = store.abilityEffects(self);
           const hits = e.rndHits(times);
-          store.addPoison(e.damageMultiplier * 10 * hits);
+          store.addPoison(e.damageMultiplier * 10, hits);
         },
       }],
     },
@@ -926,7 +926,7 @@ for (const an1 of ATTACKS) {
       combined.onCompleted = (store, times, self) => {
         const e = store.abilityEffects(self);
         const hits = e.rndHits(times);
-        store.addPoison((self.damage as number) * e.damageMultiplier * hits);
+        store.addPoison((self.damage as number) * e.damageMultiplier, hits);
       };
     }
     friendsByName['Smiling Pilot'].abilities.push(combined);

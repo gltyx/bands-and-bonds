@@ -111,7 +111,7 @@ const enemyAbilities: Record<string, Ability[]> = {
     onCompleted(store, times, self) {
       const e = store.abilityEffects(self);
       const hits = e.rndHits(times);
-      store.addPoison(10 * e.damageMultiplier * hits);
+      store.addPoison(10 * e.damageMultiplier, hits);
     },
   }],
   "Animated Skeleton": [{ name: "Femurs Clashing", duration: 5, damage: 30, description: "Bones to bones. Ashes to ashes.", tags: ['blunt'] }],
@@ -158,8 +158,8 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Chago": [{
     name: "Create Cheese Demon", duration: 300, description: "Chago releases a demon to chew on the enemy.",
     tags: ['bite'],
-    onCompleted(store) {
-      store.addPoison(160000);
+    onCompleted(store, times) {
+      store.addPoison(160000, times);
     },
   }],
   "Door of Loathing": [{

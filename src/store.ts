@@ -109,9 +109,9 @@ export const store: base.Store = {
   addDamage(x: number, times: number, opts?: base.DamageOptions) {
     return addDamage(x, times, opts);
   },
-  addPoison(x: number) {
+  addPoison(x: number, times: number) {
     const armor = (store.currentEnemy()?.armor ?? 0) - store.run.room.armorDamage;
-    store.run.room.poison += Math.max(0, x - armor);
+    store.run.room.poison += Math.max(0, x - armor) * times;
   },
   bandByName() {
     return bandByName.value;
