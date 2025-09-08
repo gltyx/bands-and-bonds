@@ -28,20 +28,21 @@ function set(row: number, col: number, name: string) {
   const onb = onboard(name);
   const cost = friendsByName[name]?.cost ?? 0;
   if (onb) {
-    clear(onb.row, onb.col);
+    remove(onb.row, onb.col);
     if (store.available(row, col)) {
       store.local.band[col + row * store.local.band.width] = name;
     }
+    removeUnlit();
   } else if (store.team.packs >= packsSpent.value + cost && store.available(row, col)) {
     store.local.band[col + row * store.local.band.width] = name;
   }
 }
-function remove(key: number) {
+function remove(row: number, col: number) {
+  const key = col + row * store.local.band.width;
   delete store.local.band[key];
 }
-function clear(row: number, col: number) {
+function removeUnlit() {
   const band = store.local.band;
-  remove(col + row * band.width);
   // Drop anyone who is now on unlit tiles.
   for (let r = 0; r < band.height; r++) {
     for (let c = 0; c < band.width; c++) {
@@ -49,7 +50,7 @@ function clear(row: number, col: number) {
         const place = c + r * band.width;
         const friend = band[place];
         if (friend) {
-          remove(place);
+          remove(c, r);
         }
       }
     }
@@ -79,7 +80,8 @@ function friendClicked(row: number, col: number) {
   if (selected.value !== friend?.name) {
     selected.value = friend?.name;
   } else if (enabled.value) {
-    clear(row, col);
+    remove(row, col);
+    removeUnlit();
   }
 }
 
