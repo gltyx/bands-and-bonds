@@ -3,7 +3,7 @@
   "short_name": "Bands & Bonds",
   "description": "An incremental game with adventure and co-op!",
   "id": "https://darabos.github.io/bands-and-bonds/",
-  "start_url": "https://darabos.github.io/bands-and-bonds/",
+  "start_url": "./",
   "display": "fullscreen",
   "background_color": "#222222",
   "theme_color": "#eeddbb",
@@ -16,13 +16,13 @@
   ],
   "icons": [
     {
-      "src": "/bands-and-bonds/images/generated/maskable_icon.png",
+      "src": "images/generated/maskable_icon.png",
       "sizes": "1204x1204",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/bands-and-bonds/images/generated/logo.png",
+      "src": "images/generated/logo.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
