@@ -401,7 +401,7 @@ var cnItems = {
     "A heavy door to the west. You smell damp earth.": "西面有一扇沉重的门。你闻到了潮湿的泥土味。",
     "Open door": "开门",
     "sharp attacks": "尖锐攻击",
-    "": "",
+    "Copy invite link": "复制邀请链接",
     "": "",
     "": "",
     "": "",
