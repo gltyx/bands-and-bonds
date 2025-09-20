@@ -10,7 +10,7 @@ if (params.has('join')) {
   local.settings.teamId = params.get('join');
   local.settings.online = true;
   localStorage.setItem('bnb-local', JSON.stringify(local));
-  window.location.search = '';
+  window.location.href = window.location.href.replace(window.location.search, '');
 }
 
 createApp(App).mount('#app')
