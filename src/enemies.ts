@@ -92,13 +92,18 @@ export const allEnemies: Enemy[] = [
     rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "dark", "poison", "sharp", "blunt", "ranged"],
     passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
     eulogy: (store) =>
-      `
-    <img src="images/generated/Skelemasterion-dead.webp" class="friend">
-    <h1 style="margin-top: 0">Skelemasterion is ${store.run.capturedMonsters.includes('Skelemasterion') ? 'captured' : 'defeated'}!</h1>
+      store.run.capturedMonsters.includes('Skelemasterion')
+        ? `<img src="images/generated/Skelemasterion-captured.webp" class="friend" style="margin-top: -30px;">
+    <h1 style="margin-top: -10px">Skelemasterion is captured!</h1>
     <div class="description">
-    ${store.run.capturedMonsters.includes('Skelemasterion') ?
-        "<p>Your victory is complete. Your band organizes a feast. <p> You search Skelemasterion's lair and collect its treasures. You can force the beast to reveal its secrets now. Finally you learn how to access the next level of the dungeon."
-        : "<p>Victory is yours. A great evil has been vanquished. Time to celebrate! <p> You search its lair and collect its treasures. Yet you miss something that only Skelemasterion could reveal..."}
+        <p>Your victory is complete. Your band organizes a feast.</p>
+        <p> You search Skelemasterion's lair and collect its treasures. You can force the beast to reveal its secrets now. Finally you learn how to access the next level of the dungeon.</p>
+    </div>`
+        : `<img src="images/generated/Skelemasterion-dead.webp" class="friend">
+    <h1 style="margin-top: -30px">Skelemasterion is defeated!</h1>
+    <div class="description">
+        <p>Victory is yours. A great evil has been vanquished. Time to celebrate!</p>
+        <p> You search its lair and collect its treasures. Yet you miss something that only Skelemasterion could reveal...</p>
     </div>`,
   },
 ];

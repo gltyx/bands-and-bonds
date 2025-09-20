@@ -8,7 +8,9 @@ const emit = defineEmits(['on-start', 'on-end']);
 function image(n: number) {
   return `images/generated/victory${props.skelemasterion ? "-skelemasterion" : ""}${n}.webp`;
 }
-</script><template>
+</script>
+
+<template>
   <Transition @before-enter="emit('on-start')" @after-leave="emit('on-end')">
     <div class="celebrating" :style="{ height: `${props.skelemasterion ? 300 : 200}px` }" v-if="props.show">
       <img class="layer1" :src="image(1)" alt="A circle of golden swords" />
