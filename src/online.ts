@@ -46,6 +46,14 @@ function receiveFromDatabase(payload: TeamData, store: Store) {
   if (payload.name !== store.team.name) {
     store.team.name = payload.name;
   }
+  if ((payload.startTime ?? 0) > 0 && payload.startTime < store.team.startTime) {
+    store.team.startTime = payload.startTime;
+  }
+  for (let i = 0; i < payload.floorCompletions.length; i++) {
+    if (payload.floorCompletions[i] < store.team.floorCompletions[i]) {
+      store.team.floorCompletions[i] = payload.floorCompletions[i];
+    }
+  }
 }
 export async function getTeam(teamId: string): Promise<TeamData> {
   const doc = await databases.getDocument(

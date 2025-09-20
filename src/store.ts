@@ -68,16 +68,17 @@ if (dataVersion !== V) {
   localStorage.setItem('bnb-version', V);
   window.location.reload();
 }
-const loadedRunData = localStorage.getItem('bnb-run');
-export const runData = reactive<base.RunData>(loadedRunData ? JSON.parse(loadedRunData) : startingRunData());
-// Compatibility.
-if (!runData.capturedMonsters) {
-  runData.capturedMonsters = [];
+function loadData<T extends object>(key: string, defaultValue: T): T {
+  const v = { ...defaultValue } as T;
+  const loaded = localStorage.getItem(key);
+  if (loaded) {
+    Object.assign(v, JSON.parse(loaded) as T);
+  }
+  return v;
 }
-const loadedLocal = localStorage.getItem('bnb-local');
-export const localData = reactive<base.LocalData>(loadedLocal ? JSON.parse(loadedLocal) : startingLocalData());
-const loadedTeam = localStorage.getItem('bnb-team');
-export const teamData = reactive<base.TeamData>(loadedTeam ? JSON.parse(loadedTeam) : base.startingTeamData());
+export const runData = reactive<base.RunData>(loadData('bnb-run', startingRunData()));
+export const localData = reactive<base.LocalData>(loadData('bnb-local', startingLocalData()));
+export const teamData = reactive<base.TeamData>(loadData('bnb-team', base.startingTeamData()));
 export const store: base.Store = {
   run: runData,
   local: localData,
@@ -234,8 +235,9 @@ function addDamage(x: number, times: number, opts?: base.DamageOptions) {
       store.run.room.poison = 0;
     } else {
       // Victory!
+      const finalBoss = enemy.name === 'Skelemasterion';
       if (!window.location.search.includes('test')) {
-        const duration = enemy.name === 'Skelemasterion' ? 2000 : 1000;
+        const duration = finalBoss ? 2000 : 1000;
         store.run.timers.celebrating = { duration, cost: { gold: 0, fruit: 0, saplings: 0 } };
       }
       store.run.room.damage = enemy.health;
@@ -247,6 +249,10 @@ function addDamage(x: number, times: number, opts?: base.DamageOptions) {
         if (!store.run.capturedMonsters.includes(enemy.name)) {
           store.run.capturedMonsters.push(enemy.name);
         }
+      }
+      if (finalBoss && store.team.startTime > 0 && !store.team.floorCompletions[0]) {
+        const time = Date.now() - store.team.startTime;
+        store.team.floorCompletions[0] = time;
       }
     }
   }
@@ -265,6 +271,10 @@ function takeTurn(turn: string) {
     store.run.steps += 1;
     path = turnsToPath(store.run.steps, store.run.turns).path;
     room = path[path.length - 1];
+  }
+  if (turn === 'Enter the Dungeon' && store.team.discovered.length === 0) {
+    // First time entering the dungeon.
+    store.team.startTime = Date.now();
   }
   if (!store.team.discovered.includes(roomKey(room))) {
     store.team.discovered.push(roomKey(room));

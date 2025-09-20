@@ -1,4 +1,28 @@
-import type { Ability, Enemy, Store } from "./base";
+import { durationFormat, type Ability, type Enemy, type Store } from "./base";
+
+const SKELEMASTERION_RANKS = [
+  { name: "Ultramasterion", limit: 0 },
+  { name: "Grandmasterion", limit: 0 },
+  { name: "Rapid Destructorion", limit: 0 },
+  { name: "Honorary Hopanoid", limit: 0 },
+  { name: "Skyrmion Skirmisher", limit: 0 },
+  { name: "Tosyl Ambassador", limit: 0 },
+  { name: "Bandling General", limit: 0 },
+  { name: "Trollish Mayor", limit: 1000 * 60 * 60 * 24 * 8 },
+  { name: "Potato Potential", limit: Number.POSITIVE_INFINITY },
+];
+const numRanks = SKELEMASTERION_RANKS.length;
+for (let i = 2; i < numRanks; ++i) {
+  SKELEMASTERION_RANKS[numRanks - 1 - i].limit = Math.ceil(SKELEMASTERION_RANKS[numRanks - i].limit / 2);
+}
+function getRank(time: number): number {
+  for (let i = 0; i < SKELEMASTERION_RANKS.length; i++) {
+    if (time < SKELEMASTERION_RANKS[i].limit) {
+      return i;
+    }
+  }
+  throw new Error("Unreachable — the last entry has limit = Infinity");
+}
 
 export const allEnemies: Enemy[] = [
   { name: "Wild Slime", health: 10, rewards: { gold: 1, fruit: 1 }, weaknesses: ["fire", "ice", "left", "right"] },
@@ -91,21 +115,34 @@ export const allEnemies: Enemy[] = [
     name: "Skelemasterion", health: 1_000_000_000_000_000, armor: 1_000_000_000_000, regen: 1_000_000_000_000, ethereal: true,
     rewards: { gold: 1_000_000, fruit: 1_000_000 }, immune: ["fire", "ice", "water", "light", "dark", "poison", "sharp", "blunt", "ranged"],
     passiveEffects: ["This dungeon is barely strong enough to contain the invincible Skelemasterion."],
-    eulogy: (store) =>
-      store.run.capturedMonsters.includes('Skelemasterion')
-        ? `<img src="images/generated/Skelemasterion-captured.webp" class="friend" style="margin-top: -30px;">
+    eulogy: (store) => {
+      const time = store.team.floorCompletions[0] || 0;
+      const rank = getRank(time);
+      const rankText = time
+        ? rank === 0
+          ? `<p>You won in <span class="numbers">${durationFormat(time)}</span>, earning you the ultimate rank of <i>${SKELEMASTERION_RANKS[0].name}</i>.</p>`
+          : `<p>You won in <span class="numbers">${durationFormat(time)}</span>, earning you the rank of <i>${SKELEMASTERION_RANKS[rank].name}</i>.
+          The cutoff for the next rank is at <span class="numbers">${durationFormat(SKELEMASTERION_RANKS[rank - 1].limit)}</span>.</p>`
+        : `<p>Your adventure started before time measurement was implemented. If you start a new adventure, your time will be measured.</p>`;
+      if (store.run.capturedMonsters.includes('Skelemasterion')) {
+        return `<img src="images/generated/Skelemasterion-captured.webp" class="friend" style="margin-top: -30px;">
     <h1 style="margin-top: -10px">Skelemasterion is captured!</h1>
     <div class="description">
         <p>Your victory is complete. Your band organizes a feast.</p>
-        <p> You search Skelemasterion's lair and collect its treasures. You can force the beast to reveal its secrets now. Finally you learn how to access the next level of the dungeon.</p>
-    </div>`
-        : `<img src="images/generated/Skelemasterion-dead.webp" class="friend">
+        <p>You search Skelemasterion's lair and collect its treasures. You can force the beast to reveal its secrets now.
+          Finally you learn how to access the next level of the dungeon.</p>
+        ${rankText}`;
+      } else {
+        return `<img src="images/generated/Skelemasterion-dead.webp" class="friend">
     <h1 style="margin-top: -30px">Skelemasterion is defeated!</h1>
     <div class="description">
         <p>Victory is yours. A great evil has been vanquished. Time to celebrate!</p>
-        <p> You search its lair and collect its treasures. Yet you miss something that only Skelemasterion could reveal...</p>
-    </div>`,
-  },
+        <p>You search its lair and collect its treasures. Yet you miss something that only Skelemasterion could reveal...</p>
+        ${rankText}
+    </div>`;
+      }
+    },
+  }
 ];
 
 function discardMonster(store: Store, name: string) {

@@ -71,6 +71,8 @@ export type TeamData = {
   unlocked: string[]; // Friend names.
   discovered: string[]; // Room keys.
   name: string;
+  startTime: number;
+  floorCompletions: number[];
 }
 export function startingTeamData(): TeamData {
   return {
@@ -80,6 +82,8 @@ export function startingTeamData(): TeamData {
     unlocked: ['Stick Master'],
     discovered: [],
     name: 'Unnamed Guild',
+    startTime: 0,
+    floorCompletions: [],
   };
 }
 
