@@ -212,6 +212,13 @@ for (const enemy of Object.values(enemiesByName)) {
       <h1>{{ st.justRescued.value?.name }}</h1>
       <p class="description is-rescued" style="margin-top: 0; text-align: center; color: #edb;">is rescued!</p>
       <div class="description" v-html="st.justRescued.value?.descriptionHtml"></div>
+      <div class="abilities" v-for="ab in st.justRescued.value?.abilities" :key="ab.name">
+        <SlowButton :title="ab.name"
+          :display-duration="typeof ab.duration === 'number' ? 1000 * ab.duration : undefined"
+          :description="st.describeAbility(ab, { hitChance: 1, damageMultiplier: 1, baseMultiplier: 1, enemyMultiplier: 1, rndHits: () => 1 })"
+          :image="`images/generated/${ab.image ?? ab.name}.webp`" v-if="!ab.hidden?.(store)"
+          :cost="st.abilityCost(ab)" />
+      </div>
     </div>
     <div key="rescue-available" class="fade-to-white scene" v-else-if="st.rescueAvailable.value">
       <img src="/images/generated/rescue-locked.webp" alt="A creature in a cage" />
@@ -354,6 +361,10 @@ for (const enemy of Object.values(enemiesByName)) {
   animation: rescue-reveal-text-2 3s;
 }
 
+.revealed-info.v-enter-active .abilities {
+  animation: rescue-reveal-text-2 3s;
+}
+
 .revealed-info.v-enter-active {
   animation: rescue-reveal-background 3s;
 }
@@ -444,6 +455,10 @@ for (const enemy of Object.values(enemiesByName)) {
   h1 {
     margin-top: -15px;
     margin-bottom: 0px;
+  }
+
+  .abilities {
+    margin-top: 15px;
   }
 }
 
