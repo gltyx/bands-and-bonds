@@ -330,7 +330,7 @@ for (let i = 0; i < allRooms.length - 1; i++) {
     prevRoom[i + 1] = { room: i };
   }
 }
-for (let i = 0; i < allRooms.length - 1; i++) {
+for (let i = 0; i < allRooms.length; i++) {
   const room = allRooms[i];
   if (room.type === 'none' || room.type === 'rescue') continue;
   const key = roomKey(room);
