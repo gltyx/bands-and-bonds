@@ -153,6 +153,8 @@ for (const url of [
   'images/generated/victory-skelemasterion2.webp',
   'images/generated/victory-skelemasterion3.webp',
   'images/generated/victory-skelemasterion4.webp',
+  'images/generated/Skelemasterion-dead.webp',
+  'images/generated/Skelemasterion-captured.webp',
 ]) {
   preloadImage(url);
 }
