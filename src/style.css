@@ -264,6 +264,39 @@ u {
   background-color: oklch(0.6 0.15 30);
 }
 
+.tag.left,
+.tag.right,
+.tag.front,
+.tag.back {
+  width: 0;
+  height: 0;
+  border: 2.5px solid transparent;
+}
+
+.tag.left {
+  border-right: 2.5px solid oklch(0.7 0 0);
+  margin-left: 1px;
+  margin-right: 3px;
+}
+
+.tag.right {
+  border-left: 2.5px solid oklch(0.7 0 0);
+  margin-right: 1px;
+  margin-left: 3px;
+}
+
+.tag.front {
+  border-bottom: 2.5px solid oklch(0.7 0 0);
+  margin-top: 1px;
+  margin-bottom: 3px
+}
+
+.tag.back {
+  border-top: 2.5px solid oklch(0.7 0 0);
+  margin-bottom: 1px;
+  margin-top: 3px
+}
+
 .tag.sound {
   border: 1px solid oklch(0.6 0.15 190);
   border-right: none;

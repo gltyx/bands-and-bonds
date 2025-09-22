@@ -172,8 +172,14 @@ const enemyAbilities: Record<string, Ability[]> = {
     name: "Time Wrap", duration: 1, description: "Slows down time.", peaceful: true,
     onCompleted(store) { store.run.speedLevel = 1; },
   }, {
-    name: "Time Burp", duration: 1, description: "Pushes time forward.", peaceful: true,
-    onCompleted(store) { store.run.skipTime += 2_000; },
+    name: "Time Burp", duration: 2, description: "Pushes time forward.", peaceful: true, affectedBySpeedLevel: true,
+    onCompleted(store, times) {
+      const speed = Math.log(store.run.speedLevel);
+      const factor = 1 + speed / (speed + 5);
+      // At factor = 1 it's a 2x speedup. At factor = 2 it's theoretically infinite speedup.
+      // We gently go from 1 to 2 as the speed level grows.
+      store.run.skipTime += 1_000 * times * factor / store.run.speedLevel;
+    },
   }],
   "Glass Dragon": [{ name: "Shatter", duration: 1, damage: 100_000, description: "The repairs are expensive.", consumes: { gold: 100 }, tags: ['sharp'] }],
   "Xaranthian Construct": [{ name: "Fire Xaranthian Cannons", duration: 10, damage: 650_000, description: "Sounds like thunder, looks like lightning bolts flying straight at the target." }],
@@ -197,7 +203,7 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Corrupted Bounty Hunter": [{ name: "Hyper Beam", duration: 100, damage: 1_250_000, description: "Imagine a rainbow turning to violence." }],
   "Lior the Weaver": [{
     name: "Fabric of Reality", duration: 5, damage: 120_000, tags: ['left', 'right', 'front', 'back'],
-    description: "An attack that comes from all directions at once."
+    description: "An attack that comes from all directions at once.",
   }],
   "Skeletron": [{ name: "Bonetron", duration: 2, damage: 1000, tags: ['blunt'], description: "Applies a bone to the head of the enemy." }],
   "Chago's Chamber": [],
@@ -382,7 +388,7 @@ Then a whirlwind collects all the petals and puts them back together in the shap
       },
     },
     {
-      name: "Reveal Skelemasterion's Stairway", duration: 20,
+      name: "Reveal Skelemasterion's Stairway", duration: 20, peaceful: true,
       description: `
 Hidden in Skelemasterion's lair is a stairway leading to the second level of the dungeon.
 
