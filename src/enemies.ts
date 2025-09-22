@@ -169,10 +169,10 @@ const enemyAbilities: Record<string, Ability[]> = {
   "The Shroud": [{ name: "Shroud of Darkness", duration: 1, damage: 1000, description: "Envelops the enemy in darkness.", tags: ['dark'] }],
   "Dark Lord": [{ name: "Shadow Strike", duration: 1, damage: 10, description: "The Dark Lord never misses.", tags: ['dark', 'undodgeable'] }],
   "Clockomancer": [{
-    name: "Time Wrap", duration: 1, description: "Slows down time.",
+    name: "Time Wrap", duration: 1, description: "Slows down time.", peaceful: true,
     onCompleted(store) { store.run.speedLevel = 1; },
   }, {
-    name: "Time Burp", duration: 1, description: "Pushes time forward.",
+    name: "Time Burp", duration: 1, description: "Pushes time forward.", peaceful: true,
     onCompleted(store) { store.run.skipTime += 2_000; },
   }],
   "Glass Dragon": [{ name: "Shatter", duration: 1, damage: 100_000, description: "The repairs are expensive.", consumes: { gold: 100 }, tags: ['sharp'] }],
