@@ -185,7 +185,7 @@ const enemyAbilities: Record<string, Ability[]> = {
   "Xaranthian Construct": [{ name: "Fire Xaranthian Cannons", duration: 10, damage: 650_000, description: "Sounds like thunder, looks like lightning bolts flying straight at the target." }],
   "Potato Golem": [{
     name: "Fertilize Saplings", duration: 1, description: "The number of saplings you have is effectively doubled. Potato magic.",
-    peaceful: true, consumes: (store) => ({ gold: store.run.saplings }),
+    peaceful: true, consumes: (store) => ({ gold: 100 * store.run.saplings }),
     onCompleted(store) {
       store.run.saplings *= 2;
     },
