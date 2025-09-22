@@ -274,12 +274,12 @@ This negates the defenses of ethereal enemies.`,
     }
   }],
   "Gnollish Ambassador": [{
-    name: "Diplomatic Cables", duration: 12, damage: 10_000, tags: ['sharp'],
+    name: "Diplomatic Cables", duration: 12, damage: 5_000, tags: ['sharp'],
     description: "A web of Gnollish steel wires strangle the enemy.",
   }],
   "Striped Horror": [
-    { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 80_000, description: "The black stripes connect to the darkness of the underworld." },
-    { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 80_000, description: "The white stripes connect to the light of the heavens." },
+    { name: "Ebony Stripe", tags: ['dark'], duration: 100, damage: 30_000, description: "The black stripes connect to the darkness of the underworld." },
+    { name: "Ivory Stripe", tags: ['light'], duration: 100, damage: 30_000, description: "The white stripes connect to the light of the heavens." },
   ],
   "Dragonfly Agaric": [{
     name: "Agaric Poison Strike", tags: ['poison'], duration: 5, description: "The deadly poison of the Dragonfly Agaric causes great damage over time.",
@@ -294,7 +294,7 @@ This negates the defenses of ethereal enemies.`,
 Finds a chest containing an artifact worth a thousand pieces of <img src="images/generated/gold.webp" class="resource-icon" />.
 Have these chests always been around us?`,
     onCompleted(store, times) {
-      store.run.gold += 1_000 * times;
+      store.run.gold += 10_000 * times;
     },
   }],
   "Golden Chest": [],
@@ -370,7 +370,7 @@ Then a whirlwind collects all the petals and puts them back together in the shap
   }],
   "The Final Warden": [{
     name: "The Final Warning", duration: 120, damage: 2_400_000, tags: ['ranged', 'sound'],
-    description: "A deadly weapon rings out immediately after the duration of the warning.",
+    description: "A warning, a generous pause, then the ring of a deadly weapon.",
   }],
   "Skelemasterion": [
     {
