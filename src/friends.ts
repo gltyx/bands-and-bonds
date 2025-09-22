@@ -71,21 +71,21 @@ Her enemies become ethereal, making them challenging to hit.
   {
     name: 'Coldblade',
     cost: 0,
-    description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
+    description: "A frozen warrior. Legends say his attacks will kill any foe, but each swing takes a hundred years.",
     abilities: [{
       name: "Glacial Strike",
       description: "A very cold blade with a very sharp edge.",
-      duration: 3600 * 24 * 365 * 1000,
-      damage: 1_000_000_000_000,
+      duration: 3600 * 24 * 365 * 100,
+      damage: 100_000_000_000,
       tags: ['ice'],
     }],
     super: {
       name: 'Hotblade',
-      description: "A frozen warrior, now with a hot blade. Legends say his attacks will kill any foe, but each swing takes a thousand years.",
+      description: "A frozen warrior, now with a hot blade. Legends say his attacks will kill any foe, but each swing takes a hundred years.",
       abilities: [{
         name: "Glacial Flame Strike",
         description: "A very hot blade with a very sharp edge.",
-        duration: 3600 * 24 * 365 * 1000,
+        duration: 3600 * 24 * 365 * 100,
         damage: 1_000_000_000_000,
         tags: ['fire'],
       }],
